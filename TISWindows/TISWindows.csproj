@@ -13,4 +13,8 @@
     <Folder Include="View\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
 </Project>
