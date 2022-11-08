@@ -1,0 +1,8 @@
+C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.csproj.AssemblyReference.cache
+C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\View\AnimalList.g.cs
+C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\View\App.g.cs
+C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\View\Login.g.cs
+C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\View\MainWindow.g.cs
+C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\View\UserProfile.g.cs
+C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows_MarkupCompile.cache
+C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows_MarkupCompile.lref
