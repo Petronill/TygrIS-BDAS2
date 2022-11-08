@@ -1,8 +1,13 @@
 {
   "ExpandedNodes": [
     "",
+    "\\TygrISBackend\\App_Data",
+    "\\TygrISFramework\\bin",
+    "\\TygrISFramework\\obj",
+    "\\TygrISFramework\\obj\\Debug",
+    "\\TygrISFramework\\obj\\Debug\\TempPE",
     "\\WpfWindows"
   ],
-  "SelectedNode": "\\WpfWindows\\AnimalList.xaml",
+  "SelectedNode": "\\WpfWindows",
   "PreviewInSolutionExplorer": false
 }
