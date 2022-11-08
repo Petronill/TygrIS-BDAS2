@@ -7,4 +7,19 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="alchemy_palette.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Model\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="View\" />
+    <Folder Include="Solution Items\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="alchemy_palette.png" />
+  </ItemGroup>
+
 </Project>
