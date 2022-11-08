@@ -7,11 +7,16 @@
         mc:Ignorable="d"
         Title="AnimalList" Height="450" Width="800">
     <Grid>
-        <StackPanel>
+        <StackPanel >
         <DockPanel LastChildFill="False">
             <StackPanel DockPanel.Dock="Top" Width="800"
                         Orientation="Horizontal">
-                <Label>Zoo Pardubice</Label>
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="100, 5, 10 5"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Label>Zoo Pardubice</Label>
                 <Button x:Name="Zoo" Click="OnClickZoo">O Zoo</Button>
                 <Button x:Name="Animals" Click="OnClickAnimals">Zvířata</Button>
                 <Button x:Name="Info" Click="OnClickInfo">Kdo jsme</Button>
@@ -22,82 +27,64 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                        <Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Raccoon_in_Central_Park_%2835264%29.jpg/1200px-Raccoon_in_Central_Park_%2835264%29.jpg" Width="100"> </Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
 
-                    <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                    <StackPanel Orientation="Vertical" Margin="10">
+                        <Image Source="https://artprojectsforkids.org/wp-content/uploads/2020/08/Elephant-recolor.jpg" Width="86"></Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                        <Image Source="https://th-thumbnailer.cdn-si-edu.com/9UrydtZErwwxVrzQRr4EmWfGAjk=/fit-in/1600x0/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/Blobfish-ugly-470.jpg" Width="145"></Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
             <StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="381"  Margin="10">
                     <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                        <Image Width="100" Source="https://animals.sandiegozoo.org/sites/default/files/2016-11/animals_hero_giraffe_1_0.jpg"></Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
 
-                    <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                    <StackPanel Orientation="Vertical" Margin="10,0,10,0">
+                        <Image Source="https://www.dogalize.com/wp-content/uploads/2017/06/cat-girl.jpg" Width="100" Height="56"></Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                        <Image Source="https://st.depositphotos.com/1128251/1320/i/450/depositphotos_13207345-stock-photo-pigeon-walking.jpg" Width="83"></Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
             <StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" Width="375">
                     <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                        <Image Source="https://images.blz-contentstack.com/v3/assets/blt3452e3b114fab0cd/blt603c3c5a8ff3aaaf/616da56f35f1b36b742c7549/M805GDT27ZDX1620936576461.png" Width="100"></Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
 
-                    <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                    <StackPanel Orientation="Vertical" Margin="10,0,10,0">
+                        <Image Source="https://www.postavy.cz/obrazky-thumbs/wiki/kocour-163683-wikithumb.jpg" Width="112.5"></Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
-                        <Image></Image>
+                        <Image Source="https://static.wikia.nocookie.net/villains/images/3/3c/4xvje3l.png/revision/latest?cb=20161104043733" Width="100" Height="63.5"></Image>
                         <TextBlock>já jsem zvire whuaaa</TextBlock>
                         <Button>Donate</Button>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
             <StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                    <StackPanel Orientation="Vertical">
-                        <Image></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Vertical">
-                        <Image></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical">
-                        <Image></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-                </StackPanel>
             </StackPanel>
         </StackPanel>
     </Grid>

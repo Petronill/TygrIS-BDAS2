@@ -7,11 +7,16 @@
         mc:Ignorable="d"
         Title="UserProfile" Height="450" Width="800">
     <Grid>
-        <StackPanel>
+        <StackPanel Background="Azure">
         <DockPanel LastChildFill="False">
-            <StackPanel DockPanel.Dock="Top" Width="800"
+            <StackPanel DockPanel.Dock="Top" Width="800" Background="Aqua"
                         Orientation="Horizontal">
-                <Label>Zoo Pardubice</Label>
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="100, 5, 10 5"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Label>Zoo Pardubice</Label>
                 <Button x:Name="Zoo" Click="OnClickZoo">O Zoo</Button>
                 <Button x:Name="Animals" Click="OnClickAnimals">Zvířata</Button>
                 <Button x:Name="Info" Click="OnClickInfo">Kdo jsme</Button>
@@ -21,9 +26,9 @@
         </DockPanel>
             <StackPanel Orientation="Horizontal" Height="408">
                 <DockPanel>
-                    <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
-                        <Button> Podívat se na svá zvířata</Button>
-                        <Button> Ošetřovatelé </Button>
+                    <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Width="150" Margin="5,5,5,0">
+                        <Button Margin="5,5,5,10"> Podívat se na svá zvířata</Button>
+                        <Button Margin="5,5,5,10"> Ošetřovatelé </Button>
                     </StackPanel>
                 </DockPanel>
                 <StackPanel>
