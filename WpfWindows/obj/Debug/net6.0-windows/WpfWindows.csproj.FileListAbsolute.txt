@@ -1,8 +1,0 @@
-C:\Users\ondre\source\repos\tretak\WPF\WpfWindows\obj\Debug\net6.0-windows\WpfWindows.csproj.AssemblyReference.cache
-C:\Users\ondre\source\repos\tretak\WPF\WpfWindows\obj\Debug\net6.0-windows\AnimalList.g.cs
-C:\Users\ondre\source\repos\tretak\WPF\WpfWindows\obj\Debug\net6.0-windows\Login.g.cs
-C:\Users\ondre\source\repos\tretak\WPF\WpfWindows\obj\Debug\net6.0-windows\MainMenu.g.cs
-C:\Users\ondre\source\repos\tretak\WPF\WpfWindows\obj\Debug\net6.0-windows\UserProfile.g.cs
-C:\Users\ondre\source\repos\tretak\WPF\WpfWindows\obj\Debug\net6.0-windows\App.g.cs
-C:\Users\ondre\source\repos\tretak\WPF\WpfWindows\obj\Debug\net6.0-windows\WpfWindows_MarkupCompile.cache
-C:\Users\ondre\source\repos\tretak\WPF\WpfWindows\obj\Debug\net6.0-windows\WpfWindows_MarkupCompile.lref

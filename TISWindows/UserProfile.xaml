@@ -1,0 +1,51 @@
+﻿<Window x:Class="TISWindows.UserProfile"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TISWindows"
+        mc:Ignorable="d"
+        Title="UserProfile" Height="450" Width="800">
+    <Grid>
+        <StackPanel Background="Azure">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Top" Width="800" Background="Aqua"
+                        Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="100, 5, 10 5"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Label>Zoo Pardubice</Label>
+                    <Button x:Name="Zoo" Click="OnClickZoo">O Zoo</Button>
+                    <Button x:Name="Animals" Click="OnClickAnimals">Zvířata</Button>
+                    <Button x:Name="Info" Click="OnClickInfo">Kdo jsme</Button>
+                    <Button x:Name="Login" Click="OnClickLogin">Přihlášení</Button>
+
+                </StackPanel>
+            </DockPanel>
+            <StackPanel Orientation="Horizontal" Height="408">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Width="150" Margin="5,5,5,0">
+                        <Button Margin="5,5,5,10">Podívat se na svá zvířata</Button>
+                        <Button Margin="5,5,5,10">Ošetřovatelé</Button>
+                    </StackPanel>
+                </DockPanel>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical" Height="407" Width="249">
+                            <Label>Jméno: Ondra Neustadt</Label>
+                            <Label>Věk: Strašně moc</Label>
+                            <Label>Adresa: Kbýlkova 420 Bolín 3</Label>
+                            <Label>E-mail: ondrajebuh@pornhub.com</Label>
+                            <Label>Telefon: 123 456 789</Label>
+                            <Label>Číslo bankovního účtu: 58008</Label>
+                        </StackPanel>
+                        <Image Source="https://static.qnm.it/845X0/www/qnm/it/wp-content/uploads/2015/05/lavori-nerd.jpg"
+                               Width="200" VerticalAlignment="Top"></Image>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

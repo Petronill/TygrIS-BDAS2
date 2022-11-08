@@ -1,0 +1,42 @@
+﻿<Window x:Class="TISWindows.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TISWindows"
+        mc:Ignorable="d"
+        Title="Login" Height="450" Width="800">
+    <Grid>
+        <StackPanel Orientation="Vertical" Background="Azure">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Top" Width="800"
+                        Orientation="Horizontal" Background="Aqua">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="100, 5, 10 5"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Label>Zoo Pardubice</Label>
+                    <Button x:Name="Zoo" Click="OnClickZoo">O Zoo</Button>
+                    <Button x:Name="Animals" Click="OnClickAnimals">Zvířata</Button>
+                    <Button x:Name="Info" Click="OnClickInfo">Kdo jsme</Button>
+                    <Button x:Name="Log" Click="OnClickLogin">Přihlášení</Button>
+
+                </StackPanel>
+            </DockPanel>
+            <StackPanel Height="406" HorizontalAlignment="Center" Margin="0,50,0,0" Background="LightGreen">
+                <TextBlock FontSize="30"> Přihlášení</TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Přihlašovací jméno:</Label>
+                    <TextBox HorizontalAlignment="Right">jmeno</TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Heslo:</Label>
+                    <TextBox HorizontalAlignment="Right">heslo
+                    </TextBox>
+                </StackPanel>
+                <Button Width="65" Click="OnClickLogIn" HorizontalAlignment="Right" Margin="0,10,5,0">Přihlásit se</Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
