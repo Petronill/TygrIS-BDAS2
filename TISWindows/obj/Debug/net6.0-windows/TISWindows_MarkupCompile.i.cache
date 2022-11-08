@@ -9,12 +9,12 @@ TISWindows
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\App.xaml
-4169760674
 
-8-202081201
+51056205175
+
+8-283853165
 194618410957
-AnimalList.xaml;Login.xaml;MainWindow.xaml;UserProfile.xaml;
+View\AnimalList.xaml;View\App.xaml;View\Login.xaml;View\MainWindow.xaml;View\UserProfile.xaml;
 
 False
 

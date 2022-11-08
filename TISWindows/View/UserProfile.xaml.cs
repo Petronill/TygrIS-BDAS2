@@ -10,29 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TISWindows
+namespace TISWindows.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interakční logika pro UserProfile.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class UserProfile : Window
     {
-        public MainWindow()
+        public UserProfile()
         {
             InitializeComponent();
-        }
-
-        private void OnClickOZoo(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void OnClickLogin(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
