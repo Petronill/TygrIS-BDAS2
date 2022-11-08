@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TISWindows.View
+namespace TISWindows
 {
     /// <summary>
-    /// Interakční logika pro AnimalList.xaml
+    /// Interakční logika pro Login.xaml
     /// </summary>
-    public partial class AnimalList : Window
+    public partial class Login : Window
     {
-        public AnimalList()
+        public Login()
         {
             InitializeComponent();
         }

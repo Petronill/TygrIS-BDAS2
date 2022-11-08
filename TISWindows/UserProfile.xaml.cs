@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TISWindows.View
+namespace TISWindows
 {
     /// <summary>
-    /// Interakční logika pro Login.xaml
+    /// Interakční logika pro UserProfile.xaml
     /// </summary>
-    public partial class Login : Window
+    public partial class UserProfile : Window
     {
-        public Login()
+        public UserProfile()
         {
             InitializeComponent();
         }

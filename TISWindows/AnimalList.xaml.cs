@@ -10,29 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TISWindows.View
+namespace TISWindows
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interakční logika pro AnimalList.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class AnimalList : Window
     {
-        public MainWindow()
+        public AnimalList()
         {
             InitializeComponent();
-        }
-
-        private void OnClickOZoo(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void OnClickLogin(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
