@@ -7,10 +7,15 @@
         mc:Ignorable="d"
         Title="MainMenu" Height="450" Width="800">
     <Grid>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Background="Azure">
         <DockPanel LastChildFill="False">
-            <StackPanel DockPanel.Dock="Top" Width="800"
-                        Orientation="Horizontal">
+            <StackPanel DockPanel.Dock="Top" Width="800" Background="Aqua"
+                        Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Margin" Value="100, 5, 10 5"/>
+                        </Style>
+                    </StackPanel.Resources>
                 <Label>Zoo Pardubice</Label>
                 <Button x:Name="Zoo" Click="OnClickZoo">O Zoo</Button>
                 <Button x:Name="Animals" Click="OnClickAnimals">Zvířata</Button>
@@ -26,7 +31,7 @@
                        ></Image>
                 <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
                     <TextBlock FontSize="20" FontWeight="Bold">Adoptuj zvíře</TextBlock>
-                    <TextBlock FontSize="15">Adopce zvířat je nyní možná! 
+                    <TextBlock FontSize="15" TextWrapping="Wrap">Adopce zvířat je nyní možná! 
                     Klikněte na tlačítko pro zobrazení zvířat! </TextBlock>
                     <Button Click="OnClickListOfAnimals" Width="100" HorizontalAlignment="Left" Margin="20">Zviratka zde!</Button>
                 </StackPanel>
