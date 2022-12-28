@@ -6,3 +6,30 @@ C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\View
 C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\View\UserProfile.g.cs
 C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows_MarkupCompile.cache
 C:\Users\Petr Čech\source\repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows_MarkupCompile.lref
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.csproj.AssemblyReference.cache
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\AnimalList.g.cs
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\Login.g.cs
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\MainWindow.g.cs
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\UserProfile.g.cs
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\App.g.cs
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows_MarkupCompile.cache
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows_MarkupCompile.lref
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\bin\Debug\net6.0-windows\TISWindows.exe
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\bin\Debug\net6.0-windows\TISWindows.deps.json
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\bin\Debug\net6.0-windows\TISWindows.runtimeconfig.json
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\bin\Debug\net6.0-windows\TISWindows.dll
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\bin\Debug\net6.0-windows\TISWindows.pdb
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\AnimalList.baml
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\Login.baml
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\MainWindow.baml
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\UserProfile.baml
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.g.resources
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.AssemblyInfoInputs.cache
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.AssemblyInfo.cs
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.csproj.CoreCompileInputs.cache
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.dll
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\refint\TISWindows.dll
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.pdb
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\TISWindows.genruntimeconfig.cache
+C:\Users\Ondra\Source\Repos\TygrIS\TISWindows\obj\Debug\net6.0-windows\ref\TISWindows.dll

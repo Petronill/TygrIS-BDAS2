@@ -1,13 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\TygrISBackend\\App_Data",
-    "\\TygrISFramework\\bin",
-    "\\TygrISFramework\\obj",
-    "\\TygrISFramework\\obj\\Debug",
-    "\\TygrISFramework\\obj\\Debug\\TempPE",
-    "\\WpfWindows"
+    "\\TISWindows"
   ],
-  "SelectedNode": "\\WpfWindows",
+  "SelectedNode": "\\TygrIS.sln",
   "PreviewInSolutionExplorer": false
 }

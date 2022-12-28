@@ -7,24 +7,8 @@
         mc:Ignorable="d"
         Title="AnimalList" Height="450" Width="800">
     <Grid>
-        <StackPanel >
-            <DockPanel LastChildFill="False">
-                <StackPanel DockPanel.Dock="Top" Width="800"
-                        Orientation="Horizontal">
-                    <StackPanel.Resources>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="Margin" Value="100, 5, 10 5"/>
-                        </Style>
-                    </StackPanel.Resources>
-                    <Label>Zoo Pardubice</Label>
-                    <Button x:Name="Zoo" Click="OnClickZoo">O Zoo</Button>
-                    <Button x:Name="Animals" Click="OnClickAnimals">Zvířata</Button>
-                    <Button x:Name="Info" Click="OnClickInfo">Kdo jsme</Button>
-                    <Button x:Name="Login" Click="OnClickLogin">Přihlášení</Button>
-
-                </StackPanel>
-            </DockPanel>
-            <StackPanel>
+        <StackPanel x:Name="animalList">
+            <StackPanel Margin="0,15,0,0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                     <StackPanel Orientation="Vertical">
                         <Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Raccoon_in_Central_Park_%2835264%29.jpg/1200px-Raccoon_in_Central_Park_%2835264%29.jpg" Width="100"></Image>

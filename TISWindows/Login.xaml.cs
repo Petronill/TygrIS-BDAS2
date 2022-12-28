@@ -23,5 +23,10 @@ namespace TISWindows
         {
             InitializeComponent();
         }
+        private void OnClickLogIn(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.userName.Content = loginName.GetLineText(0);
+        }
     }
 }
