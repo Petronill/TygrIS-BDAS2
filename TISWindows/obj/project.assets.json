@@ -8,26 +8,19 @@
     "net6.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Ondra\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Petr Čech\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ondra\\Source\\Repos\\TygrIS\\TISWindows\\TISWindows.csproj",
+      "projectUniqueName": "C:\\Users\\Petr Čech\\Source\\Repos2\\TygrIS\\TISWindows\\TISWindows.csproj",
       "projectName": "TISWindows",
-      "projectPath": "C:\\Users\\Ondra\\Source\\Repos\\TygrIS\\TISWindows\\TISWindows.csproj",
-      "packagesPath": "C:\\Users\\Ondra\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Ondra\\Source\\Repos\\TygrIS\\TISWindows\\obj\\",
+      "projectPath": "C:\\Users\\Petr Čech\\Source\\Repos2\\TygrIS\\TISWindows\\TISWindows.csproj",
+      "packagesPath": "C:\\Users\\Petr Čech\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Petr Čech\\Source\\Repos2\\TygrIS\\TISWindows\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Ondra\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\Petr Čech\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -35,7 +28,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -72,7 +64,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }
