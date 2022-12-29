@@ -33,6 +33,7 @@ namespace TISWindows
             Content.Children.Clear();
 
             MainWindow mainWindow = new MainWindow();
+
             string panel = XamlWriter.Save(mainWindow.Content);
             DockPanel content = (DockPanel)XamlReader.Parse(panel);
 
@@ -84,10 +85,16 @@ namespace TISWindows
         {
             Content.Children.Clear();
             Login login = new Login();
-
             string panel = XamlWriter.Save(login.loginMenu);
             StackPanel loginMenu = (StackPanel)XamlReader.Parse(panel);
-            
+            Button btn = (Button)loginMenu.FindName("pokus");
+            TextBox box = (TextBox)loginMenu.FindName("loginName");
+            //mainWindow.userName.Content = loginName.GetLineText(0);
+            btn.Click += (s, e) => {
+                userName.Content = box.Text;
+            };
+
+
             Content.Children.Add(loginMenu);
         }
     }

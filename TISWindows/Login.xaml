@@ -19,7 +19,7 @@
                     <TextBox x:Name="loginPassword" HorizontalAlignment="Right">heslo
                     </TextBox>
                 </StackPanel>
-                <Button Width="65" Click="OnClickLogIn" HorizontalAlignment="Right" Margin="0,10,5,0">Přihlásit se</Button>
+                <Button Name="pokus" Width="65" Click="OnClickLogIn" HorizontalAlignment="Right" Margin="0,10,5,0">Přihlásit se</Button>
             </StackPanel>
         </StackPanel>
     </Grid>

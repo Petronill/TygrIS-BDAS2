@@ -42,7 +42,7 @@
                     <StackPanel DockPanel.Dock="Left" Orientation="Vertical" VerticalAlignment="Center" >
                         <TextBlock FontSize="20" FontWeight="Bold">Hledáme nové zaměstnance!</TextBlock>
                         <TextBlock FontSize="15">Máte rádi práci se zvířaty, nízký plat a smrad? máme práci přímo pro vás!</TextBlock>
-                        <Button Click="OnClickEmployee" Width="100" HorizontalAlignment="Right" Margin="20">Zjistěte více!</Button>
+                        <Button x:Name="findOut" Click="OnClickEmployee" Width="100" HorizontalAlignment="Right" Margin="20">Zjistěte více!</Button>
                     </StackPanel>
                     <Image DockPanel.Dock="Right"
                            Source="https://cdn.britannica.com/98/194098-050-AF1D1D85/Slave-Trade-paper-George-Morland-John-Raphael-1812.jpg"
