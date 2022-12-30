@@ -14,5 +14,8 @@ namespace TISWindows.Model
         protected int MaintCosts { get; set; }
         protected DateTime Birth { get; set; }
         protected DateTime Death { get; set; }
+        protected Species? Species { get; set; }
+        protected Genus? Genus { get; set; }
+
     }
 }

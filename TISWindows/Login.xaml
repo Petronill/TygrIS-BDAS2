@@ -8,18 +8,20 @@
         Title="Login" Height="450" Width="800">
     <Grid>
         <StackPanel Orientation="Vertical" Background="Azure">
-            <StackPanel Name="loginMenu" Height="406" HorizontalAlignment="Center" Margin="0,50,0,0" Background="LightGreen">
-                <TextBlock FontSize="30"> Přihlášení</TextBlock>
-                <StackPanel Orientation="Horizontal">
-                    <Label>Přihlašovací jméno:</Label>
+            <StackPanel Name="loginMenu" Height="406" HorizontalAlignment="Center" Margin="0,50,0,0" Background="LightGreen" Width="354">
+                <TextBlock HorizontalAlignment="Center" FontSize="30"> Přihlášení</TextBlock>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,10,0,0">
+                    <Label >Přihlašovací jméno:</Label>
                     <TextBox x:Name="loginName" HorizontalAlignment="Right">jmeno</TextBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                     <Label>Heslo:</Label>
                     <TextBox x:Name="loginPassword" HorizontalAlignment="Right">heslo
                     </TextBox>
                 </StackPanel>
-                <Button Name="pokus" Width="65" Click="OnClickLogIn" HorizontalAlignment="Right" Margin="0,10,5,0">Přihlásit se</Button>
+                <Label x:Name="errMsg" FontStyle="Italic">
+                </Label>
+                <Button Name="pokus" Width="65" Click="OnClickLogIn" HorizontalAlignment="Center" Margin="0,10,5,0">Přihlásit se</Button>
             </StackPanel>
         </StackPanel>
     </Grid>

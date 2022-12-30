@@ -7,23 +7,23 @@
         mc:Ignorable="d"
         Title="UserProfile" Height="450" Width="800">
     <Grid>
-        <StackPanel Background="Azure">
+        <StackPanel x:Name="profile" Background="Azure">
             <StackPanel Orientation="Horizontal" Height="408" Margin="15,15,0,0">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Width="150" Margin="5,5,5,0">
-                        <Button Margin="5,5,5,10">Podívat se na svá zvířata</Button>
-                        <Button Margin="5,5,5,10">Ošetřovatelé</Button>
+                        <Button x:Name="animalList" Margin="5,5,5,10">Podívat se na svá zvířata</Button>
+                        <Button x:Name="keepers" Margin="5,5,5,10">Ošetřovatelé</Button>
                     </StackPanel>
                 </DockPanel>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Orientation="Vertical" Height="407" Width="249">
-                            <Label>Jméno: Ondra Neustadt</Label>
-                            <Label>Věk: Strašně moc</Label>
-                            <Label>Adresa: Kbýlkova 420 Bolín 3</Label>
-                            <Label>E-mail: ondrajebuh@pornhub.com</Label>
-                            <Label>Telefon: 123 456 789</Label>
-                            <Label>Číslo bankovního účtu: 58008</Label>
+                            <Label Name="name">Jméno: Ondra Neustadt</Label>
+                            <Label Name="age">Věk: Strašně moc</Label>
+                            <Label Name="adress">Adresa: Kbýlkova 420 Bolín 3</Label>
+                            <Label Name="email">E-mail: ondrajebuh@pornhub.com</Label>
+                            <Label Name="phone">Telefon: 123 456 789</Label>
+                            <Label Name="bankAccount">Číslo bankovního účtu: 58008</Label>
                         </StackPanel>
                         <Image Source="https://static.qnm.it/845X0/www/qnm/it/wp-content/uploads/2015/05/lavori-nerd.jpg"
                                Width="200" VerticalAlignment="Top"></Image>

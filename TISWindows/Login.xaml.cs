@@ -25,6 +25,7 @@ namespace TISWindows
         }
         private void OnClickLogIn(object sender, RoutedEventArgs e)
         {
+            // This is useless, can be deleted but I am too afraid to do so
             MainWindow mainWindow = new MainWindow();
             mainWindow.userName.Content = loginName.GetLineText(0);
         }
