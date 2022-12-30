@@ -12,6 +12,8 @@ namespace TISBackend.Auth
         public string Username { get; set; }
         public string Hash { get; set; }
 
+        public AuthLevel? As { get; set; }
+
         public static AuthToken? FromJSON(JObject json)
         {
             if (json == null || !json.ContainsKey("user") || !json.ContainsKey("hash"))
@@ -19,7 +21,11 @@ namespace TISBackend.Auth
                 return null;
             }
 
-            return new AuthToken() { Username = json["user"].ToString(), Hash = json["hash"].ToString() };
+            return new AuthToken() {
+                Username = json["user"].ToString(),
+                Hash = json["hash"].ToString(),
+                As = (json.ContainsKey("as") && Enum.TryParse(json["as"].ToString(), out AuthLevel result)) ? result : (AuthLevel?)null
+            };
         }
     }
 
@@ -30,7 +36,7 @@ namespace TISBackend.Auth
 
     public static class AuthController
     {
-        private static ObjectCache cachedTokens = MemoryCache.Default;
+        private static readonly ObjectCache cachedTokens = MemoryCache.Default;
 
         static AuthLevel CheckInDatabase(AuthToken authToken)
         {
@@ -39,13 +45,7 @@ namespace TISBackend.Auth
                 new OracleParameter("jmeno", authToken.Username),
                 new OracleParameter("hash", authToken.Hash)
             ).Rows[0];
-            switch (query["level"].ToString())
-            {
-                case "0": return AuthLevel.ADMIN;
-                case "1": return AuthLevel.INNER;
-                case "2": return AuthLevel.OUTER;
-                default: return AuthLevel.NONE;
-            }
+            return Enum.TryParse(query["level"].ToString(), out AuthLevel result) ? result : AuthLevel.NONE;
         }
 
         public static AuthLevel Check(AuthToken? authToken)
@@ -59,12 +59,12 @@ namespace TISBackend.Auth
             AuthLevel? cachedLevel = cachedTokens[token.Username] as AuthLevel?;
             if (cachedLevel != null)
             {
-                return cachedLevel.Value;
+                return (token.As is null || cachedLevel != AuthLevel.ADMIN) ? cachedLevel.Value : token.As.Value;
             }
 
             AuthLevel level = CheckInDatabase(token);
             cachedTokens.Add(token.Username+token.Hash, level, DateTimeOffset.Now.AddMinutes(15));
-            return level;
+            return (token.As is null || level != AuthLevel.ADMIN) ? level : token.As.Value;
         }
 
     }
