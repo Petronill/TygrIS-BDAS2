@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TISBackend",
+    "\\TISBackend\\Properties"
   ],
-  "SelectedNode": "\\C:\\Users\\Petr Čech\\Source\\Repos2\\TygrIS",
+  "SelectedNode": "\\TygrIS.sln",
   "PreviewInSolutionExplorer": false
 }

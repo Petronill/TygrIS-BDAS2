@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
 using System.Runtime.Caching;
@@ -24,16 +25,20 @@ namespace TISBackend.Auth
 
     public enum AuthLevel
     {
-        NONE, OUTER, INNER, ADMIN
+        NONE = -1, OUTER = 2, INNER = 1, ADMIN = 0
     }
 
     public static class AuthController
     {
         private static ObjectCache cachedTokens = MemoryCache.Default;
 
-        public static AuthLevel CheckInDatabase(AuthToken authToken)
+        static AuthLevel CheckInDatabase(AuthToken authToken)
         {
-            DataRow query = DatabaseController.Query($"SELECT \"ST64113\".\"VERIFY_USER\"(\"{authToken.Username}\", \"{authToken.Hash}\") \"level\" FROM DUAL").Rows[0];
+            DataRow query = DatabaseController.Query(
+                $"SELECT PKG_HESLA.ZJISTI_UROVEN(:jmeno, :hash) \"level\" FROM DUAL",
+                new OracleParameter("jmeno", authToken.Username),
+                new OracleParameter("hash", authToken.Hash)
+            ).Rows[0];
             switch (query["level"].ToString())
             {
                 case "0": return AuthLevel.ADMIN;
@@ -58,7 +63,7 @@ namespace TISBackend.Auth
             }
 
             AuthLevel level = CheckInDatabase(token);
-            cachedTokens.Add(token.Username, level, DateTimeOffset.Now.AddMinutes(15));
+            cachedTokens.Add(token.Username+token.Hash, level, DateTimeOffset.Now.AddMinutes(15));
             return level;
         }
 
