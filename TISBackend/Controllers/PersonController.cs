@@ -12,18 +12,12 @@ namespace TISBackend.Controllers
 {
     public class PersonController : ApiController
     {
-        // POST: api/Person
-        public IEnumerable<Person> Post(JObject value)
+        // GET: api/Person
+        public IEnumerable<Person> GetAll()
         {
-            List<Person> list = new List<Person>();
-            
-            if (value == null)
-            {
-                return list;
-            }
-
-            AuthLevel level = AuthController.Check(AuthToken.FromJSON(value["auth"] as JObject));
+            AuthLevel level = AuthController.Check(AuthToken.From(Request.Headers));
             DataTable query;
+            List<Person> list = new List<Person>();
 
             switch (level) {
                 case AuthLevel.OUTER:

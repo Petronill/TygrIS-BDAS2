@@ -2,6 +2,8 @@
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.Caching;
 using TISBackend.Db;
 
@@ -14,14 +16,30 @@ namespace TISBackend.Auth
 
         public AuthLevel? As { get; set; }
 
-        public static AuthToken? FromJSON(JObject json)
+        public static AuthToken? From(HttpRequestHeaders headers)
+        {
+            if (!headers.TryGetValues("Tis-User", out var userValues) || !headers.TryGetValues("Tis-Hash", out var hashValues)) {
+                return null;
+            }
+
+            return new AuthToken()
+            {
+                Username = userValues.First(),
+                Hash = hashValues.First(),
+                As = (headers.TryGetValues("Tis-As", out var asValues) && Enum.TryParse(asValues.First(), out AuthLevel result)) ? result : (AuthLevel?)null
+            };
+        }
+
+        [Obsolete("Method AuthToken.From(JObject json) is deprecated, please use method AuthToken.From(HttpRequestHeaders headers) instead.")]
+        public static AuthToken? From(JObject json)
         {
             if (json == null || !json.ContainsKey("user") || !json.ContainsKey("hash"))
             {
                 return null;
             }
 
-            return new AuthToken() {
+            return new AuthToken()
+            {
                 Username = json["user"].ToString(),
                 Hash = json["hash"].ToString(),
                 As = (json.ContainsKey("as") && Enum.TryParse(json["as"].ToString(), out AuthLevel result)) ? result : (AuthLevel?)null
