@@ -1,18 +1,40 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/
 
-/.vs/TygrIS/config/applicationhost.config
-/.vs/TygrIS/FileContentIndex/9076dab0-d8d8-418a-8ee8-ee1733c464d6.vsidx
-/.vs/TygrIS/FileContentIndex/9848af44-7a43-43ab-a768-eae5174364a1.vsidx
-/.vs/TygrIS/FileContentIndex/b3f63265-0e22-4b16-9992-0d3359a211fa.vsidx
-/.vs/TygrIS/FileContentIndex/f3d2b423-2a6f-40ea-891d-0588f0f69c61.vsidx
-/TISBackend/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
-/TISBackend/obj/Debug/TISBackend.csproj.FileListAbsolute.txt
-/.vs/TygrIS/v17/workspaceFileList.bin
-/.vs/TygrIS/FileContentIndex/41585e25-379d-485d-8a67-7578dacc34c5.vsidx
-/.vs/slnx.sqlite
-/.vs/TygrIS/FileContentIndex/abb0580a-fb2a-473a-8ae1-44b5a3b74b62.vsidx
-/.vs/TygrIS/FileContentIndex/e9c0f4f3-eb75-4e84-84e4-2510a80cc9b5.vsidx
-/.vs/TygrIS/FileContentIndex/d24cfdff-85f7-4677-acdc-7f6b2ede5547.vsidx
-*.vsidx
+
+# Visual Studio
+.vs/
+
+# Visual Studio Code
+.vscode
+
+# Rider
+.idea
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+TestResults/
