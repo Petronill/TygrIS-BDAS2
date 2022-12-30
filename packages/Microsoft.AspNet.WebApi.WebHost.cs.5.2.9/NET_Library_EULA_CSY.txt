@@ -1,0 +1,127 @@
+﻿LICENČNÍ PODMÍNKY PRO SOFTWARE SPOLEČNOSTI MICROSOFT
+KNIHOVNA MICROSOFT .NET
+Tyto licenční podmínky představují smlouvu mezi vámi a společností Microsoft Corporation (nebo 
+některou z jejích afilací v závislosti na tom, kde bydlíte). Vztahují se na výše uvedený software. Podmínky 
+se rovněž vztahují na jakékoli služby Microsoft nebo aktualizace pro software, pokud se na služby nebo 
+aktualizace nevztahují odlišné podmínky.
+DODRŽÍTE-LI TYTO LICENČNÍ PODMÍNKY, MÁTE NÁSLEDUJÍCÍ PRÁVA.
+1.	PRÁVA K INSTALACI A UŽÍVÁNÍ. 
+Můžete instalovat a používat libovolný počet kopií softwaru za účelem vývoje a testování svých 
+aplikací.  
+2.	KOMPONENTY TŘETÍCH STRAN. Software může zahrnovat komponenty třetích stran se 
+samostatnými právními poučeními nebo komponenty, jejichž užívání se řídí jinými smlouvami, které mohou 
+být popsány v souborech ThirdPartyNotices připojených k softwaru.
+3.	DALŠÍ LICENČNÍ POŽADAVKY A/NEBO PRÁVA K UŽÍVÁNÍ.
+a.	OPĚTOVNĚ ŠIŘITELNÝ KÓD. Software se skládá z opětovně šiřitelného kódu. „Opětovně 
+šiřitelný kód“ je kód, který máte povoleno distribuovat v aplikacích, které vyvinete, pokud splníte 
+následující podmínky.
+i.	Právo na užívání a distribuci. 
+•	Software smíte kopírovat a distribuovat v podobě strojového kódu.
+•	Distribuce pomocí třetích stran. Můžete povolit distributorům aplikací kopírování 
+a distribuci kódu k distribuci jako součást těchto aplikací.
+ii.	Požadavky na distribuci. V případě opětovně šiřitelného kódu, který distribuujete, 
+musíte splnit tyto podmínky
+•	používat opětovně šiřitelný kód ve vašich aplikacích, a nikoli k samostatné distribuci;
+•	zavázat distributory a externí koncové uživatele smlouvou, jejíž podmínky jej budou 
+chránit nejméně tak jako tato smlouva; a
+•	zbavit společnost Microsoft odpovědnosti, chránit ji a bránit před jakýmikoli nároky 
+včetně poplatků za právní zastoupení souvisejícími s distribucí nebo použitím vašich 
+aplikací s výjimkou rozsahu, ve kterém je nárok založen výhradně na nezměněném 
+opětovně šiřitelném kódu.
+iii.	Distribuční omezení. Zákazník nesmí
+•	používat ochranné známky společnosti Microsoft v názvech svých aplikací nebo 
+způsobem, který by naznačoval, že vaše aplikace pocházejí od společnosti Microsoft nebo 
+že je společnost Microsoft schválila;
+•	upravovat ani distribuovat zdrojový kód libovolného kódu k distribuci tak, aby se jeho 
+libovolná část stala předmětem vyloučené licence. „Vyloučená licence“ je licence, která 
+vyžaduje jako podmínku užívání, úprav nebo distribuce kódu, (i) aby byl kód zpřístupněn 
+nebo zveřejněn ve tvaru zdrojového kódu nebo (ii) aby jej byli oprávněni upravovat 
+ostatní uživatelé.
+4.	DATA.
+a.	Shromažďování údajů. Software může shromažďovat informace o vás a užívání softwaru a 
+odesílat je společnosti Microsoft. Společnost Microsoft může tyto informace použít k poskytování 
+služeb a zlepšování svých produktů a služeb.  K některým z těchto scénářů se nemusíte přihlásit, 
+jak je popsáno v dokumentaci k softwaru.  Některé funkce v softwaru mohou vám a společnosti 
+Microsoft povolovat shromažďování dat od uživatelů vašich aplikací. Při užívání těchto funkcí 
+musíte dodržovat příslušné zákony, včetně poskytování příslušných sdělení uživatelům vašich 
+aplikací společně prohlášením společnosti Microsoft o ochraně osobních údajů. Prohlášení 
+společnosti Microsoft o ochraně osobních údajů je umístěno na adrese 
+https://go.microsoft.com/fwlink/?LinkID=824704. Další informace o sběru a užívání dat naleznete 
+v dokumentaci k softwaru a v našem prohlášení o ochraně osobních údajů. Užitím tohoto 
+softwaru vyjadřujete svůj souhlas s těmito postupy.
+b.	Zpracování osobních údajů. V rámci svojí role zpracovatele a dílčího zpracovatele osobních 
+údajů v souvislosti se softwarem společnost Microsoft přijímá vůči všem zákazníkům s účinností 
+ke dni 25. května 2018 závazky v souladu s podmínkami pro online služby dle obecného nařízení 
+Evropské unie o ochraně osobních údajů, které naleznete na adrese 
+https://docs.microsoft.com/en-us/legal/gdpr.
+5.	ROZSAH LICENCE. Software se neprodává, pouze se poskytuje licence k jeho užívání. Tato smlouva 
+vám poskytuje pouze určitá užívací práva k softwaru. Všechna ostatní práva si vyhrazuje společnost 
+Microsoft. Pokud vám rozhodné právo dává další práva, která mají přednost před tímto omezením, 
+smíte používat tento software pouze tak, jak je výslovně povoleno v této smlouvě. Současně musíte 
+dodržovat veškerá technická omezení v softwaru, která umožňují jeho užívání pouze určitými 
+způsoby. Nesmíte
+•	překračovat žádná technická omezení softwaru;
+•	provádět zpětnou analýzu, dekompilaci nebo rozklad softwaru nebo se jinak pokoušet odvodit 
+zdrojový kód softwaru s výjimkou případů, kdy je to požadováno licenčními podmínkami 
+stanovenými třetí stranou, kterými se řídí užívání určitých komponent typu Open Source, které 
+mohou být zahrnuty do softwaru, a v rozsahu těchto podmínek;
+•	odebírat, minimalizovat, blokovat nebo upravovat sdělení společnosti Microsoft nebo jejích 
+dodavatelů, která jsou v softwaru obsažena; 
+•	užívat software jakýmkoli způsobem, který je v rozporu se zákonem;
+•	sdílet, publikovat, pronajímat nebo poskytovat tento software na leasing nebo jej poskytovat jako 
+samostatnou nabídku pro ostatní uživatele k užívání nebo převádět software nebo tuto smlouvu 
+na jakoukoli třetí stranu.
+6.	VÝVOZNÍ OMEZENÍ. Dále musíte dodržet veškeré místní i mezinárodní zákony a předpisy 
+o exportu, které se na software vztahují, včetně omezení týkajících se místa určení, koncových 
+uživatelů a koncového užívání. Další informace o omezeních exportu naleznete na adrese 
+www.microsoft.com/exporting.  
+7.	SLUŽBY TECHNICKÉ PODPORY. Vzhledem k tomu, že software je poskytován „tak, jak stojí 
+a leží“, nemusíme k němu poskytovat žádné služby podpory.
+8.	ÚPLNÁ SMLOUVA. Tato smlouva a podmínky pro doplňky, aktualizace, internetové služby a služby 
+technické podpory, které užíváte, tvoří úplnou smlouvu ohledně softwaru a služeb technické podpory.
+9.	ROZHODNÉ PRÁVO.  Pokud jste software získali v USA, řídí se výklad této smlouvy a nároky z titulu 
+jejího porušení zákony státu Washington a na veškeré další nároky se vztahují zákony státu vašeho 
+bydliště. Pokud jste software získali na území jakékoli jiné země, bude se tato smlouva řídit zákony 
+této země.
+10.	PRÁVA SPOTŘEBITELE, REGIONÁLNÍ ODCHYLKY. Tato smlouva popisuje určitá zákonná práva. 
+Zákony vašeho státu nebo země vám mohou zaručovat i další práva, včetně spotřebitelských práv. 
+Mimo váš vztah ke společnosti Microsoft můžete mít rovněž určitá práva ve vztahu ke straně, od které 
+jste software získali. Tato smlouva nemění tato další práva, pokud právní řád vašeho státu či země 
+jejich změnu nepovoluje. Pokud jste software například získali v jednom z regionů níže nebo platí 
+povinné místní zákony, vztahují se na vás následující ustanovení:
+a)	Austrálie. Na základě australského spotřebitelského práva máte zákonné záruky a záměrem 
+žádného ustanovení této smlouvy není taková práva jakkoli ovlivňovat.
+b)	Kanada. Pokud jste tento software pořídili v Kanadě, můžete zastavit příjem aktualizací vypnutím 
+funkce automatických aktualizací, odpojením vašeho zařízení od internetu (v případě opětovného 
+připojení k internetu však software obnoví zjišťování a instalaci aktualizací) nebo odinstalováním 
+softwaru. Dokumentace k produktu, je-li k dispozici, může také uvádět pokyny pro vypnutí 
+aktualizací pro vaše konkrétní zařízení nebo software.
+c)	Německo a Rakousko.
+(i)	Záruka. Software bude v podstatných rysech fungovat tak, jak je popsáno v materiálech 
+společnosti Microsoft, které jsou spolu s ním dodávány. Společnost Microsoft však ve vztahu k 
+tomuto softwaru neposkytuje žádné smluvní záruky.
+(ii)	Omezení odpovědnosti. V případě záměrného jednání, hrubé nedbalosti, nároků na 
+základě zákona o odpovědnosti za produkt a také v případě úmrtí nebo zranění nese společnost 
+Microsoft odpovědnost podle zákonného práva.
+Podle předchozího ujednání (ii) ponese společnost Microsoft odpovědnost za mírnou nedbalost jen 
+v případě, že společnost Microsoft porušila důležité smluvní závazky, jejichž splnění usnadňuje řádné 
+plnění této smlouvy a jejichž porušení by ohrozilo účel této smlouvy a soulad se smlouvou, ve který 
+může mít smluvní strana trvale důvěru (takzvané „podstatné povinnosti“). V ostatních případech 
+mírné nedbalosti nenese společnost Microsoft za mírnou nedbalost odpovědnost.
+11.	ODMÍTNUTÍ ZÁRUK. SOFTWARE JE LICENCOVÁN „JAK STOJÍ A LEŽÍ“. RIZIKA SPOJENÁ 
+S JEJÍM UŽÍVÁNÍM NESETE VY. SPOLEČNOST MICROSOFT NEPOSKYTUJE ŽÁDNÉ 
+VÝSLOVNÉ ZÁRUKY, GARANCE ANI PODMÍNKY. V ROZSAHU POVOLENÉM VAŠIMI 
+MÍSTNÍMI ZÁKONY SPOLEČNOST MICROSOFT VYLUČUJE ODVOZENÉ ZÁRUKY 
+PRODEJNOSTI, VHODNOSTI PRO URČITÝ ÚČEL A NEPORUŠENÍ PRÁV. 
+12.	OMEZENÍ A VYLOUČENÍ PROSTŘEDKŮ NÁPRAVY A ŠKODY. OD SPOLEČNOSTI 
+MICROSOFT A JEJÍCH DODAVATELŮ MŮŽETE ZÍSKAT POUZE NÁHRADU ZA PŘÍMÉ ŠKODY 
+DO MAXIMÁLNÍ VÝŠE 5,00 USD. NEZÍSKÁTE NÁHRADU ZA ŽÁDNÉ JINÉ ŠKODY VČETNĚ 
+NÁSLEDNÝCH ŠKOD, UŠLÉHO ZISKU A ZVLÁŠTNÍCH, NEPŘÍMÝCH A NÁHODNÝCH ŠKOD.
+Toto omezení se vztahuje na (a) cokoli související se softwarem, službami, obsahem (včetně kódu) na 
+webových stránkách třetích stran nebo v aplikacích třetích stran a na (b) žaloby pro porušení 
+smlouvy, porušení záruky, garance či podmínky, objektivní odpovědnosti, nedbalost či jiné 
+občanskoprávní delikty v rozsahu povoleném rozhodným právem.
+Vztahuje se rovněž na situace, kdy společnost Microsoft věděla nebo měla vědět o možnosti vzniku 
+těchto škod. Výše uvedené omezení nebo vyloučení se na vás nemusí vztahovat v případě, že váš stát 
+nebo země neumožňuje vyloučení nebo omezení náhodných, následných nebo jiných škod.
+

@@ -5,9 +5,9 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TISFramework", "TISFramework\TISFramework.csproj", "{347C7338-A053-4169-B213-0860A9DEDA90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TISServer", "TISServer\TISServer.csproj", "{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TISWindows", "TISWindows\TISWindows.csproj", "{98A1BAA2-4465-458A-A49A-084711420888}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TISWindows", "TISWindows\TISWindows.csproj", "{98A1BAA2-4465-458A-A49A-084711420888}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TISBackend", "TISBackend\TISBackend.csproj", "{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,6 @@ Global
 		{347C7338-A053-4169-B213-0860A9DEDA90}.Release|Any CPU.Build.0 = Release|Any CPU
 		{347C7338-A053-4169-B213-0860A9DEDA90}.Release|x86.ActiveCfg = Release|Any CPU
 		{347C7338-A053-4169-B213-0860A9DEDA90}.Release|x86.Build.0 = Release|Any CPU
-		{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}.Debug|x86.Build.0 = Debug|Any CPU
-		{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}.Release|x86.ActiveCfg = Release|Any CPU
-		{683658FC-EC72-4BD5-9C98-F0FF8A8F0EFB}.Release|x86.Build.0 = Release|Any CPU
 		{98A1BAA2-4465-458A-A49A-084711420888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98A1BAA2-4465-458A-A49A-084711420888}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98A1BAA2-4465-458A-A49A-084711420888}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -41,6 +33,14 @@ Global
 		{98A1BAA2-4465-458A-A49A-084711420888}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98A1BAA2-4465-458A-A49A-084711420888}.Release|x86.ActiveCfg = Release|Any CPU
 		{98A1BAA2-4465-458A-A49A-084711420888}.Release|x86.Build.0 = Release|Any CPU
+		{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}.Debug|x86.Build.0 = Debug|Any CPU
+		{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
