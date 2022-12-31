@@ -130,8 +130,8 @@ namespace TISWindows
             Label phone = (Label)profileMenu.FindName("phone");
 
             name.Content = content.FirstName + " " + content.SecondName;
-            age.Content = 45;
-            address.Content = content.Address;
+            age.Content = content.PIN;
+            address.Content = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City + " " + content.Address.Country;
             email.Content = content.Email;
             phone.Content = content.PhoneNumber;
 
