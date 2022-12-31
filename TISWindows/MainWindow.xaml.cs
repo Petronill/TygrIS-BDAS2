@@ -17,6 +17,7 @@ using static System.Net.WebRequestMethods;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Net.Http;
+using TISWindows.Model;
 
 namespace TISWindows
 {
@@ -26,6 +27,7 @@ namespace TISWindows
     public partial class MainWindow : Window
     {
         HttpClient client = new HttpClient();
+        Human? user = null;
 
         public MainWindow()
         {
@@ -80,6 +82,8 @@ namespace TISWindows
         }
         private void OnClickInfo(object sender, RoutedEventArgs e)
         {
+            client.BaseAddress = new Uri("https://localhost:44333/api/login/");
+            client.DefaultRequestHeaders.Accept.Clear();
             Content.Children.Clear();
             UserProfile profile = new UserProfile();
 
@@ -130,13 +134,13 @@ namespace TISWindows
             Button btn = (Button)loginMenu.FindName("pokus");
             TextBox name = (TextBox)loginMenu.FindName("loginName");
             TextBox pswrd = (TextBox)loginMenu.FindName("loginPassword");
-            client.DefaultRequestHeaders.Add("Tis-User", name.Text);
-            client.DefaultRequestHeaders.Add("Tis-Hash", pswrd.Text);
-            HttpResponseMessage result = client.GetAsync(client.BaseAddress).Result;
-            result.EnsureSuccessStatusCode();
-            string bodyOfMessage = result.Content.ReadAsStringAsync().Result;
             btn.Click += (s, e) =>
             {
+                client.DefaultRequestHeaders.Add("Tis-User", name.Text);
+                client.DefaultRequestHeaders.Add("Tis-Hash", pswrd.Text);
+                HttpResponseMessage result = client.GetAsync(client.BaseAddress).Result;
+                result.EnsureSuccessStatusCode();
+                string bodyOfMessage = result.Content.ReadAsStringAsync().Result;
                 //TODO: if statement with a method, that takes the user and checks, if it's really him
                 if (Int32.Parse(bodyOfMessage) > 0)
                 {
