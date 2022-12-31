@@ -26,9 +26,9 @@ namespace TISBackend.Controllers
                     list.Add(new Address() {
                         Id = int.Parse(dr[idName].ToString()),
                         Street = (dr["ulice"].ToString() == "") ? null : dr["ulice"].ToString(),
-                        HouseNumber = (dr["cislo_popisne"].ToString() == "") ? null : dr["cislo_popisne"].ToString(),
+                        HouseNumber = (dr["cislo_popisne"].ToString() == "") ? null : (int?)int.Parse(dr["cislo_popisne"].ToString()),
                         City = (dr["obec"].ToString() == "") ? null : dr["obec"].ToString(),
-                        PostalCode = (dr["psc"].ToString() == "") ? null : dr["psc"].ToString(),
+                        PostalCode = (dr["psc"].ToString() == "") ? null : (int?)int.Parse(dr["psc"].ToString()),
                         Country = (dr["zeme"].ToString() == "") ? null : dr["zeme"].ToString()
                     });
                 }
@@ -48,9 +48,9 @@ namespace TISBackend.Controllers
             return new Address() {
                 Id = int.Parse(query[idName].ToString()),
                 Street = (query["ulice"].ToString() == "") ? null : query["ulice"].ToString(),
-                HouseNumber = (query["cislo_popisne"].ToString() == "") ? null : query["cislo_popisne"].ToString(),
+                HouseNumber = (query["cislo_popisne"].ToString() == "") ? null : (int?)int.Parse(query["cislo_popisne"].ToString()),
                 City = (query["obec"].ToString() == "") ? null : query["obec"].ToString(),
-                PostalCode = (query["psc"].ToString() == "") ? null : query["psc"].ToString(),
+                PostalCode = (query["psc"].ToString() == "") ? null : (int?)int.Parse(query["psc"].ToString()),
                 Country = (query["zeme"].ToString() == "") ? null : query["zeme"].ToString()
             };
         }

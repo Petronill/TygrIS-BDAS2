@@ -124,6 +124,7 @@
     <Compile Include="Controllers\GenusController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PavilionController.cs" />
+    <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Controllers\SexController.cs" />
     <Compile Include="Controllers\SpeciesController.cs" />
     <Compile Include="Controllers\TISController.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Keeper.cs" />
     <Compile Include="Models\Pavilion.cs" />
+    <Compile Include="Models\PersonalRoles.cs" />
     <Compile Include="Models\Sex.cs" />
     <Compile Include="Models\Species.cs" />
     <Compile Include="Models\Title.cs" />
