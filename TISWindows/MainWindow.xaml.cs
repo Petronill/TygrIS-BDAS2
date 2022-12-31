@@ -1,27 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static System.Net.WebRequestMethods;
 using System.Diagnostics;
-using System.Reflection.Metadata;
 using System.Net.Http;
-using TISModelLibrary;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Net.Http.Json;
-
+using TISModelLibrary;
+using System.Collections.Generic;
 
 namespace TISWindows
 {
@@ -78,47 +64,50 @@ namespace TISWindows
             Content.Children.Clear();
             HttpResponseMessage result = client.GetAsync("Animal/").Result;
             string res = result.Content.ReadAsStringAsync().Result;
-            var content = JsonSerializer.Deserialize<Animal>(res);
+            var content = JsonSerializer.Deserialize<List<Animal>>(res);
 
             AnimalList animalList = new AnimalList();
-            //TODO: For cycle with all the animals in database??
             string panel = XamlWriter.Save(animalList.grid);
             Grid animal = (Grid)XamlReader.Parse(panel);
             StackPanel threeAnimals = (StackPanel)animal.FindName("threeAnimals");
-            Image photo = (Image)animal.FindName("picture");
-            TextBlock name = (TextBlock)animal.FindName("name");
-            TextBlock sex = (TextBlock)animal.FindName("sex");
-            TextBlock species = (TextBlock)animal.FindName("species");
-            TextBlock genus = (TextBlock)animal.FindName("genus");
-            TextBlock birth = (TextBlock)animal.FindName("birth");
-            TextBlock death = (TextBlock)animal.FindName("death");
-            TextBlock cost = (TextBlock)animal.FindName("costs");
-            Button donate = (Button)animal.FindName("donate");
-
-            if (content != null)
+            for (int i = 0; i < content.Count; i++)
             {
-                name.Text = content.Name;
-                species.Text = content.Species.CzechName;
-                genus.Text = content.Species.Genus.CzechName;
-                birth.Text = content.Birth.ToString();
-                if (content.Death.ToString().Length == 0)
-                {
-                    death.Text = "Ještě žije";
-                }
-                else
-                {
-                    death.Text = content.Death.ToString();
-                }
-                cost.Text = content.MaintCosts.ToString();
-                sex.Text = content.Sex.ToString();
-            }
+               
+                Image photo = (Image)animal.FindName("picture");
+                TextBlock name = (TextBlock)animal.FindName("name");
+                TextBlock sex = (TextBlock)animal.FindName("sex");
+                TextBlock species = (TextBlock)animal.FindName("species");
+                TextBlock genus = (TextBlock)animal.FindName("genus");
+                TextBlock birth = (TextBlock)animal.FindName("birth");
+                TextBlock death = (TextBlock)animal.FindName("death");
+                TextBlock cost = (TextBlock)animal.FindName("costs");
 
+                if (content != null)
+                {
+                    photo.DataContext = new Uri("/Items/defaultUser.png");
+                    name.Text = content[i].Name;
+                    species.Text = content[i].Species.CzechName;
+                    genus.Text = content[i].Species.Genus.CzechName;
+                    birth.Text = content[i].Birth.ToString();
+                    if (content[i].Death == null)
+                    {
+                        death.Text = "Ještě žije";
+                    }
+                    else
+                    {
+                        death.Text = content[i].Death.ToString();
+                    }
+                    cost.Text = content[i].MaintCosts.ToString();
+                    sex.Text = content[i].Sex.ToString();
+                    if (i % 5 == 4 || i == content.Count - 1)
+                    {
+                        animal.Children.Add(threeAnimals);
+                        threeAnimals = (StackPanel)animal.FindName("threeAnimals");
+                    }
+                }
+            }
             Content.Children.Add(animal);
 
-            donate.Click += (s, e) =>
-            {
-                //TODO: what the hell am I gonna put here? Take money from the person who is logged in i guess?
-            };
         }
         private void OnClickInfo(object sender, RoutedEventArgs e)
         {
@@ -181,7 +170,7 @@ namespace TISWindows
 
         private void OnClickLogin(object sender, RoutedEventArgs e)
         {
-            
+
             Content.Children.Clear();
             Login login = new Login();
             string panel = XamlWriter.Save(login.loginMenu);
@@ -214,42 +203,41 @@ namespace TISWindows
         {
             HttpResponseMessage result = client.GetAsync("Person/").Result;
             string res = result.Content.ReadAsStringAsync().Result;
-            //var objects = JsonConvert.DeserializeObject(res); 
-            var content = JsonSerializer.Deserialize<Person>(res);
-            //int count = result.Count;
+            var content = JsonSerializer.Deserialize<List<Person>>(res);
             Employees employeeList = new Employees();
-            //TODO: For cycle with all the Employees in database??
             string panel = XamlWriter.Save(employeeList.grid);
             Grid employee = (Grid)XamlReader.Parse(panel);
-
-            for (int i = 0; i < 10; i++)
+            StackPanel threeEmployees = (StackPanel)employee.FindName("threeEmployees");
+            for (int i = 0, j = 0; i < content.Count; i++, j++)
             {
-                StackPanel threeEmployees = (StackPanel)employee.FindName("threeEmployees");
+                if (content[i].Role == PersonalRoles.ADOPTER)
+                {
+                    j--;
+                    continue;
+                }
                 Image photo = (Image)employee.FindName("piture");
-                TextBlock title = (TextBlock)employee.FindName("title");
                 TextBlock firstName = (TextBlock)employee.FindName("firstName");
                 TextBlock secondName = (TextBlock)employee.FindName("secondName");
                 TextBlock pin = (TextBlock)employee.FindName("pin");
                 TextBlock phone = (TextBlock)employee.FindName("phoneNumber");
                 TextBlock email = (TextBlock)employee.FindName("email");
-                TextBlock wage = (TextBlock)employee.FindName("wage");
                 if (result.IsSuccessStatusCode == true)
                 {
 
                     photo.DataContext = new Uri("/Items/defaultUser.png");
-                    //title.Text = content.Title.ToString();
-                    firstName.Text = content.FirstName;
-                    secondName.Text = content.SecondName;
-                    pin.Text = content.PIN.ToString();
-                    phone.Text = content.PhoneNumber.ToString();
-                    email.Text = content.Email;
+                    firstName.Text = content[i].FirstName;
+                    secondName.Text = content[i].SecondName;
+                    pin.Text = content[i].PIN.ToString();
+                    phone.Text = content[i].PhoneNumber.ToString();
+                    email.Text = content[i].Email;
                     Content.Children.Add(employee);
+                    if (j % 5 == 4 || i == content.Count - 1)
+                    {
+                        employee.Children.Add(threeEmployees);
+                        threeEmployees = (StackPanel)employee.FindName("threeAnimals");
+                    }
 
-                }
-                else
-                {
-                    //TODO: ¯\_(ツ)_/¯ nvm jak napsat nějakou hlášku... JSRuntime nebo co nemuzu pry si stahnout
-                }
+                }  
             }
         }
     }

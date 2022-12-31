@@ -12,13 +12,11 @@
                 <StackPanel x:Name="threeEmployees" Orientation="Horizontal" HorizontalAlignment="Center" >
                     <StackPanel x:Name="employee" Orientation="Vertical">
                         <Image x:Name="picture"  Source="/Items/defaultUser.png" Width="100"></Image>
-                        <TextBlock Text="Ing." x:Name="title" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="Petr" x:Name="firstName" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="Sobotka" x:Name="secondName" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="8756" x:Name="pin" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="SobotkaFFS@poop.com" x:Name="email" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="123 456 789" x:Name="phoneNumber" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="42069 KČ" x:Name="wage" HorizontalAlignment="center"></TextBlock>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
