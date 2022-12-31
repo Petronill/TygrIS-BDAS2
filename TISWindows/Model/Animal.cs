@@ -16,9 +16,9 @@ namespace TISWindows.Model
         public DateTime Birth { get; set; }
         public DateTime Death { get; set; }
         public Species? Species { get; set; }
-        public Sex Sex { get; set; }
-        public Enclosure Enclosure { get; set; }
-        public Image Photo { get; set; }
+        public Sex? Sex { get; set; }
+        public Enclosure? Enclosure { get; set; }
+        public Image? Photo { get; set; }
 
     }
 }

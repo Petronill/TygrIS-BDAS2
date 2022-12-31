@@ -16,16 +16,30 @@
                     </StackPanel>
                 </DockPanel>
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="userProfile" Orientation="Horizontal">
                         <StackPanel Orientation="Vertical" Height="407" Width="249">
-                            <Label Name="name">Jméno: Ondra Neustadt</Label>
-                            <Label Name="age">Věk: Strašně moc</Label>
-                            <Label Name="adress">Adresa: Kbýlkova 420 Bolín 3</Label>
-                            <Label Name="email">E-mail: ondrajebuh@pornhub.com</Label>
-                            <Label Name="phone">Telefon: 123 456 789</Label>
-                            <Label Name="bankAccount">Číslo bankovního účtu: 58008</Label>
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <Label>Jméno:</Label>
+                                <Label x:Name="name">Ondřej Neustadt</Label>
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <Label>Věk:</Label>
+                                <Label x:Name="age">45</Label>
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <Label>Adresa:</Label>
+                                <Label x:Name="adress">Kbýlkova 420 Bolín 3</Label>
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <Label>email:</Label>
+                                <Label x:Name="email">ondrej1303@hupsikdupsik.com</Label>
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <Label>Telefonní číslo:</Label>
+                                <Label x:Name="phone">123456</Label>
+                            </StackPanel>
                         </StackPanel>
-                        <Image Source="https://static.qnm.it/845X0/www/qnm/it/wp-content/uploads/2015/05/lavori-nerd.jpg"
+                        <Image x:Name="picture" Source="/Items/defaultUser.png"
                                Width="200" VerticalAlignment="Top" Height="100"></Image>
                     </StackPanel>
                 </StackPanel>

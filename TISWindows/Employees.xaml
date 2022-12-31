@@ -1,0 +1,27 @@
+﻿<Window x:Class="TISWindows.Employees"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TISWindows"
+        mc:Ignorable="d"
+        Title="Employees" Height="450" Width="800">
+    <Grid x:Name="grid">
+        <StackPanel x:Name="employeeList">
+            <StackPanel Margin="0,15,0,0">
+                <StackPanel x:Name="threeEmployees" Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <StackPanel x:Name="employee" Orientation="Vertical">
+                        <Image x:Name="picture"  Source="/Items/defaultUser.png" Width="100"></Image>
+                        <TextBlock Text="Ing." x:Name="title" HorizontalAlignment="center"></TextBlock>
+                        <TextBlock Text="Petr" x:Name="firstName" HorizontalAlignment="center"></TextBlock>
+                        <TextBlock Text="Sobotka" x:Name="secondName" HorizontalAlignment="center"></TextBlock>
+                        <TextBlock Text="8756" x:Name="pin" HorizontalAlignment="center"></TextBlock>
+                        <TextBlock Text="SobotkaFFS@poop.com" x:Name="email" HorizontalAlignment="center"></TextBlock>
+                        <TextBlock Text="123 456 789" x:Name="phoneNumber" HorizontalAlignment="center"></TextBlock>
+                        <TextBlock Text="42069 KČ" x:Name="wage" HorizontalAlignment="center"></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
