@@ -124,7 +124,18 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\Adopter.cs" />
+    <Compile Include="Models\Animal.cs" />
+    <Compile Include="Models\Document.cs" />
+    <Compile Include="Models\Enclosure.cs" />
+    <Compile Include="Models\Genus.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Keeper.cs" />
+    <Compile Include="Models\Pavilion.cs" />
+    <Compile Include="Models\Sex.cs" />
+    <Compile Include="Models\Species.cs" />
+    <Compile Include="Models\Title.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
