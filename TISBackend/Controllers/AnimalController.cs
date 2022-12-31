@@ -5,7 +5,7 @@ using System.Data;
 using System.Net;
 using System.Web.Http;
 using TISBackend.Db;
-using TISBackend.Models;
+using TISModelLibrary;
 
 namespace TISBackend.Controllers
 {

@@ -1,4 +1,4 @@
-﻿namespace TISBackend.Models
+﻿namespace TISModelLibrary
 {
     public class Enclosure
     {

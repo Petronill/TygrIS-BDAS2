@@ -3,7 +3,7 @@ using System.Data;
 using System.Web.Http;
 using TISBackend.Auth;
 using TISBackend.Db;
-using TISBackend.Models;
+using TISModelLibrary;
 
 namespace TISBackend.Controllers
 {
