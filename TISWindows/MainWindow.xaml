@@ -27,7 +27,7 @@
             <DockPanel x:Name="Content">
             <DockPanel DockPanel.Dock="Top">
                 <Image DockPanel.Dock="Left" x:Name="adoptPicture" 
-                       Source="alchemy_palette.png" Width="200" Height="200"
+                       Source="/Items/alchemy_palette.png" Width="200" Height="200"
                        HorizontalAlignment="Center"
                        ></Image>
                 <StackPanel DockPanel.Dock="Right" Orientation="Vertical">

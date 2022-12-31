@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using static System.Net.WebRequestMethods;
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Net.Http;
 
 namespace TISWindows
 {
@@ -24,6 +25,8 @@ namespace TISWindows
     /// </summary>
     public partial class MainWindow : Window
     {
+        HttpClient client = new HttpClient();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -118,18 +121,26 @@ namespace TISWindows
 
         private void OnClickLogin(object sender, RoutedEventArgs e)
         {
+            client.BaseAddress = new Uri("https://localhost:44333/api/login/");
+            client.DefaultRequestHeaders.Accept.Clear();
             Content.Children.Clear();
             Login login = new Login();
             string panel = XamlWriter.Save(login.loginMenu);
             StackPanel loginMenu = (StackPanel)XamlReader.Parse(panel);
             Button btn = (Button)loginMenu.FindName("pokus");
-            TextBox box = (TextBox)loginMenu.FindName("loginName");
+            TextBox name = (TextBox)loginMenu.FindName("loginName");
+            TextBox pswrd = (TextBox)loginMenu.FindName("loginPassword");
+            client.DefaultRequestHeaders.Add("Tis-User", name.Text);
+            client.DefaultRequestHeaders.Add("Tis-Hash", pswrd.Text);
+            HttpResponseMessage result = client.GetAsync(client.BaseAddress).Result;
+            result.EnsureSuccessStatusCode();
+            string bodyOfMessage = result.Content.ReadAsStringAsync().Result;
             btn.Click += (s, e) =>
             {
                 //TODO: if statement with a method, that takes the user and checks, if it's really him
-                if (true)
+                if (Int32.Parse(bodyOfMessage) > 0)
                 {
-                    userName.Content = box.Text;
+                    userName.Content = name.Text;
                     OnClickZoo(sender, e);
                 }
                 else
@@ -138,8 +149,6 @@ namespace TISWindows
                     lbl.Content = "Špatně zadané jméno/heslo, zkuste znovu.";
                 }
             };
-
-
             Content.Children.Add(loginMenu);
         }
     }

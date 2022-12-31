@@ -12,7 +12,7 @@
                 <TextBlock HorizontalAlignment="Center" FontSize="30"> Přihlášení</TextBlock>
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,10,0,0">
                     <Label >Přihlašovací jméno:</Label>
-                    <TextBox x:Name="loginName" HorizontalAlignment="Right">jmeno</TextBox>
+                    <TextBox MaxLength="30" x:Name="loginName" HorizontalAlignment="Right">jmeno</TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
                     <Label>Heslo:</Label>

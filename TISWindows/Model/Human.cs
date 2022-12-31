@@ -18,8 +18,8 @@ namespace TISWindows.Model
         public int? AccountNumber { get; set; }
         public int PhoneNumber { get; set; }
         public string? Email { get; set; }
-        public Image Photo { get; set; }
-        public Address Address { get; set; }
+        public Image? Photo { get; set; }
+        public Address? Address { get; set; }
         public Title? Title { get; set; }
     }
 }

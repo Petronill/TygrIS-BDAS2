@@ -26,7 +26,7 @@
                             <Label Name="bankAccount">Číslo bankovního účtu: 58008</Label>
                         </StackPanel>
                         <Image Source="https://static.qnm.it/845X0/www/qnm/it/wp-content/uploads/2015/05/lavori-nerd.jpg"
-                               Width="200" VerticalAlignment="Top"></Image>
+                               Width="200" VerticalAlignment="Top" Height="100"></Image>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
