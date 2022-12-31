@@ -28,7 +28,7 @@
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>Adresa:</Label>
-                                <Label x:Name="adress">Kbýlkova 420 Bolín 3</Label>
+                                <Label x:Name="address">Kbýlkova 420 Bolín 3</Label>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>email:</Label>
