@@ -17,7 +17,7 @@ using static System.Net.WebRequestMethods;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Net.Http;
-using TISWindows.Model;
+using TISModelLibrary;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http.Json;
@@ -30,13 +30,25 @@ namespace TISWindows
     /// </summary>
     public partial class MainWindow : Window
     {
-        HttpClient client = new HttpClient();
-        Human? user = null;
-
+        HttpClient client;
+        Person? user = null;
+        string BASE_ADDRESS = "https://localhost:44333/api/";
 
         public MainWindow()
         {
             InitializeComponent();
+            SetUpClient();
+        }
+
+        private void SetUpClient()
+        {
+            if (client != null)
+            {
+                client.Dispose();
+            }
+            client = new HttpClient();
+            client.BaseAddress = new Uri(BASE_ADDRESS);
+            client.DefaultRequestHeaders.Accept.Clear();
         }
 
         private void OnClickZoo(object sender, RoutedEventArgs e)
@@ -63,9 +75,8 @@ namespace TISWindows
         }
         private void OnClickAnimals(object sender, RoutedEventArgs e)
         {
-            client.BaseAddress = new Uri("https://localhost:44333/api/animal/");
             Content.Children.Clear();
-            HttpResponseMessage result = client.GetAsync(client.BaseAddress).Result;
+            HttpResponseMessage result = client.GetAsync("Animal/").Result;
             string res = result.Content.ReadAsStringAsync().Result;
             var content = JsonSerializer.Deserialize<Animal>(res);
 
@@ -74,7 +85,7 @@ namespace TISWindows
             string panel = XamlWriter.Save(animalList.grid);
             Grid animal = (Grid)XamlReader.Parse(panel);
             StackPanel threeAnimals = (StackPanel)animal.FindName("threeAnimals");
-            Image photo = (Image)animal.FindName("piture");
+            Image photo = (Image)animal.FindName("picture");
             TextBlock name = (TextBlock)animal.FindName("name");
             TextBlock sex = (TextBlock)animal.FindName("sex");
             TextBlock species = (TextBlock)animal.FindName("species");
@@ -84,20 +95,23 @@ namespace TISWindows
             TextBlock cost = (TextBlock)animal.FindName("costs");
             Button donate = (Button)animal.FindName("donate");
 
-            name.Text = content.Name;
-            species.Text = content.Species.CzechName;
-            genus.Text = content.Species.Genus.CzechName;
-            birth.Text = content.Birth.ToString();
-            if(content.Death.ToString().Length == 0)
+            if (content != null)
             {
-                death.Text = "Ještě žije";
+                name.Text = content.Name;
+                species.Text = content.Species.CzechName;
+                genus.Text = content.Species.Genus.CzechName;
+                birth.Text = content.Birth.ToString();
+                if (content.Death.ToString().Length == 0)
+                {
+                    death.Text = "Ještě žije";
+                }
+                else
+                {
+                    death.Text = content.Death.ToString();
+                }
+                cost.Text = content.MaintCosts.ToString();
+                sex.Text = content.Sex.ToString();
             }
-            else
-            {
-                death.Text = content.Death.ToString();
-            }
-            cost.Text = content.MaintCosts.ToString();
-            sex.Text = content.Sex.ToString();
 
             Content.Children.Add(animal);
 
@@ -105,19 +119,14 @@ namespace TISWindows
             {
                 //TODO: what the hell am I gonna put here? Take money from the person who is logged in i guess?
             };
-
-
-
         }
         private void OnClickInfo(object sender, RoutedEventArgs e)
         {
-            client.BaseAddress = new Uri("https://localhost:44333/api/user/");
-            client.DefaultRequestHeaders.Accept.Clear();
             Content.Children.Clear();
             UserProfile profile = new UserProfile();
-            HttpResponseMessage result = client.GetAsync(client.BaseAddress).Result;
+            HttpResponseMessage result = client.GetAsync("User/").Result;
             string res = result.Content.ReadAsStringAsync().Result;
-            var content = JsonSerializer.Deserialize<Human>(res);
+            var content = JsonSerializer.Deserialize<Person>(res);
 
             string panel = XamlWriter.Save(profile.profile);
             StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
@@ -129,11 +138,14 @@ namespace TISWindows
             Label email = (Label)profileMenu.FindName("email");
             Label phone = (Label)profileMenu.FindName("phone");
 
-            name.Content = content.FirstName + " " + content.SecondName;
-            age.Content = content.PIN;
-            address.Content = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City + " " + content.Address.Country;
-            email.Content = content.Email;
-            phone.Content = content.PhoneNumber;
+            if (content != null)
+            {
+                name.Content = content.FirstName + " " + content.SecondName;
+                age.Content = 45; // TODO: vypočítávat!
+                address.Content = content.Address;
+                email.Content = content.Email;
+                phone.Content = content.PhoneNumber;
+            }
 
             btnAnimal.Click += (s, e) =>
             {
@@ -169,8 +181,7 @@ namespace TISWindows
 
         private void OnClickLogin(object sender, RoutedEventArgs e)
         {
-            client.BaseAddress = new Uri("https://localhost:44333/api/login/");
-            client.DefaultRequestHeaders.Accept.Clear();
+            
             Content.Children.Clear();
             Login login = new Login();
             string panel = XamlWriter.Save(login.loginMenu);
@@ -180,9 +191,10 @@ namespace TISWindows
             TextBox pswrd = (TextBox)loginMenu.FindName("loginPassword");
             btn.Click += (s, e) =>
             {
+                SetUpClient();
                 client.DefaultRequestHeaders.Add("Tis-User", name.Text);
                 client.DefaultRequestHeaders.Add("Tis-Hash", pswrd.Text);
-                HttpResponseMessage result = client.GetAsync(client.BaseAddress).Result;
+                HttpResponseMessage result = client.GetAsync("Login/").Result;
                 result.EnsureSuccessStatusCode();
                 string bodyOfMessage = result.Content.ReadAsStringAsync().Result;
                 if (Int32.Parse(bodyOfMessage) >= 0)
@@ -200,12 +212,10 @@ namespace TISWindows
         }
         private void OnClickEmployees()
         {
-            client.BaseAddress = new Uri("https://localhost:44333/api/Person/");
-            Content.Children.Clear();
-            HttpResponseMessage result = client.GetAsync(client.BaseAddress).Result;
+            HttpResponseMessage result = client.GetAsync("Person/").Result;
             string res = result.Content.ReadAsStringAsync().Result;
             //var objects = JsonConvert.DeserializeObject(res); 
-            var content = JsonSerializer.Deserialize<Human>(res);
+            var content = JsonSerializer.Deserialize<Person>(res);
             //int count = result.Count;
             Employees employeeList = new Employees();
             //TODO: For cycle with all the Employees in database??
@@ -227,10 +237,10 @@ namespace TISWindows
                 {
 
                     photo.DataContext = new Uri("/Items/defaultUser.png");
-                    title.Text = content.Title.ToString();
+                    //title.Text = content.Title.ToString();
                     firstName.Text = content.FirstName;
                     secondName.Text = content.SecondName;
-                    pin.Text = content.PIN;
+                    pin.Text = content.PIN.ToString();
                     phone.Text = content.PhoneNumber.ToString();
                     email.Text = content.Email;
                     Content.Children.Add(employee);

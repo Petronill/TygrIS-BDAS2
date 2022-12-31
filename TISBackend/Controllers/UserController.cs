@@ -3,7 +3,7 @@ using System.Data;
 using System.Web.Http;
 using TISBackend.Auth;
 using TISBackend.Db;
-using TISBackend.Models;
+using TISModelLibrary;
 
 namespace TISBackend.Controllers
 {
@@ -19,26 +19,7 @@ namespace TISBackend.Controllers
                 if (query.Rows.Count > 0)
                 {
                     DataRow dr = query.Rows[0];
-                    return new Person()
-                    {
-                        Id = int.Parse(dr["id_clovek"].ToString()),
-                        FirstName = dr["jmeno"].ToString(),
-                        SecondName = dr["prijmeni"].ToString(),
-                        PIN = long.Parse(dr["rodne_cislo"].ToString()),
-                        PhoneNumber = (dr["telefon"].ToString() == "") ? null : (long?)long.Parse(dr["telefon"].ToString()),
-                        Email = (dr["E-mail"].ToString() == "") ? null : dr["E-mail"].ToString(),
-                        AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
-                        Address = new Address()
-                        {
-                            Id = int.Parse(dr["id_adresa"].ToString()),
-                            Street = (dr["ulice"].ToString() == "") ? null : dr["ulice"].ToString(),
-                            HouseNumber = (dr["cislo_popisne"].ToString() == "") ? null : (int?)int.Parse(dr["cislo_popisne"].ToString()),
-                            City = (dr["obec"].ToString() == "") ? null : dr["obec"].ToString(),
-                            PostalCode = (dr["psc"].ToString() == "") ? null : (int?)int.Parse(dr["psc"].ToString()),
-                            Country = (dr["zeme"].ToString() == "") ? null : dr["zeme"].ToString()
-                        },
-                        Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString())
-                    };
+                    return PersonController.New(dr);
                 }
             }
 
@@ -54,26 +35,7 @@ namespace TISBackend.Controllers
                 if (query.Rows.Count > 0)
                 {
                     DataRow dr = query.Rows[0];
-                    return new Person()
-                    {
-                        Id = int.Parse(dr["id_clovek"].ToString()),
-                        FirstName = dr["jmeno"].ToString(),
-                        SecondName = dr["prijmeni"].ToString(),
-                        PIN = long.Parse(dr["rodne_cislo"].ToString()),
-                        PhoneNumber = (dr["telefon"].ToString() == "") ? null : (long?)long.Parse(dr["telefon"].ToString()),
-                        Email = (dr["E-mail"].ToString() == "") ? null : dr["E-mail"].ToString(),
-                        AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
-                        Address = new Address()
-                        {
-                            Id = int.Parse(dr["id_adresa"].ToString()),
-                            Street = (dr["ulice"].ToString() == "") ? null : dr["ulice"].ToString(),
-                            HouseNumber = (dr["cislo_popisne"].ToString() == "") ? null : (int?)int.Parse(dr["cislo_popisne"].ToString()),
-                            City = (dr["obec"].ToString() == "") ? null : dr["obec"].ToString(),
-                            PostalCode = (dr["psc"].ToString() == "") ? null : (int?)int.Parse(dr["psc"].ToString()),
-                            Country = (dr["zeme"].ToString() == "") ? null : dr["zeme"].ToString()
-                        },
-                        Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString())
-                    };
+                    return PersonController.New(dr);
                 }
             }
 

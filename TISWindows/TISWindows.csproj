@@ -22,6 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TISModelLibrary\TISModelLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Items\alchemy_palette.png" />
     <Resource Include="Items\defaultUser.png" />
   </ItemGroup>
