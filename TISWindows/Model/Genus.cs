@@ -8,8 +8,8 @@ namespace TISWindows.Model
 {
     internal class Genus
     {
-        protected int Id { get; set; }
-        protected string? CzechName { get; set; }
-        protected string? LatinName { get; set; }
+        public int Id { get; set; }
+        public string? CzechName { get; set; }
+        public string? LatinName { get; set; }
     }
 }

@@ -38,3 +38,5 @@ msbuild.err
 msbuild.wrn
 
 TestResults/
+/.vs/TygrIS/v17/.wsuo
+/.vs/VSWorkspaceState.json
