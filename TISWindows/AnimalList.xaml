@@ -7,75 +7,23 @@
         mc:Ignorable="d"
         Title="AnimalList" Height="450" Width="800">
     <Grid x:Name="grid">
+        <ScrollViewer>
         <StackPanel x:Name="animalList">
             <StackPanel Margin="0,15,0,0">
                 <StackPanel x:Name="threeAnimals" Orientation="Horizontal" HorizontalAlignment="Center" >
-                    <StackPanel x:Name="animal" Orientation="Vertical">
-                        <Image x:Name="picture"  Source="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Raccoon_in_Central_Park_%2835264%29.jpg/1200px-Raccoon_in_Central_Park_%2835264%29.jpg" Width="100"></Image>
-                        <TextBlock Text="Jméno: Adélka" x:Name="name" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="Pohlaví: " x:Name="sex" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="Rod: P. lotor" x:Name="species" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="Čeleď: Procyon" x:Name="genus" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="Narození: 13.2.2000" x:Name="birth" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="Smrt: ještě ne" x:Name="death" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="42069 KČ" x:Name="costs" HorizontalAlignment="center"></TextBlock>
-                        <Button x:Name="donate">Donate</Button>
+                        <StackPanel x:Name="animal" Orientation="Vertical">
+                            <Image x:Name="picture"  Source="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Raccoon_in_Central_Park_%2835264%29.jpg/1200px-Raccoon_in_Central_Park_%2835264%29.jpg" Width="100"></Image>
+                            <TextBlock Text="Jméno: Adélka" x:Name="name" HorizontalAlignment="center"></TextBlock>
+                            <TextBlock Text="Pohlaví: " x:Name="sex" HorizontalAlignment="center"></TextBlock>
+                            <TextBlock Text="Rod: P. lotor" x:Name="species" HorizontalAlignment="center"></TextBlock>
+                            <TextBlock Text="Čeleď: Procyon" x:Name="genus" HorizontalAlignment="center"></TextBlock>
+                            <TextBlock Text="Narození: 13.2.2000" x:Name="birth" HorizontalAlignment="center"></TextBlock>
+                            <TextBlock Text="Smrt: ještě ne" x:Name="death" HorizontalAlignment="center"></TextBlock>
+                            <TextBlock Text="42069 KČ" x:Name="costs" HorizontalAlignment="center"></TextBlock>
+                        </StackPanel>
                     </StackPanel>
-
-                    <StackPanel Orientation="Vertical" Margin="10">
-                        <Image Source="https://artprojectsforkids.org/wp-content/uploads/2020/08/Elephant-recolor.jpg" Width="86"></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical">
-                        <Image Source="https://th-thumbnailer.cdn-si-edu.com/9UrydtZErwwxVrzQRr4EmWfGAjk=/fit-in/1600x0/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/Blobfish-ugly-470.jpg" Width="145"></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="381"  Margin="10">
-                    <StackPanel Orientation="Vertical">
-                        <Image Width="100" Source="https://animals.sandiegozoo.org/sites/default/files/2016-11/animals_hero_giraffe_1_0.jpg"></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Vertical" Margin="10,0,10,0">
-                        <Image Source="https://www.dogalize.com/wp-content/uploads/2017/06/cat-girl.jpg" Width="100" Height="56"></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical">
-                        <Image Source="https://st.depositphotos.com/1128251/1320/i/450/depositphotos_13207345-stock-photo-pigeon-walking.jpg" Width="83"></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" Width="375">
-                    <StackPanel Orientation="Vertical">
-                        <Image Source="https://images.blz-contentstack.com/v3/assets/blt3452e3b114fab0cd/blt603c3c5a8ff3aaaf/616da56f35f1b36b742c7549/M805GDT27ZDX1620936576461.png" Width="100"></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Vertical" Margin="10,0,10,0">
-                        <Image Source="https://www.postavy.cz/obrazky-thumbs/wiki/kocour-163683-wikithumb.jpg" Width="112.5"></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical">
-                        <Image Source="https://static.wikia.nocookie.net/villains/images/3/3c/4xvje3l.png/revision/latest?cb=20161104043733" Width="100" Height="63.5"></Image>
-                        <TextBlock>já jsem zvire whuaaa</TextBlock>
-                        <Button>Donate</Button>
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel>
             </StackPanel>
         </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>
