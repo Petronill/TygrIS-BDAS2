@@ -35,6 +35,12 @@ namespace TISBackend.Controllers
                 new OracleParameter("p_jmeno", account["user"].ToString()),
                 new OracleParameter("p_hash", account["hash"].ToString()),
                 new OracleParameter("p_uroven", account["level"].ToString()));
+            if (account.ContainsKey("pid") && int.TryParse(account["pid"].ToString(), out int id))
+            {
+                DatabaseController.Execute("PKG_HESLA.NASTAV_CLOVEKA",
+                    new OracleParameter("p_jmeno", account["user"].ToString()),
+                    new OracleParameter("p_id_clovek", id));
+            }
         }
 
         // POST: api/Login
