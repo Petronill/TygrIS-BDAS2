@@ -8,6 +8,7 @@ namespace TISWindows.Model
 {
     internal class Keeper : Human
     {
-        protected int GrossWage { get; set; }
+        public int GrossWage { get; set; }
+        public int? SuperiorId { get; set; }
     }
 }

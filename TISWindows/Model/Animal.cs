@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace TISWindows.Model
 {
     internal class Animal
     {
-        protected int Id { get; set; }
-        protected string? Name { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
         //MaintCosts - how much for a  maintanance of the animal
-        protected int MaintCosts { get; set; }
-        protected DateTime Birth { get; set; }
-        protected DateTime Death { get; set; }
-        protected Species? Species { get; set; }
-        protected Genus? Genus { get; set; }
+        public int MaintCosts { get; set; }
+        public DateTime Birth { get; set; }
+        public DateTime Death { get; set; }
+        public Species? Species { get; set; }
+        public Sex Sex { get; set; }
+        public Enclosure Enclosure { get; set; }
+        public Image Photo { get; set; }
 
     }
 }

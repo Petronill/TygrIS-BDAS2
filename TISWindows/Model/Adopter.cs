@@ -8,6 +8,6 @@ namespace TISWindows.Model
 {
     internal class Adopter : Human
     {
-        protected int Donation { get; set; }
+        public int Donation { get; set; }
     }
 }

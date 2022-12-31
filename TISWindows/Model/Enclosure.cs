@@ -8,8 +8,9 @@ namespace TISWindows.Model
 {
     internal class Enclosure
     {
-        protected int Id { get; set; }
-        protected string? Name { get; set; }
-        protected int Capacity { get; set; }
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public int Capacity { get; set; }
+        public Pavilion Pavilion { get; set; }
     }
 }

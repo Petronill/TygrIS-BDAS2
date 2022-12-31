@@ -8,12 +8,12 @@ namespace TISWindows.Model
 {
     internal class Address
     {
-        protected int Id { get; set; }
-        protected string? Street { get; set; }
-        protected string? HouseNumber { get; set; }
-        protected string? Cíty { get; set; }
-        protected string? PostalCode { get; set; }
-        protected string? Country { get; set; }
+        public int Id { get; set; }
+        public string? Street { get; set; }
+        public string? HouseNumber { get; set; }
+        public string? Cíty { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Country { get; set; }
 
     }
 

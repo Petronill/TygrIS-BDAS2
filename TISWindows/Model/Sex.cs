@@ -8,7 +8,7 @@ namespace TISWindows.Model
 {
     internal class Sex
     {
-        protected int Id { get; set; }
-        protected string? Abbreviation { get; set; }
+        public int Id { get; set; }
+        public string? Abbreviation { get; set; }
     }
 }

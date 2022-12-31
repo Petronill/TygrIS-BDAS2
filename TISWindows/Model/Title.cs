@@ -8,8 +8,8 @@ namespace TISWindows.Model
 {
     internal class Title
     {
-        protected int Id { get; set; }
-        protected string? TitleName { get; set; }
-        protected string? Abbreviation { get; set;}
+        public int Id { get; set; }
+        public string? TitleName { get; set; }
+        public string? Abbreviation { get; set;}
     }
 }
