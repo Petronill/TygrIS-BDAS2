@@ -14,7 +14,23 @@ namespace TISBackend.Controllers
         private const string idName = "id_vybeh";
         private const string superTableName = "PAVILONY";
         private const string superIdName = "id_pavilon";
+        private const string otherNazevName = "nazev2";
 
+
+        public static Enclosure New(DataRow dr, string idName = EnclosureController.idName, string superIdName = EnclosureController.superIdName, string otherNazevName = EnclosureController.otherNazevName)
+        {
+            return new Enclosure()
+            {
+                Id = int.Parse(dr[idName].ToString()),
+                Name = dr["nazev"].ToString(),
+                Capacity = int.Parse(dr["kapacita"].ToString()),
+                Pavilion = (dr[superIdName].ToString() == "") ? null : new Pavilion()
+                {
+                    Id = int.Parse(dr[superIdName].ToString()),
+                    Name = dr[otherNazevName].ToString()
+                }
+            };
+        }
 
         // GET: api/Enclosure
         public IEnumerable<Enclosure> Get()
@@ -23,20 +39,10 @@ namespace TISBackend.Controllers
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS nazev2 FROM {tableName} t1 LEFT JOIN {superTableName} t2 ON t1.{superIdName} = t2.{superIdName}");
+                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS {otherNazevName} FROM {tableName} t1 LEFT JOIN {superTableName} t2 ON t1.{superIdName} = t2.{superIdName}");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(new Enclosure()
-                    {
-                        Id = int.Parse(dr[idName].ToString()),
-                        Name = dr["nazev"].ToString(),
-                        Capacity = int.Parse(dr["kapacita"].ToString()),
-                        Pavilion = (dr[superIdName].ToString() == "") ? null : new Pavilion()
-                        {
-                            Id = int.Parse(dr[superIdName].ToString()),
-                            Name = dr["nazev2"].ToString()
-                        }
-                    });
+                    list.Add(New(dr));
                 }
             }
 
@@ -50,18 +56,8 @@ namespace TISBackend.Controllers
             {
                 return null;
             }
-            DataRow query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS nazev2 FROM {tableName} t1 LEFT JOIN {superTableName} t2 ON t1.{superIdName} = t2.{superIdName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return new Enclosure()
-            {
-                Id = int.Parse(query[idName].ToString()),
-                Name = query["nazev"].ToString(),
-                Capacity = int.Parse(query["kapacita"].ToString()),
-                Pavilion = (query[superIdName].ToString() == "") ? null : new Pavilion()
-                {
-                    Id = int.Parse(query[superIdName].ToString()),
-                    Name = query["nazev2"].ToString()
-                }
-            };
+            DataRow query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS {otherNazevName} FROM {tableName} t1 LEFT JOIN {superTableName} t2 ON t1.{superIdName} = t2.{superIdName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
+            return New(query);
         }
 
         // POST: api/Enclosure
