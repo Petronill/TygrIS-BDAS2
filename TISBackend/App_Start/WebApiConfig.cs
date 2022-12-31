@@ -15,7 +15,8 @@ namespace TISBackend
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                defaults: new { id = RouteParameter.Optional },
+                constraints: new { controller = @"^(?:(?!TIS).)*$" }
             );
 
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings

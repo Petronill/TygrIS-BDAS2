@@ -12,6 +12,6 @@ namespace TISBackend.Models
         public DateTime Death { get; set; }
         public Species Species { get; set; }
         public Genus Genus { get; set; }
-
+        public Document Photo { get; set; }
     }
 }
