@@ -6,17 +6,18 @@
         xmlns:local="clr-namespace:TISWindows"
         mc:Ignorable="d"
         Title="AnimalList" Height="450" Width="800">
-    <Grid>
+    <Grid x:Name="grid">
         <StackPanel x:Name="animalList">
             <StackPanel Margin="0,15,0,0">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <StackPanel x:Name="threeAnimals" Orientation="Horizontal" HorizontalAlignment="Center" >
                     <StackPanel x:Name="animal" Orientation="Vertical">
-                        <Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Raccoon_in_Central_Park_%2835264%29.jpg/1200px-Raccoon_in_Central_Park_%2835264%29.jpg" Width="100"></Image>
+                        <Image x:Name="picture"  Source="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Raccoon_in_Central_Park_%2835264%29.jpg/1200px-Raccoon_in_Central_Park_%2835264%29.jpg" Width="100"></Image>
                         <TextBlock Text="Jméno: Adélka" x:Name="name" HorizontalAlignment="center"></TextBlock>
+                        <TextBlock Text="Pohlaví: " x:Name="sex" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="Rod: P. lotor" x:Name="species" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="Čeleď: Procyon" x:Name="genus" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="Narození: 13.2.2000" x:Name="birth" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="Smert: ještě ne" x:Name="death" HorizontalAlignment="center"></TextBlock>
+                        <TextBlock Text="Smrt: ještě ne" x:Name="death" HorizontalAlignment="center"></TextBlock>
                         <TextBlock Text="42069 KČ" x:Name="costs" HorizontalAlignment="center"></TextBlock>
                         <Button x:Name="donate">Donate</Button>
                     </StackPanel>
