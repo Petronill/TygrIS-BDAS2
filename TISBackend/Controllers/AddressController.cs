@@ -12,7 +12,20 @@ namespace TISBackend.Controllers
     {
         private const string tableName = "ADRESY";
         private const string idName = "id_adresa";
-        
+
+        public static Address New(DataRow dr, string idName = AddressController.idName)
+        {
+            return new Address()
+            {
+                Id = int.Parse(dr[idName].ToString()),
+                Street = (dr["ulice"].ToString() == "") ? null : dr["ulice"].ToString(),
+                HouseNumber = (dr["cislo_popisne"].ToString() == "") ? null : (int?)int.Parse(dr["cislo_popisne"].ToString()),
+                City = (dr["obec"].ToString() == "") ? null : dr["obec"].ToString(),
+                PostalCode = (dr["psc"].ToString() == "") ? null : (int?)int.Parse(dr["psc"].ToString()),
+                Country = (dr["zeme"].ToString() == "") ? null : dr["zeme"].ToString()
+            };
+        }
+
         // GET: api/Address
         public IEnumerable<Address> Get()
         {
@@ -23,14 +36,7 @@ namespace TISBackend.Controllers
                 DataTable query = DatabaseController.Query($"SELECT * FROM {tableName}");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(new Address() {
-                        Id = int.Parse(dr[idName].ToString()),
-                        Street = (dr["ulice"].ToString() == "") ? null : dr["ulice"].ToString(),
-                        HouseNumber = (dr["cislo_popisne"].ToString() == "") ? null : (int?)int.Parse(dr["cislo_popisne"].ToString()),
-                        City = (dr["obec"].ToString() == "") ? null : dr["obec"].ToString(),
-                        PostalCode = (dr["psc"].ToString() == "") ? null : (int?)int.Parse(dr["psc"].ToString()),
-                        Country = (dr["zeme"].ToString() == "") ? null : dr["zeme"].ToString()
-                    });
+                    list.Add(New(dr));
                 }
             }
 
@@ -45,14 +51,7 @@ namespace TISBackend.Controllers
                 return null;
             }
             DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return new Address() {
-                Id = int.Parse(query[idName].ToString()),
-                Street = (query["ulice"].ToString() == "") ? null : query["ulice"].ToString(),
-                HouseNumber = (query["cislo_popisne"].ToString() == "") ? null : (int?)int.Parse(query["cislo_popisne"].ToString()),
-                City = (query["obec"].ToString() == "") ? null : query["obec"].ToString(),
-                PostalCode = (query["psc"].ToString() == "") ? null : (int?)int.Parse(query["psc"].ToString()),
-                Country = (query["zeme"].ToString() == "") ? null : query["zeme"].ToString()
-            };
+            return New(query);
         }
 
         // POST: api/Address

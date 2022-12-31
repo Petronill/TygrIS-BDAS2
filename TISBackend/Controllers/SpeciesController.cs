@@ -15,6 +15,17 @@ namespace TISBackend.Controllers
         private const string superTableName = "RODY";
         private const string superIdName = "id_rod";
 
+        public static Species New(DataRow dr, string idName = SpeciesController.idName)
+        {
+            return new Species()
+            {
+                Id = int.Parse(dr[idName].ToString()),
+                CzechName = dr["jmeno_druhu_cesky"].ToString(),
+                LatinName = dr["jmeno_druhu_latinsky"].ToString(),
+                Genus = GenusController.New(dr)
+            };
+        }
+
         // GET: api/Species
         public IEnumerable<Species> Get()
         {
@@ -25,18 +36,7 @@ namespace TISBackend.Controllers
                 DataTable query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN {superTableName} USING ({superIdName})");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(new Species()
-                    {
-                        Id = int.Parse(dr[idName].ToString()),
-                        CzechName = dr["jmeno_druhu_cesky"].ToString(),
-                        LatinName = dr["jmeno_druhu_latinsky"].ToString(),
-                        Genus = new Genus()
-                        {
-                            Id = int.Parse(dr["id_rod"].ToString()),
-                            CzechName = dr["jmeno_rodu_cesky"].ToString(),
-                            LatinName = dr["jmeno_rodu_latinsky"].ToString()
-                        }
-                    });
+                    list.Add(New(dr));
                 }
             }
 
@@ -51,18 +51,7 @@ namespace TISBackend.Controllers
                 return null;
             }
             DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN {superTableName} USING ({superIdName}) WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return new Species()
-            {
-                Id = int.Parse(query[idName].ToString()),
-                CzechName = query["jmeno_druhu_cesky"].ToString(),
-                LatinName = query["jmeno_druhu_latinsky"].ToString(),
-                Genus = new Genus()
-                {
-                    Id = int.Parse(query["id_rod"].ToString()),
-                    CzechName = query["jmeno_rodu_cesky"].ToString(),
-                    LatinName = query["jmeno_rodu_latinsky"].ToString()
-                }
-            };
+            return New(query);
         }
 
         // POST: api/Species

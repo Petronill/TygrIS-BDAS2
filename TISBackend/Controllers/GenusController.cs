@@ -13,6 +13,16 @@ namespace TISBackend.Controllers
         private const string tableName = "RODY";
         private const string idName = "id_rod";
 
+        public static Genus New(DataRow dr, string idName = GenusController.idName)
+        {
+            return new Genus()
+            {
+                Id = int.Parse(dr[idName].ToString()),
+                CzechName = dr["jmeno_rodu_cesky"].ToString(),
+                LatinName = dr["jmeno_rodu_latinsky"].ToString()
+            };
+        }
+
         // GET: api/Genus
         public IEnumerable<Genus> Get()
         {
@@ -23,12 +33,7 @@ namespace TISBackend.Controllers
                 DataTable query = DatabaseController.Query($"SELECT * FROM {tableName}");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(new Genus()
-                    {
-                        Id = int.Parse(dr[idName].ToString()),
-                        CzechName = dr["jmeno_rodu_cesky"].ToString(),
-                        LatinName = dr["jmeno_rodu_latinsky"].ToString()
-                    });
+                    list.Add(New(dr));
                 }
             }
 
@@ -43,12 +48,7 @@ namespace TISBackend.Controllers
                 return null;
             }
             DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return new Genus()
-            {
-                Id = int.Parse(query[idName].ToString()),
-                CzechName = query["jmeno_rodu_cesky"].ToString(),
-                LatinName = query["jmeno_rodu_latinsky"].ToString()
-            };
+            return New(query);
         }
 
         // POST: api/Genus
