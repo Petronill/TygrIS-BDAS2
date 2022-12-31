@@ -8,23 +8,25 @@ using TISBackend.Models;
 
 namespace TISBackend.Controllers
 {
-    public class SexController : TISController
+    public class TitleController : TISController
     {
-        private const string tableName = "POHLAVI";
-        private const string idName = "id_pohlavi";
+        private const string tableName = "TITULY";
+        private const string idName = "id_titul";
 
-        // GET: api/Sex
-        public IEnumerable<Sex> Get()
+        // GET: api/Title
+        public IEnumerable<Title> Get()
         {
-            List<Sex> list = new List<Sex>();
+            List<Title> list = new List<Title>();
 
             if (IsAuthorized())
             {
                 DataTable query = DatabaseController.Query($"SELECT * FROM {tableName}");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(new Sex() {
+                    list.Add(new Title()
+                    {
                         Id = int.Parse(dr[idName].ToString()),
+                        TitleName = dr["nazev"].ToString(),
                         Abbreviation = dr["zkratka"].ToString()
                     });
                 }
@@ -33,22 +35,24 @@ namespace TISBackend.Controllers
             return list;
         }
 
-        // GET: api/Sex/5
-        public Sex Get(int id)
+        // GET: api/Title/5
+        public Title Get(int id)
         {
             if (!IsAuthorized())
             {
                 return null;
             }
             DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return new Sex() {
+            return new Title()
+            {
                 Id = int.Parse(query[idName].ToString()),
+                TitleName = query["nazev"].ToString(),
                 Abbreviation = query["zkratka"].ToString()
             };
         }
 
-        // POST: api/Sex
-        public IHttpActionResult Post([FromBody]string value)
+        // POST: api/Title
+        public IHttpActionResult Post([FromBody] string value)
         {
             if (!IsAdmin())
             {
@@ -60,7 +64,7 @@ namespace TISBackend.Controllers
             return StatusCode(HttpStatusCode.OK);
         }
 
-        // DELETE: api/Sex/5
+        // DELETE: api/Title/5
         public IHttpActionResult Delete(int id)
         {
             return DeleteById(tableName, idName, id);

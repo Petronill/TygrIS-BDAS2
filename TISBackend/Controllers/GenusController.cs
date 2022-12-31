@@ -8,24 +8,26 @@ using TISBackend.Models;
 
 namespace TISBackend.Controllers
 {
-    public class SexController : TISController
+    public class GenusController : TISController
     {
-        private const string tableName = "POHLAVI";
-        private const string idName = "id_pohlavi";
+        private const string tableName = "RODY";
+        private const string idName = "id_rod";
 
-        // GET: api/Sex
-        public IEnumerable<Sex> Get()
+        // GET: api/Genus
+        public IEnumerable<Genus> Get()
         {
-            List<Sex> list = new List<Sex>();
+            List<Genus> list = new List<Genus>();
 
             if (IsAuthorized())
             {
                 DataTable query = DatabaseController.Query($"SELECT * FROM {tableName}");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(new Sex() {
+                    list.Add(new Genus()
+                    {
                         Id = int.Parse(dr[idName].ToString()),
-                        Abbreviation = dr["zkratka"].ToString()
+                        CzechName = dr["jmeno_rodu_cesky"].ToString(),
+                        LatinName = dr["jmeno_rodu_latinsky"].ToString()
                     });
                 }
             }
@@ -33,22 +35,24 @@ namespace TISBackend.Controllers
             return list;
         }
 
-        // GET: api/Sex/5
-        public Sex Get(int id)
+        // GET: api/Genus/5
+        public Genus Get(int id)
         {
             if (!IsAuthorized())
             {
                 return null;
             }
             DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return new Sex() {
+            return new Genus()
+            {
                 Id = int.Parse(query[idName].ToString()),
-                Abbreviation = query["zkratka"].ToString()
+                CzechName = query["jmeno_rodu_cesky"].ToString(),
+                LatinName = query["jmeno_rodu_latinsky"].ToString()
             };
         }
 
-        // POST: api/Sex
-        public IHttpActionResult Post([FromBody]string value)
+        // POST: api/Genus
+        public IHttpActionResult Post([FromBody] string value)
         {
             if (!IsAdmin())
             {
@@ -60,7 +64,7 @@ namespace TISBackend.Controllers
             return StatusCode(HttpStatusCode.OK);
         }
 
-        // DELETE: api/Sex/5
+        // DELETE: api/Genus/5
         public IHttpActionResult Delete(int id)
         {
             return DeleteById(tableName, idName, id);

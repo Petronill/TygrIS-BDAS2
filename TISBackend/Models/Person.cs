@@ -13,5 +13,6 @@
         public int? AccountNumber { get; set; }
         public Address Address { get; set; }
         public Document Photo { get; set; }
+
     }
 }
