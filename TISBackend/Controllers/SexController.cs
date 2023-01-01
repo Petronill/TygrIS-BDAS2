@@ -13,6 +13,7 @@ namespace TISBackend.Controllers
         private const string tableName = "POHLAVI";
         private const string idName = "id_pohlavi";
 
+        [NonAction]
         public static Sex New(DataRow dr, string idName = SexController.idName)
         {
             return new Sex()

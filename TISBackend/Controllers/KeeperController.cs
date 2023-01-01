@@ -8,15 +8,15 @@ using TISModelLibrary;
 
 namespace TISBackend.Controllers
 {
-    public class PersonController : TISController
+    public class KeeperController : TISController
     {
         private const string tableName = "LIDE";
         private const string idName = "id_clovek";
 
         [NonAction]
-        public static Person New(DataRow dr)
+        public static Keeper New(DataRow dr)
         {
-            return new Person()
+            return new Keeper()
             {
                 Id = int.Parse(dr[idName].ToString()),
                 FirstName = dr["jmeno"].ToString(),
@@ -26,18 +26,20 @@ namespace TISBackend.Controllers
                 Email = (dr["E-mail"].ToString() == "") ? null : dr["E-mail"].ToString(),
                 AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
                 Address = AddressController.New(dr),
-                Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString())
+                Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString()),
+                GrossWage = int.Parse(dr["hruba_mzda"].ToString()),
+                SupervisorId = (dr["id_nadrizeny"].ToString() == "") ? null : (int?)int.Parse(dr["id_nadrizeny"].ToString())
             };
         }
 
-        // GET: api/Person
-        public IEnumerable<Person> Get()
+        // GET: api/Keeper
+        public IEnumerable<Keeper> Get()
         {
-            List<Person> list = new List<Person>();
+            List<Keeper> list = new List<Keeper>();
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN ADRESY USING (id_adresa)");
+                DataTable query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN ADRESY USING (id_adresa) JOIN OSETROVATELE USING (id_clovek)");
                 foreach (DataRow dr in query.Rows)
                 {
                     list.Add(New(dr));
@@ -47,18 +49,18 @@ namespace TISBackend.Controllers
             return list;
         }
 
-        // GET: api/Person/5
-        public Person Get(int id)
+        // GET: api/Keeper/5
+        public Keeper Get(int id)
         {
             if (!IsAuthorized())
             {
                 return null;
             }
-            DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN ADRESY USING (id_adresa) WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
+            DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN ADRESY USING (id_adresa) JOIN OSETROVATELE USING (id_clovek) WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
             return New(query);
         }
 
-        // POST: api/Person
+        // POST: api/Keeper
         public IHttpActionResult Post([FromBody] string value)
         {
             if (!IsAdmin())
@@ -71,7 +73,7 @@ namespace TISBackend.Controllers
             return StatusCode(HttpStatusCode.OK);
         }
 
-        // DELETE: api/Person/5
+        // DELETE: api/Keeper/5
         public IHttpActionResult Delete(int id)
         {
             return DeleteById(tableName, idName, id);

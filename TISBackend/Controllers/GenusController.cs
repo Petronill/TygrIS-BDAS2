@@ -13,6 +13,7 @@ namespace TISBackend.Controllers
         private const string tableName = "RODY";
         private const string idName = "id_rod";
 
+        [NonAction]
         public static Genus New(DataRow dr, string idName = GenusController.idName)
         {
             return new Genus()

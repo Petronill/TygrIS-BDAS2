@@ -16,7 +16,7 @@ namespace TISBackend.Controllers
         private const string superIdName = "id_pavilon";
         private const string otherNazevName = "nazev2";
 
-
+        [NonAction]
         public static Enclosure New(DataRow dr, string idName = EnclosureController.idName, string superIdName = EnclosureController.superIdName, string otherNazevName = EnclosureController.otherNazevName)
         {
             return new Enclosure()

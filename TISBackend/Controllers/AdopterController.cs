@@ -8,15 +8,15 @@ using TISModelLibrary;
 
 namespace TISBackend.Controllers
 {
-    public class PersonController : TISController
+    public class AdopterController : TISController
     {
         private const string tableName = "LIDE";
         private const string idName = "id_clovek";
 
         [NonAction]
-        public static Person New(DataRow dr)
+        public static Adopter New(DataRow dr)
         {
-            return new Person()
+            return new Adopter()
             {
                 Id = int.Parse(dr[idName].ToString()),
                 FirstName = dr["jmeno"].ToString(),
@@ -26,18 +26,19 @@ namespace TISBackend.Controllers
                 Email = (dr["E-mail"].ToString() == "") ? null : dr["E-mail"].ToString(),
                 AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
                 Address = AddressController.New(dr),
-                Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString())
+                Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString()),
+                Donation = int.Parse(dr["prispevek"].ToString())
             };
         }
 
-        // GET: api/Person
-        public IEnumerable<Person> Get()
+        // GET: api/Adopter
+        public IEnumerable<Adopter> Get()
         {
-            List<Person> list = new List<Person>();
+            List<Adopter> list = new List<Adopter>();
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN ADRESY USING (id_adresa)");
+                DataTable query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN ADRESY USING (id_adresa) JOIN ADOPTUJICI USING (id_clovek)");
                 foreach (DataRow dr in query.Rows)
                 {
                     list.Add(New(dr));
@@ -47,18 +48,18 @@ namespace TISBackend.Controllers
             return list;
         }
 
-        // GET: api/Person/5
-        public Person Get(int id)
+        // GET: api/Adopter/5
+        public Adopter Get(int id)
         {
             if (!IsAuthorized())
             {
                 return null;
             }
-            DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN ADRESY USING (id_adresa) WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
+            DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} JOIN ADRESY USING (id_adresa) JOIN ADOPTUJICI USING (id_clovek) WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
             return New(query);
         }
 
-        // POST: api/Person
+        // POST: api/Adopter
         public IHttpActionResult Post([FromBody] string value)
         {
             if (!IsAdmin())
@@ -71,7 +72,7 @@ namespace TISBackend.Controllers
             return StatusCode(HttpStatusCode.OK);
         }
 
-        // DELETE: api/Person/5
+        // DELETE: api/Adopter/5
         public IHttpActionResult Delete(int id)
         {
             return DeleteById(tableName, idName, id);

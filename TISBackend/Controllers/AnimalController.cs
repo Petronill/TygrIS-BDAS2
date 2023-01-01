@@ -14,6 +14,7 @@ namespace TISBackend.Controllers
         private const string tableName = "ZVIRATA";
         private const string idName = "id_zvire";
 
+        [NonAction]
         private static Animal New(DataRow dr, string idName = AnimalController.idName)
         {
             return new Animal()
@@ -25,7 +26,9 @@ namespace TISBackend.Controllers
                 Birth = DateTime.Parse(dr["datum_narozeni"].ToString()),
                 Death = (dr["datum_umrti"].ToString() == "") ? null : (DateTime?)DateTime.Parse(dr["datum_umrti"].ToString()),
                 Enclosure = (dr["id_vybeh"].ToString() == "") ? null : EnclosureController.New(dr, otherNazevName: "nazev2"),
-                MaintCosts = int.Parse(dr["naklady"].ToString())
+                MaintCosts = int.Parse(dr["naklady"].ToString()),
+                KeeperId = (dr["id_osetrovatel"].ToString() == "") ? null : (int?)int.Parse(dr["id_osetrovatel"].ToString()),
+                AdopterId = (dr["id_adoptujici"].ToString() == "") ? null : (int?)int.Parse(dr["id_adoptujici"].ToString())
             };
         }
 

@@ -13,6 +13,7 @@ namespace TISBackend.Controllers
         private const string tableName = "PAVILONY";
         private const string idName = "id_pavilon";
 
+        [NonAction]
         private static Pavilion New(DataRow dr, string idName = PavilionController.idName)
         {
             return new Pavilion()

@@ -13,6 +13,7 @@ namespace TISBackend.Controllers
         private const string tableName = "ADRESY";
         private const string idName = "id_adresa";
 
+        [NonAction]
         public static Address New(DataRow dr, string idName = AddressController.idName)
         {
             return new Address()

@@ -13,6 +13,7 @@ namespace TISBackend.Controllers
         private const string tableName = "TITULY";
         private const string idName = "id_titul";
 
+        [NonAction]
         public static Title New(DataRow dr, string idName = TitleController.idName)
         {
             return new Title()

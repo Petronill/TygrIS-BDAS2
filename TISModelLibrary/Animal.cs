@@ -13,6 +13,8 @@ namespace TISModelLibrary
         public int MaintCosts { get; set; }
         public DateTime Birth { get; set; }
         public DateTime? Death { get; set; }
+        public int? KeeperId { get; set; }
+        public int? AdopterId { get; set; }
         public Document Photo { get; set; }
     }
 }

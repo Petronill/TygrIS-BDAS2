@@ -15,6 +15,7 @@ namespace TISBackend.Controllers
         private const string superTableName = "RODY";
         private const string superIdName = "id_rod";
 
+        [NonAction]
         public static Species New(DataRow dr, string idName = SpeciesController.idName)
         {
             return new Species()
