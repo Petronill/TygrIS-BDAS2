@@ -107,7 +107,7 @@ namespace TISWindows
         private void OnClickEmployees()
         {
             Content.Children.Clear();
-            HttpResponseMessage result = client.GetAsync("Person/").Result;
+            HttpResponseMessage result = client.GetAsync("Keeper/").Result;
             string res = result.Content.ReadAsStringAsync().Result;
             var content = JsonSerializer.Deserialize<List<Person>>(res);
 
@@ -118,13 +118,8 @@ namespace TISWindows
             StackPanel ogEmployee = (StackPanel)ogThreeEmployees.FindName("employee");
             ogThreeEmployees.Children.Clear();
             StackPanel threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
-            for (int i = 0, j = 0; i < content.Count; i++, j++)
+            for (int i = 0; i < content.Count; i++)
             {
-                if (content[i].Role == PersonalRoles.ADOPTER)
-                {
-                    j--;
-                    continue;
-                }
                 StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
                 Image photo = (Image)employee.FindName("piture");
                 TextBlock firstName = (TextBlock)employee.FindName("firstName");
@@ -141,7 +136,7 @@ namespace TISWindows
                 email.Text = content[i].Email;
 
                 threeEmployees.Children.Add(employee);
-                if (j % 5 == 4 || i == content.Count - 1)
+                if (i % 5 == 4 || i == content.Count - 1)
                 {
                     list.Children.Add(threeEmployees);
                     threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
