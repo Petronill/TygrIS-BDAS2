@@ -8,8 +8,7 @@
         Title="Employees" Height="450" Width="800">
     <Grid x:Name="grid">
         <StackPanel x:Name="employeeList">
-            <StackPanel Margin="0,15,0,0">
-                <StackPanel x:Name="threeEmployees" Orientation="Horizontal" HorizontalAlignment="Center" >
+            <StackPanel x:Name="threeEmployees" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
                     <StackPanel x:Name="employee" Orientation="Vertical">
                         <Image x:Name="picture"  Source="/Items/defaultUser.png" Width="100"></Image>
                         <TextBlock Text="Petr" x:Name="firstName" HorizontalAlignment="center"></TextBlock>
@@ -19,7 +18,6 @@
                         <TextBlock Text="123 456 789" x:Name="phoneNumber" HorizontalAlignment="center"></TextBlock>
                     </StackPanel>
                 </StackPanel>
-            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

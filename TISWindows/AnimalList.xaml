@@ -7,10 +7,8 @@
         mc:Ignorable="d"
         Title="AnimalList" Height="450" Width="800">
     <Grid x:Name="grid">
-        <ScrollViewer>
-        <StackPanel x:Name="animalList">
-            <StackPanel Margin="0,15,0,0">
-                <StackPanel x:Name="threeAnimals" Orientation="Horizontal" HorizontalAlignment="Center" >
+            <StackPanel x:Name="animalList">
+                <StackPanel x:Name="threeAnimals" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
                         <StackPanel x:Name="animal" Orientation="Vertical">
                             <Image x:Name="picture"  Source="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Raccoon_in_Central_Park_%2835264%29.jpg/1200px-Raccoon_in_Central_Park_%2835264%29.jpg" Width="100"></Image>
                             <TextBlock Text="Jméno: Adélka" x:Name="name" HorizontalAlignment="center"></TextBlock>
@@ -21,9 +19,7 @@
                             <TextBlock Text="Smrt: ještě ne" x:Name="death" HorizontalAlignment="center"></TextBlock>
                             <TextBlock Text="42069 KČ" x:Name="costs" HorizontalAlignment="center"></TextBlock>
                         </StackPanel>
-                    </StackPanel>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-        </ScrollViewer>
     </Grid>
 </Window>

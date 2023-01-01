@@ -71,6 +71,7 @@ namespace TISWindows
             StackPanel list = (StackPanel)animalGrid.FindName("animalList");
             StackPanel ogThreeAnimals = (StackPanel)list.FindName("threeAnimals");
             StackPanel ogAnimal = (StackPanel)ogThreeAnimals.FindName("animal");
+            ogThreeAnimals.Children.Clear();
             StackPanel threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
             for (int i = 0; i < content.Count; i++)
             {
@@ -88,17 +89,11 @@ namespace TISWindows
                 name.Text = content[i].Name;
                 species.Text = content[i].Species.CzechName;
                 genus.Text = content[i].Species.Genus.CzechName;
-                birth.Text = content[i].Birth.ToString();
-                if (content[i].Death == null)
-                {
-                    death.Text = "Ještě žije";
-                }
-                else
-                {
-                    death.Text = content[i].Death.ToString();
-                }
-                cost.Text = content[i].MaintCosts.ToString();
-                sex.Text = content[i].Sex.ToString();
+                birth.Text = content[i].Birth.ToString("dd. MM. yyyy");
+                death.Text = content[i].Death?.ToString("dd. MM. yyyy") ?? "Ještě žije";
+                cost.Text = content[i].MaintCosts.ToString() + " Kč";
+                sex.Text = content[i].Sex.Abbreviation;
+
                 threeAnimals.Children.Add(animal);
                 if (i % 5 == 4 || i == content.Count - 1)
                 {
@@ -107,8 +102,54 @@ namespace TISWindows
                 }
             }
             Content.Children.Add(animalGrid);
-
         }
+
+        private void OnClickEmployees()
+        {
+            Content.Children.Clear();
+            HttpResponseMessage result = client.GetAsync("Person/").Result;
+            string res = result.Content.ReadAsStringAsync().Result;
+            var content = JsonSerializer.Deserialize<List<Person>>(res);
+
+            Employees employeeList = new Employees();
+            Grid employeeGrid = (Grid)XamlReader.Parse(XamlWriter.Save(employeeList.grid));
+            StackPanel list = (StackPanel)employeeGrid.FindName("employeeList");
+            StackPanel ogThreeEmployees = (StackPanel)list.FindName("threeEmployees");
+            StackPanel ogEmployee = (StackPanel)ogThreeEmployees.FindName("employee");
+            ogThreeEmployees.Children.Clear();
+            StackPanel threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
+            for (int i = 0, j = 0; i < content.Count; i++, j++)
+            {
+                if (content[i].Role == PersonalRoles.ADOPTER)
+                {
+                    j--;
+                    continue;
+                }
+                StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
+                Image photo = (Image)employee.FindName("piture");
+                TextBlock firstName = (TextBlock)employee.FindName("firstName");
+                TextBlock secondName = (TextBlock)employee.FindName("secondName");
+                TextBlock pin = (TextBlock)employee.FindName("pin");
+                TextBlock phone = (TextBlock)employee.FindName("phoneNumber");
+                TextBlock email = (TextBlock)employee.FindName("email");
+
+                //photo.DataContext = new Uri("Items/defaultUser.png");
+                firstName.Text = content[i].FirstName;
+                secondName.Text = content[i].SecondName;
+                pin.Text = content[i].PIN.ToString();
+                phone.Text = content[i].PhoneNumber.ToString();
+                email.Text = content[i].Email;
+
+                threeEmployees.Children.Add(employee);
+                if (j % 5 == 4 || i == content.Count - 1)
+                {
+                    list.Children.Add(threeEmployees);
+                    threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
+                }
+            }
+            Content.Children.Add(employeeGrid);
+        }
+
         private void OnClickInfo(object sender, RoutedEventArgs e)
         {
             Content.Children.Clear();
@@ -130,7 +171,7 @@ namespace TISWindows
             if (content != null)
             {
                 name.Content = content.FirstName + " " + content.SecondName;
-                age.Content = 45; // TODO: vypočítávat!
+                age.Content = content.Birthday().ToString("dd. MM. YYYY");
                 address.Content = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City;
                 email.Content = content.Email;
                 phone.Content = content.PhoneNumber;
@@ -198,44 +239,6 @@ namespace TISWindows
                 }
             };
             Content.Children.Add(loginMenu);
-        }
-        private void OnClickEmployees()
-        {
-            HttpResponseMessage result = client.GetAsync("Person/").Result;
-            string res = result.Content.ReadAsStringAsync().Result;
-            var content = JsonSerializer.Deserialize<List<Person>>(res);
-            Employees employeeList = new Employees();
-            string panel = XamlWriter.Save(employeeList.grid);
-            Grid employee = (Grid)XamlReader.Parse(panel);
-            StackPanel ogPanel = (StackPanel)employee.FindName("threeEmployees");
-            StackPanel threeEmployees = XamlReader.Parse(XamlWriter.Save(ogPanel)) as StackPanel;
-            for (int i = 0, j = 0; i < content.Count; i++, j++)
-            {
-                if (content[i].Role == PersonalRoles.ADOPTER)
-                {
-                    j--;
-                    continue;
-                }
-                Image photo = (Image)employee.FindName("piture");
-                TextBlock firstName = (TextBlock)employee.FindName("firstName");
-                TextBlock secondName = (TextBlock)employee.FindName("secondName");
-                TextBlock pin = (TextBlock)employee.FindName("pin");
-                TextBlock phone = (TextBlock)employee.FindName("phoneNumber");
-                TextBlock email = (TextBlock)employee.FindName("email");
-
-                //photo.DataContext = new Uri("Items/defaultUser.png");
-                firstName.Text = content[i].FirstName;
-                secondName.Text = content[i].SecondName;
-                pin.Text = content[i].PIN.ToString();
-                phone.Text = content[i].PhoneNumber.ToString();
-                email.Text = content[i].Email;
-                Content.Children.Add(employee);
-                if (j % 5 == 4 || i == content.Count - 1)
-                {
-                    employee.Children.Add(threeEmployees);
-                    threeEmployees = XamlReader.Parse(XamlWriter.Save(ogPanel)) as StackPanel;
-                }
-            }
         }
     }
 }
