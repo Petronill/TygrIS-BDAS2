@@ -1,20 +1,27 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Net;
+using System.Runtime.Caching;
 using System.Web.Http;
+using TISBackend.Auth;
 using TISBackend.Db;
 using TISModelLibrary;
 
 namespace TISBackend.Controllers
 {
-    public class SexController : TISController
+    public class SexController : TISControllerWithInt
     {
-        private const string tableName = "POHLAVI";
-        private const string idName = "id_pohlavi";
+        public const string tableName = "POHLAVI";
+        public const string idName = "id_pohlavi";
+
+        protected static readonly ObjectCache cachedSexes = MemoryCache.Default;
+
+        private static readonly SexController instance = new SexController();
 
         [NonAction]
-        public static Sex New(DataRow dr, string idName = SexController.idName)
+        public static Sex New(DataRow dr, AuthLevel authLevel, string idName = SexController.idName)
         {
             return new Sex()
             {
@@ -33,7 +40,7 @@ namespace TISBackend.Controllers
                 DataTable query = DatabaseController.Query($"SELECT * FROM {tableName}");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(New(dr));
+                    list.Add(New(dr, GetAuthLevel()));
                 }
             }
 
@@ -47,27 +54,76 @@ namespace TISBackend.Controllers
             {
                 return null;
             }
-            DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return New(query);
+
+            if (cachedSexes[id.ToString()] is Sex)
+            {
+                return cachedSexes[id.ToString()] as Sex;
+            }
+
+            DataTable query = DatabaseController.Query($"SELECT * FROM {tableName} WHERE {idName} = :id", new OracleParameter("id", id));
+
+            if (query.Rows.Count != 1)
+            {
+                return null;
+            }
+
+            Sex sex = New(query.Rows[0], GetAuthLevel());
+            cachedSexes.Add(id.ToString(), sex, DateTimeOffset.Now.AddMinutes(15));
+            return sex;
+        }
+
+        [NonAction]
+        protected override bool CheckObject(JObject value)
+        {
+            return ValidJSON(value, "Id", "Abbreviation") && int.TryParse(value["Id"].ToString(), out _);
+        }
+
+        [NonAction]
+        protected override int SetObjectInternal(JObject value, AuthLevel authLevel, OracleTransaction transaction)
+        {
+            Sex n = value.ToObject<Sex>();
+            OracleParameter p_id = new OracleParameter("p_id", n.Id);
+            DatabaseController.Execute("PKG_MODEL_DML.UPSERT_POHLAVI", transaction,
+                p_id, new OracleParameter("p_zkratka", n.Abbreviation));
+            int id = int.Parse(p_id.Value.ToString());
+
+            if (id != ErrId && cachedSexes.Contains(id.ToString()))
+            {
+                n.Id = id;
+                cachedSexes[id.ToString()] = n;
+            }
+
+            return id;
+        }
+
+        [NonAction]
+        public static bool CheckObjectStatic(JObject value)
+        {
+            return instance.CheckObject(value);
+        }
+
+        [NonAction]
+        public static int SetObjectStatic(JObject value, AuthLevel authLevel, OracleTransaction transaction = null)
+        {
+            return instance.SetObject(value, authLevel, transaction);
         }
 
         // POST: api/Sex
-        public IHttpActionResult Post([FromBody]string value)
+        public IHttpActionResult Post([FromBody] JObject value)
         {
-            if (!IsAdmin())
-            {
-                return StatusCode(HttpStatusCode.Unauthorized);
-            }
+            return PostUnknownNumber(value);
+        }
 
-            // TODO
-
-            return StatusCode(HttpStatusCode.OK);
+        // POST: api/Sex/5
+        public IHttpActionResult Post(int id, [FromBody] JObject value)
+        {
+            return PostSingle(id, value);
         }
 
         // DELETE: api/Sex/5
         public IHttpActionResult Delete(int id)
         {
-            return DeleteById(tableName, idName, id);
+            return DeleteById(tableName, idName, id, cachedSexes);
         }
     }
 }

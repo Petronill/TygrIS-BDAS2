@@ -8,8 +8,10 @@ using TISBackend.Db;
 
 namespace TISBackend.Controllers
 {
-    public class LoginController : TISController
+    public class LoginController : TISControllerWithString
     {
+        private static readonly LoginController instance = new LoginController();
+
         // GET: api/Login
         public AuthLevel Get()
         {
@@ -23,24 +25,39 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        private bool CheckAccount(JObject account)
+        protected override bool CheckObject(JObject value)
         {
-            return ValidJSON(account, "user", "hash", "level") && int.TryParse(account["level"].ToString(), out _);
+            return ValidJSON(value, "user", "hash", "level") && int.TryParse(value["level"].ToString(), out _);
         }
 
         [NonAction]
-        private void SetAccount(JObject account)
+        protected override string SetObjectInternal(JObject value, AuthLevel authLevel, OracleTransaction transaction)
         {
-            DatabaseController.Execute("PKG_HESLA.NASTAV_UCET",
-                new OracleParameter("p_jmeno", account["user"].ToString()),
-                new OracleParameter("p_hash", account["hash"].ToString()),
-                new OracleParameter("p_uroven", account["level"].ToString()));
-            if (account.ContainsKey("pid") && int.TryParse(account["pid"].ToString(), out int id))
+            DatabaseController.Execute("PKG_HESLA.NASTAV_UCET", transaction,
+                new OracleParameter("p_jmeno", value["user"].ToString()),
+                new OracleParameter("p_hash", value["hash"].ToString()),
+                new OracleParameter("p_uroven", value["level"].ToString()));
+            if (value.ContainsKey("pid") && int.TryParse(value["pid"].ToString(), out int id))
             {
-                DatabaseController.Execute("PKG_HESLA.NASTAV_CLOVEKA",
-                    new OracleParameter("p_jmeno", account["user"].ToString()),
+                DatabaseController.Execute("PKG_HESLA.NASTAV_CLOVEKA", transaction,
+                    new OracleParameter("p_jmeno", value["user"].ToString()),
                     new OracleParameter("p_id_clovek", id));
             }
+
+            return value["user"].ToString();
+        }
+
+
+        [NonAction]
+        public static bool CheckObjectStatic(JObject value)
+        {
+            return instance.CheckObject(value);
+        }
+
+        [NonAction]
+        public static string SetObjectStatic(JObject value, AuthLevel authLevel, OracleTransaction transaction = null)
+        {
+            return instance.SetObject(value, authLevel, transaction);
         }
 
         // POST: api/Login
@@ -49,32 +66,19 @@ namespace TISBackend.Controllers
             if (!IsAdmin()) {
                 return StatusCode(HttpStatusCode.Unauthorized);
             }
-            
-            if (value.Type == JTokenType.Array)
+
+            return PostUnknownNumber(value);
+        }
+
+        // POST: api/Login/5
+        public IHttpActionResult Post(string id, [FromBody] JObject value)
+        {
+            if (!IsAdmin())
             {
-                JArray array = value.ToObject<JArray>();
-                foreach (JToken token in array)
-                {
-                    if (token.Type != JTokenType.Object)
-                    {
-                        return StatusCode(HttpStatusCode.BadRequest);
-                    }
-                    JObject obj = token.ToObject<JObject>();
-                    if (!CheckAccount(obj))
-                    {
-                        return StatusCode(HttpStatusCode.BadRequest);
-                    }
-                    SetAccount(obj);
-                }
-            } else
-            {
-                if (!CheckAccount(value))
-                {
-                    return StatusCode(HttpStatusCode.BadRequest);
-                }
-                SetAccount(value);
+                return StatusCode(HttpStatusCode.Unauthorized);
             }
-            return StatusCode(HttpStatusCode.OK);
+
+            return PostSingle(id, value);
         }
 
         // DELETE: api/Login/ucet

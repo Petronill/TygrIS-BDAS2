@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Net.Configuration;
 using System.Web;
+using System.Web.Http.Results;
 
 namespace TISBackend.Db
 {
@@ -37,6 +38,24 @@ namespace TISBackend.Db
             return dataTable;
         }
 
+        public static DataTable Query(string sql, OracleTransaction transaction, params OracleParameter[] parameters)
+        {
+            DataTable dataTable = new DataTable();
+            OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
+            if (transaction != null)
+            {
+                cmd.Transaction = transaction;
+            }
+            foreach (OracleParameter op in parameters)
+            {
+                cmd.Parameters.Add(op);
+            }
+
+            OracleDataAdapter oda = new OracleDataAdapter(cmd);
+            oda.Fill(dataTable);
+            return dataTable;
+        }
+
         public static void Execute(string sql, params OracleParameter[] parameters)
         {
             OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
@@ -46,6 +65,36 @@ namespace TISBackend.Db
             }
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.ExecuteNonQuery();
+        }
+
+        public static void Execute(string sql, OracleTransaction transaction, params OracleParameter[] parameters)
+        {
+            OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
+            if (transaction != null)
+            {
+                cmd.Transaction = transaction;
+            }
+            foreach (OracleParameter op in parameters)
+            {
+                cmd.Parameters.Add(op);
+            }
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.ExecuteNonQuery();
+        }
+
+        public static OracleTransaction StartTransaction()
+        {
+            return _databaseController.con.BeginTransaction();
+        }
+
+        public static void Commit(OracleTransaction transaction)
+        {
+            transaction.Commit();
+        }
+
+        public static void Rollback(OracleTransaction transaction)
+        {
+            transaction.Rollback();
         }
 
         ~DatabaseController()

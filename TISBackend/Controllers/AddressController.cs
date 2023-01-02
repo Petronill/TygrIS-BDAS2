@@ -1,20 +1,27 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Net;
+using System.Runtime.Caching;
 using System.Web.Http;
+using TISBackend.Auth;
 using TISBackend.Db;
 using TISModelLibrary;
 
 namespace TISBackend.Controllers
 {
-    public class AddressController : TISController
+    public class AddressController : TISControllerWithInt
     {
-        private const string tableName = "ADRESY";
-        private const string idName = "id_adresa";
+        public const string TABLE_NAME = "ADRESY";
+        public const string ID_NAME = "id_adresa";
+
+        protected static readonly ObjectCache cachedAddresses = MemoryCache.Default;
+
+        private static readonly AddressController instance = new AddressController();
 
         [NonAction]
-        public static Address New(DataRow dr, string idName = AddressController.idName)
+        public static Address New(DataRow dr, AuthLevel authLevel, string idName = AddressController.ID_NAME)
         {
             return new Address()
             {
@@ -34,10 +41,10 @@ namespace TISBackend.Controllers
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT * FROM {tableName}");
+                DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME}");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(New(dr));
+                    list.Add(New(dr, GetAuthLevel()));
                 }
             }
 
@@ -51,27 +58,82 @@ namespace TISBackend.Controllers
             {
                 return null;
             }
-            DataRow query = DatabaseController.Query($"SELECT * FROM {tableName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return New(query);
+
+            if (cachedAddresses[id.ToString()] is Address)
+            {
+                return cachedAddresses[id.ToString()] as Address;
+            }
+
+            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} WHERE {ID_NAME} = :id", new OracleParameter("id", id));
+
+            if (query.Rows.Count != 1)
+            {
+                return null;
+            }
+
+            Address address = New(query.Rows[0], GetAuthLevel());
+            cachedAddresses.Add(id.ToString(), address, DateTimeOffset.Now.AddMinutes(15));
+            return address;
+        }
+
+        [NonAction]
+        protected override bool CheckObject(JObject value)
+        {
+            return ValidJSON(value, "Id") && int.TryParse(value["Id"].ToString(), out _);
+        }
+
+        [NonAction]
+        protected override int SetObjectInternal(JObject value, AuthLevel authLevel, OracleTransaction transaction)
+        {
+            Address n = value.ToObject<Address>();
+            OracleParameter p_id = new OracleParameter("p_id", n.Id);
+            DatabaseController.Execute("PKG_MODEL_DML.UPSERT_ADRESA", transaction,
+                p_id,
+                new OracleParameter("p_ulice", n.Street),
+                new OracleParameter("p_cp", n.HouseNumber),
+                new OracleParameter("p_obec", n.City),
+                new OracleParameter("p_psc", n.PostalCode),
+                new OracleParameter("p_zeme", n.Country)
+            );
+            int id = int.Parse(p_id.Value.ToString());
+
+            if (id != ErrId && cachedAddresses.Contains(id.ToString()))
+            {
+                n.Id = id;
+                cachedAddresses[id.ToString()] = n;
+            }
+
+            return id;
+        }
+
+        [NonAction]
+        public static bool CheckObjectStatic(JObject value)
+        {
+            return instance.CheckObject(value);
+        }
+
+        [NonAction]
+        public static int SetObjectStatic(JObject value, AuthLevel authLevel, OracleTransaction transaction = null)
+        {
+            return instance.SetObject(value, authLevel, transaction);
         }
 
         // POST: api/Address
-        public IHttpActionResult Post([FromBody] string value)
+        public IHttpActionResult Post([FromBody] JObject value)
         {
-            if (!IsAdmin())
-            {
-                return StatusCode(HttpStatusCode.Unauthorized);
-            }
+            return PostUnknownNumber(value);
+        }
 
-            // TODO
-
-            return StatusCode(HttpStatusCode.OK);
+        // POST : api/Address/5
+        public IHttpActionResult Post(int id, [FromBody] JObject value)
+        {
+            return PostSingle(id, value);
         }
 
         // DELETE: api/Address/5
         public IHttpActionResult Delete(int id)
         {
-            return DeleteById(tableName, idName, id);
+            return DeleteById(TABLE_NAME, ID_NAME, id, cachedAddresses);
         }
     }
 }
