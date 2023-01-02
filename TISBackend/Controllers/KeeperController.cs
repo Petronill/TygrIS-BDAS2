@@ -37,6 +37,12 @@ namespace TISBackend.Controllers
             };
         }
 
+        [Route("api/id/keeper")]
+        public IEnumerable<int> GetIds()
+        {
+            return GetIds(TABLE_NAME, ID_NAME);
+        }
+
         // GET: api/Keeper
         public IEnumerable<Keeper> Get()
         {

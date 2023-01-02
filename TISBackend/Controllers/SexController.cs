@@ -13,21 +13,27 @@ namespace TISBackend.Controllers
 {
     public class SexController : TISControllerWithInt
     {
-        public const string tableName = "POHLAVI";
-        public const string idName = "id_pohlavi";
+        public const string TABLE_NAME = "POHLAVI";
+        public const string ID_NAME = "id_pohlavi";
 
         protected static readonly ObjectCache cachedSexes = MemoryCache.Default;
 
         private static readonly SexController instance = new SexController();
 
         [NonAction]
-        public static Sex New(DataRow dr, AuthLevel authLevel, string idName = SexController.idName)
+        public static Sex New(DataRow dr, AuthLevel authLevel, string ID_NAME = SexController.ID_NAME)
         {
             return new Sex()
             {
-                Id = int.Parse(dr[idName].ToString()),
+                Id = int.Parse(dr[ID_NAME].ToString()),
                 Abbreviation = dr["zkratka"].ToString()
             };
+        }
+
+        [Route("api/id/sex")]
+        public IEnumerable<int> GetIds()
+        {
+            return GetIds(TABLE_NAME, ID_NAME);
         }
 
         // GET: api/Sex
@@ -37,7 +43,7 @@ namespace TISBackend.Controllers
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT * FROM {tableName}");
+                DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME}");
                 foreach (DataRow dr in query.Rows)
                 {
                     list.Add(New(dr, GetAuthLevel()));
@@ -60,7 +66,7 @@ namespace TISBackend.Controllers
                 return cachedSexes[id.ToString()] as Sex;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT * FROM {tableName} WHERE {idName} = :id", new OracleParameter("id", id));
+            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} WHERE {ID_NAME} = :id", new OracleParameter("id", id));
 
             if (query.Rows.Count != 1)
             {
@@ -123,7 +129,7 @@ namespace TISBackend.Controllers
         // DELETE: api/Sex/5
         public IHttpActionResult Delete(int id)
         {
-            return DeleteById(tableName, idName, id, cachedSexes);
+            return DeleteById(TABLE_NAME, ID_NAME, id, cachedSexes);
         }
     }
 }

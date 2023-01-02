@@ -36,6 +36,12 @@ namespace TISBackend.Controllers
             };
         }
 
+        [Route("api/id/adopter")]
+        public IEnumerable<int> GetIds()
+        {
+            return GetIds(TABLE_NAME, ID_NAME);
+        }
+
         // GET: api/Adopter
         public IEnumerable<Adopter> Get()
         {

@@ -2,6 +2,7 @@
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
@@ -49,6 +50,9 @@ namespace TISBackend.Controllers
             }
             return true;
         }
+
+        [NonAction]
+        protected abstract List<TId> GetIds(string tableName, string idName);
 
         [NonAction]
         protected StatusCodeResult DeleteById(string tableName, string idName, TId id, ObjectCache cache = null)
@@ -178,7 +182,7 @@ namespace TISBackend.Controllers
                 TId id = SetObject(value, GetAuthLevel());
                 if (id.Equals(ErrId))
                 {
-                    return StatusCode(HttpStatusCode.Conflict);
+                    return StatusCode(HttpStatusCode.BadRequest);
                 }
                 return Content(HttpStatusCode.OK, id);
             }
@@ -210,10 +214,44 @@ namespace TISBackend.Controllers
     public class TISControllerWithInt : TISController<int>
     {
         protected override int ErrId => -1;
+
+        [NonAction]
+        protected override List<int> GetIds(string tableName, string idName)
+        {
+            List<int> list = new List<int>();
+
+            if (IsAuthorized())
+            {
+                DataTable query = DatabaseController.Query($"SELECT {idName} FROM {tableName}");
+                foreach (DataRow dr in query.Rows)
+                {
+                    list.Add(int.Parse(dr[idName].ToString()));
+                }
+            }
+
+            return list;
+        }
     }
 
     public class TISControllerWithString : TISController<string>
     {
         protected override string ErrId => "";
+
+        [NonAction]
+        protected override List<string> GetIds(string tableName, string idName)
+        {
+            List<string> list = new List<string>();
+
+            if (IsAuthorized())
+            {
+                DataTable query = DatabaseController.Query($"SELECT {idName} FROM {tableName}");
+                foreach (DataRow dr in query.Rows)
+                {
+                    list.Add(dr[idName].ToString());
+                }
+            }
+
+            return list;
+        }
     }
 }
