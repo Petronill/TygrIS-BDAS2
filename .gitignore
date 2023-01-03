@@ -40,3 +40,4 @@ msbuild.wrn
 TestResults/
 /.vs/TygrIS/v17/.wsuo
 /.vs/VSWorkspaceState.json
+/packages/Oracle.ManagedDataAccess.21.8.0/content/net462/App.config.transform
