@@ -3,7 +3,6 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -35,7 +34,7 @@ namespace TISBackend.Controllers
                 AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
                 Address = AddressController.New(dr, authLevel),
                 Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString()),
-                Photo = (dr["id_foto"].ToString() == "") ? null : DocumentController.New(dr, authLevel)
+                PhotoId = (dr["id_foto"].ToString() == "") ? null : (int?)int.Parse(dr["id_foto"].ToString())
             };
         }
 
@@ -75,7 +74,7 @@ namespace TISBackend.Controllers
                 return cachedPeople[id.ToString()] as Person;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa) LEFT JOIN DOKUMENTY ON id_foto = id_dokument WHERE {ID_NAME} = :id", new OracleParameter("id", id));
+            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa) WHERE {ID_NAME} = :id", new OracleParameter("id", id));
             
             if (query.Rows.Count != 1)
             {
@@ -90,21 +89,14 @@ namespace TISBackend.Controllers
         [NonAction]
         protected override bool CheckObject(JObject value)
         {
-            bool intermediate = ValidJSON(value, "Id", "FirstName", "LastName", "PIN", "PhoneNumber", "Email", "AccountNumber", "Address", "Role", "Photo")
+            return ValidJSON(value, "Id", "FirstName", "LastName", "PIN", "PhoneNumber", "Email", "AccountNumber", "Address", "Role", "PhotoId")
                 && int.TryParse(value["Id"].ToString(), out _)
                 && long.TryParse(value["PIN"].ToString(), out _)
                 && (value["PhoneNumber"].Type == JTokenType.Null || long.TryParse(value["PhoneNumber"].ToString(), out _))
                 && (value["AccountNumber"].Type == JTokenType.Null || long.TryParse(value["AccountNumber"].ToString(), out _))
+                && (value["PhotoId"].Type == JTokenType.Null || int.TryParse(value["PhotoId"].ToString(), out _))
                 && AddressController.CheckObjectStatic(value["Address"].ToObject<JObject>())
                 && Enum.TryParse<PersonalRoles>(value["Role"].ToString(), out _);
-
-            if (!intermediate)
-            {
-                return false;
-            }
-
-            JObject photo = (value["Photo"]?.Type == JTokenType.Object) ? value["Photo"].ToObject<JObject>() : null;
-            return (photo == null /* TODO */);
         }
 
         [NonAction]
@@ -114,12 +106,6 @@ namespace TISBackend.Controllers
 
             int id_address = AddressController.SetObjectStatic(value["Address"].ToObject<JObject>(), authLevel, transaction);
             if (id_address == ErrId)
-            {
-                return ErrId;
-            }
-
-            int? id_photo = null; // TODO
-            if (id_photo != null && id_photo.Value == ErrId)
             {
                 return ErrId;
             }
@@ -134,7 +120,7 @@ namespace TISBackend.Controllers
                 new OracleParameter("p_mail", n.Email),
                 new OracleParameter("p_cislo_uctu", n.AccountNumber),
                 new OracleParameter("p_id_address", id_address),
-                new OracleParameter("p_id_foto", id_photo),
+                new OracleParameter("p_id_foto", n.PhotoId),
                 new OracleParameter("p_role", PersonalRoleUtils.ToDbString(n.Role))
             );
             int id = int.Parse(p_id.Value.ToString());

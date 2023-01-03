@@ -123,6 +123,7 @@
     <Compile Include="Controllers\AnimalController.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\EnclosureController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\GenusController.cs" />
     <Compile Include="Controllers\KeeperController.cs" />
     <Compile Include="Controllers\LoginController.cs" />

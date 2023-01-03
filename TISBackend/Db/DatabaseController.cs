@@ -56,6 +56,34 @@ namespace TISBackend.Db
             return dataTable;
         }
 
+        public static OracleDataReader Read(string sql, params OracleParameter[] parameters)
+        {
+            OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
+            foreach (OracleParameter op in parameters)
+            {
+                cmd.Parameters.Add(op);
+            }
+
+            OracleDataReader reader = cmd.ExecuteReader();
+            return reader;
+        }
+
+        public static OracleDataReader Read(string sql, OracleTransaction transaction, params OracleParameter[] parameters)
+        {
+            OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
+            if (transaction != null)
+            {
+                cmd.Transaction = transaction;
+            }
+            foreach (OracleParameter op in parameters)
+            {
+                cmd.Parameters.Add(op);
+            }
+
+            OracleDataReader reader = cmd.ExecuteReader();
+            return reader;
+        }
+
         public static void Execute(string sql, params OracleParameter[] parameters)
         {
             OracleCommand cmd = new OracleCommand(sql, _databaseController.con);

@@ -15,6 +15,6 @@ namespace TISModelLibrary
         public DateTime? Death { get; set; }
         public int? KeeperId { get; set; }
         public int? AdopterId { get; set; }
-        public Document Photo { get; set; }
+        public int? PhotoId { get; set; }
     }
 }
