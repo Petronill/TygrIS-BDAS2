@@ -8,7 +8,7 @@ namespace TISBackend
         public static void Register(HttpConfiguration config)
         {
             // Konfigurace a služby Web API
-
+            
             // Trasy Web API
             config.MapHttpAttributeRoutes();
 
@@ -16,7 +16,7 @@ namespace TISBackend
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional },
-                constraints: new { controller = @"^(?:(?!TIS).)*$" }
+                constraints: new { controller = @"^(?:(?!TIS).*)$" }
             );
 
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings

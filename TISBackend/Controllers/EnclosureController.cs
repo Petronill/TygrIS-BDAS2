@@ -1,23 +1,30 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Net;
+using System.Runtime.Caching;
 using System.Web.Http;
+using TISBackend.Auth;
 using TISBackend.Db;
 using TISModelLibrary;
 
 namespace TISBackend.Controllers
 {
-    public class EnclosureController : TISController
+    public class EnclosureController : TISControllerWithInt
     {
-        private const string tableName = "VYBEHY";
-        private const string idName = "id_vybeh";
-        private const string superTableName = "PAVILONY";
-        private const string superIdName = "id_pavilon";
-        private const string otherNazevName = "nazev2";
+        public const string TABLE_NAME = "VYBEHY";
+        public const string ID_NAME = "id_vybeh";
+        public const string SUPER_TABLE_NAME = "PAVILONY";
+        public const string SUPER_ID_NAME = "id_pavilon";
+        public const string OTHER_NAZEV_NAME = "nazev2";
+
+        protected static readonly ObjectCache cachedEnclosures = MemoryCache.Default;
+
+        private static readonly EnclosureController instance = new EnclosureController();
 
         [NonAction]
-        public static Enclosure New(DataRow dr, string idName = EnclosureController.idName, string superIdName = EnclosureController.superIdName, string otherNazevName = EnclosureController.otherNazevName)
+        public static Enclosure New(DataRow dr, AuthLevel authLevel, string idName = EnclosureController.ID_NAME, string superIdName = EnclosureController.SUPER_ID_NAME, string otherNazevName = EnclosureController.OTHER_NAZEV_NAME)
         {
             return new Enclosure()
             {
@@ -32,6 +39,12 @@ namespace TISBackend.Controllers
             };
         }
 
+        [Route("api/id/enclosure")]
+        public IEnumerable<int> GetIds()
+        {
+            return GetIds(TABLE_NAME, ID_NAME);
+        }
+
         // GET: api/Enclosure
         public IEnumerable<Enclosure> Get()
         {
@@ -39,10 +52,10 @@ namespace TISBackend.Controllers
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS {otherNazevName} FROM {tableName} t1 LEFT JOIN {superTableName} t2 ON t1.{superIdName} = t2.{superIdName}");
+                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS {OTHER_NAZEV_NAME} FROM {TABLE_NAME} t1 LEFT JOIN {SUPER_TABLE_NAME} t2 ON t1.{SUPER_ID_NAME} = t2.{SUPER_ID_NAME}");
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(New(dr));
+                    list.Add(New(dr, GetAuthLevel()));
                 }
             }
 
@@ -56,27 +69,97 @@ namespace TISBackend.Controllers
             {
                 return null;
             }
-            DataRow query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS {otherNazevName} FROM {tableName} t1 LEFT JOIN {superTableName} t2 ON t1.{superIdName} = t2.{superIdName} WHERE {idName} = :id", new OracleParameter("id", id)).Rows[0];
-            return New(query);
+
+            if (cachedEnclosures[id.ToString()] is Enclosure)
+            {
+                return cachedEnclosures[id.ToString()] as Enclosure;
+            }
+
+            DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS {OTHER_NAZEV_NAME} FROM {TABLE_NAME} t1 LEFT JOIN {SUPER_TABLE_NAME} t2 ON t1.{SUPER_ID_NAME} = t2.{SUPER_ID_NAME} WHERE {ID_NAME} = :id", new OracleParameter("id", id));
+
+            if (query.Rows.Count != 1)
+            {
+                return null;
+            }
+
+            Enclosure enclosure = New(query.Rows[0], GetAuthLevel());
+            cachedEnclosures.Add(id.ToString(), enclosure, DateTimeOffset.Now.AddMinutes(15));
+            return enclosure;
+        }
+
+
+
+        [NonAction]
+        protected override bool CheckObject(JObject value)
+        {
+            bool intermediate = ValidJSON(value, "Id", "Name", "Capacity", "Pavilion")
+                && int.TryParse(value["Id"].ToString(), out _) && int.TryParse(value["Capacity"].ToString(), out _);
+
+            if (!intermediate)
+            {
+                return false;
+            }
+
+            JObject pavilion = (value["Pavilion"]?.Type == JTokenType.Object) ? value["Pavilion"].ToObject<JObject>() : null;
+            return pavilion == null || PavilionController.CheckObjectStatic(pavilion);
+        }
+
+        [NonAction]
+        protected override int SetObjectInternal(JObject value, AuthLevel authLevel, OracleTransaction transaction)
+        {
+            Enclosure n = value.ToObject<Enclosure>();
+
+            int? id_pavilion = (n.Pavilion != null) ? (int?)PavilionController.SetObjectStatic(value["Pavilion"].ToObject<JObject>(), authLevel, transaction) : null;
+            if (id_pavilion != null && id_pavilion.Value == ErrId)
+            {
+                return ErrId;
+            }
+
+            OracleParameter p_id = new OracleParameter("p_id", n.Id);
+            DatabaseController.Execute("PKG_MODEL_DML.UPSERT_VYBEH", transaction,
+                p_id,
+                new OracleParameter("p_nazev", n.Name),
+                new OracleParameter("p_kapacita", n.Capacity),
+                new OracleParameter("p_id_pavilon", id_pavilion));
+            int id = int.Parse(p_id.Value.ToString());
+
+            if (id != ErrId && cachedEnclosures.Contains(id.ToString()))
+            {
+                n.Id = id;
+                cachedEnclosures[id.ToString()] = n;
+            }
+
+            return id;
+        }
+
+        [NonAction]
+        public static bool CheckObjectStatic(JObject value)
+        {
+            return instance.CheckObject(value);
+        }
+
+        [NonAction]
+        public static int SetObjectStatic(JObject value, AuthLevel authLevel, OracleTransaction transaction = null)
+        {
+            return instance.SetObject(value, authLevel, transaction);
         }
 
         // POST: api/Enclosure
-        public IHttpActionResult Post([FromBody] string value)
+        public IHttpActionResult Post([FromBody] JObject value)
         {
-            if (!IsAdmin())
-            {
-                return StatusCode(HttpStatusCode.Unauthorized);
-            }
+            return PostUnknownNumber(value);
+        }
 
-            // TODO
-
-            return StatusCode(HttpStatusCode.OK);
+        // POST : api/Enclosure/5
+        public IHttpActionResult Post(int id, [FromBody] JObject value)
+        {
+            return PostSingle(id, value);
         }
 
         // DELETE: api/Enclosure/5
         public IHttpActionResult Delete(int id)
         {
-            return DeleteById(tableName, idName, id);
+            return DeleteById(TABLE_NAME, ID_NAME, id, cachedEnclosures);
         }
     }
 }

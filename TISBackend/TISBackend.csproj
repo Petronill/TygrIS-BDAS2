@@ -121,6 +121,7 @@
     <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\AdopterController.cs" />
     <Compile Include="Controllers\AnimalController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\EnclosureController.cs" />
     <Compile Include="Controllers\GenusController.cs" />
     <Compile Include="Controllers\KeeperController.cs" />
@@ -177,7 +178,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>62301</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44333/</IISUrl>
+          <IISUrl>https://localhost:42069/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

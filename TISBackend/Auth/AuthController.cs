@@ -56,7 +56,7 @@ namespace TISBackend.Auth
     {
         private static readonly ObjectCache cachedTokens = MemoryCache.Default;
 
-        static AuthLevel CheckInDatabase(AuthToken authToken)
+        private static AuthLevel CheckInDatabase(AuthToken authToken)
         {
             DataRow query = DatabaseController.Query(
                 $"SELECT PKG_HESLA.ZJISTI_UROVEN(:jmeno, :hash) \"level\" FROM DUAL",
@@ -85,5 +85,12 @@ namespace TISBackend.Auth
             return (token.As is null || level != AuthLevel.ADMIN) ? level : token.As.Value;
         }
 
+        public static void InvalidateCache(AuthToken? authToken)
+        {
+            if (authToken != null)
+            {
+                cachedTokens.Remove(authToken.Value.Username + authToken.Value.Hash);
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace TISModelLibrary
 
         public int Id { get; set; }
         public string FirstName { get; set; }
-        public string SecondName { get; set; }
+        public string LastName { get; set; }
         //PIN - Personal Identification number - aka Rodné číslo
         public long PIN { get; set; }
         public long? PhoneNumber { get; set; }
