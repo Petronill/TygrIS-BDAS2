@@ -130,7 +130,7 @@ namespace TISWindows
 
                 //photo.DataContext = new Uri("Items/defaultUser.png");
                 firstName.Text = content[i].FirstName;
-                secondName.Text = content[i].SecondName;
+                secondName.Text = content[i].LastName;
                 pin.Text = content[i].PIN.ToString();
                 phone.Text = content[i].PhoneNumber.ToString();
                 email.Text = content[i].Email;
@@ -165,7 +165,7 @@ namespace TISWindows
 
             if (content != null)
             {
-                name.Content = content.FirstName + " " + content.SecondName;
+                name.Content = content.FirstName + " " + content.LastName;
                 age.Content = content.Birthday().ToString("dd. MM. YYYY");
                 address.Content = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City;
                 email.Content = content.Email;

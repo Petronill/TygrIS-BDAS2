@@ -121,6 +121,7 @@
     <Compile Include="Controllers\AddressController.cs" />
     <Compile Include="Controllers\AdopterController.cs" />
     <Compile Include="Controllers\AnimalController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\EnclosureController.cs" />
     <Compile Include="Controllers\GenusController.cs" />
     <Compile Include="Controllers\KeeperController.cs" />

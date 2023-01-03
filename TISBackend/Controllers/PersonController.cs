@@ -1,4 +1,5 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,6 +19,8 @@ namespace TISBackend.Controllers
 
         protected static readonly ObjectCache cachedPeople = MemoryCache.Default;
 
+        private static readonly PersonController instance = new PersonController();
+
         [NonAction]
         public static Person New(DataRow dr, AuthLevel authLevel, string idName = PersonController.ID_NAME)
         {
@@ -25,13 +28,14 @@ namespace TISBackend.Controllers
             {
                 Id = int.Parse(dr[idName].ToString()),
                 FirstName = dr["jmeno"].ToString(),
-                SecondName = dr["prijmeni"].ToString(),
+                LastName = dr["prijmeni"].ToString(),
                 PIN = long.Parse(dr["rodne_cislo"].ToString()),
                 PhoneNumber = (dr["telefon"].ToString() == "") ? null : (long?)long.Parse(dr["telefon"].ToString()),
                 Email = (dr["E-mail"].ToString() == "") ? null : dr["E-mail"].ToString(),
                 AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
                 Address = AddressController.New(dr, authLevel),
-                Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString())
+                Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString()),
+                Photo = (dr["id_foto"].ToString() == "") ? null : DocumentController.New(dr, authLevel)
             };
         }
 
@@ -71,7 +75,7 @@ namespace TISBackend.Controllers
                 return cachedPeople[id.ToString()] as Person;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa) WHERE {ID_NAME} = :id", new OracleParameter("id", id));
+            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa) LEFT JOIN DOKUMENTY ON id_foto = id_dokument WHERE {ID_NAME} = :id", new OracleParameter("id", id));
             
             if (query.Rows.Count != 1)
             {
@@ -83,17 +87,77 @@ namespace TISBackend.Controllers
             return person;
         }
 
-        // POST: api/Person
-        public IHttpActionResult Post([FromBody] string value)
+        [NonAction]
+        protected override bool CheckObject(JObject value)
         {
-            if (!IsAdmin())
+            bool intermediate = ValidJSON(value, "Id", "FirstName", "LastName", "PIN", "PhoneNumber", "Email", "AccountNumber", "Address", "Role", "Photo")
+                && int.TryParse(value["Id"].ToString(), out _)
+                && long.TryParse(value["PIN"].ToString(), out _)
+                && (value["PhoneNumber"].Type == JTokenType.Null || long.TryParse(value["PhoneNumber"].ToString(), out _))
+                && (value["AccountNumber"].Type == JTokenType.Null || long.TryParse(value["AccountNumber"].ToString(), out _))
+                && AddressController.CheckObjectStatic(value["Address"].ToObject<JObject>())
+                && Enum.TryParse<PersonalRoles>(value["Role"].ToString(), out _);
+
+            if (!intermediate)
             {
-                return StatusCode(HttpStatusCode.Unauthorized);
+                return false;
             }
 
-            // TODO
+            JObject photo = (value["Photo"]?.Type == JTokenType.Object) ? value["Photo"].ToObject<JObject>() : null;
+            return (photo == null /* TODO */);
+        }
 
-            return StatusCode(HttpStatusCode.OK);
+        [NonAction]
+        protected override int SetObjectInternal(JObject value, AuthLevel authLevel, OracleTransaction transaction)
+        {
+            Person n = value.ToObject<Person>();
+
+            int id_address = AddressController.SetObjectStatic(value["Address"].ToObject<JObject>(), authLevel, transaction);
+            if (id_address == ErrId)
+            {
+                return ErrId;
+            }
+
+            int? id_photo = null; // TODO
+            if (id_photo != null && id_photo.Value == ErrId)
+            {
+                return ErrId;
+            }
+
+            OracleParameter p_id = new OracleParameter("p_id", n.Id);
+            DatabaseController.Execute("PKG_MODEL_DML.UPSERT_CLOVEK", transaction,
+                p_id,
+                new OracleParameter("p_jmeno", n.FirstName),
+                new OracleParameter("p_prijmeni", n.LastName),
+                new OracleParameter("p_rc", n.PIN),
+                new OracleParameter("p_tel", n.PhoneNumber),
+                new OracleParameter("p_mail", n.Email),
+                new OracleParameter("p_cislo_uctu", n.AccountNumber),
+                new OracleParameter("p_id_address", id_address),
+                new OracleParameter("p_id_foto", id_photo),
+                new OracleParameter("p_role", PersonalRoleUtils.ToDbString(n.Role))
+            );
+            int id = int.Parse(p_id.Value.ToString());
+
+            if (id != ErrId && cachedPeople.Contains(id.ToString()))
+            {
+                n.Id = id;
+                cachedPeople[id.ToString()] = n;
+            }
+
+            return id;
+        }
+
+        [NonAction]
+        public static bool CheckObjectStatic(JObject value)
+        {
+            return instance.CheckObject(value);
+        }
+
+        [NonAction]
+        public static int SetObjectStatic(JObject value, AuthLevel authLevel, OracleTransaction transaction = null)
+        {
+            return instance.SetObject(value, authLevel, transaction);
         }
 
         // DELETE: api/Person/5

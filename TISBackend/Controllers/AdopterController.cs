@@ -1,8 +1,8 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -18,6 +18,8 @@ namespace TISBackend.Controllers
 
         protected static readonly ObjectCache cachedAdopters = MemoryCache.Default;
 
+        private static readonly AdopterController instance = new AdopterController();
+
         [NonAction]
         public static Adopter New(DataRow dr, AuthLevel authLevel, string idName = AdopterController.ID_NAME)
         {
@@ -25,13 +27,14 @@ namespace TISBackend.Controllers
             {
                 Id = int.Parse(dr[ID_NAME].ToString()),
                 FirstName = dr["jmeno"].ToString(),
-                SecondName = dr["prijmeni"].ToString(),
+                LastName = dr["prijmeni"].ToString(),
                 PIN = long.Parse(dr["rodne_cislo"].ToString()),
                 PhoneNumber = (dr["telefon"].ToString() == "") ? null : (long?)long.Parse(dr["telefon"].ToString()),
                 Email = (dr["E-mail"].ToString() == "") ? null : dr["E-mail"].ToString(),
                 AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
                 Address = AddressController.New(dr, authLevel),
                 Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString()),
+                Photo = (dr["id_foto"].ToString() == "") ? null : DocumentController.New(dr, authLevel),
                 Donation = int.Parse(dr["prispevek"].ToString())
             };
         }
@@ -39,7 +42,18 @@ namespace TISBackend.Controllers
         [Route("api/id/adopter")]
         public IEnumerable<int> GetIds()
         {
-            return GetIds(TABLE_NAME, ID_NAME);
+            List<int> list = new List<int>();
+
+            if (IsAuthorized())
+            {
+                DataTable query = DatabaseController.Query($"SELECT {ID_NAME} FROM ADOPTUJICI");
+                foreach (DataRow dr in query.Rows)
+                {
+                    list.Add(int.Parse(dr[ID_NAME].ToString()));
+                }
+            }
+
+            return list;
         }
 
         // GET: api/Adopter
@@ -49,7 +63,7 @@ namespace TISBackend.Controllers
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa) JOIN ADOPTUJICI USING (id_clovek)");
+                DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa) JOIN ADOPTUJICI USING (id_clovek) LEFT JOIN DOKUMENTY ON id_foto = id_dokument");
                 foreach (DataRow dr in query.Rows)
                 {
                     list.Add(New(dr, GetAuthLevel()));
@@ -72,7 +86,7 @@ namespace TISBackend.Controllers
                 return cachedAdopters[id.ToString()] as Adopter;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa) JOIN ADOPTUJICI USING (id_clovek) WHERE {ID_NAME} = :id", new OracleParameter("id", id));
+            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa) JOIN ADOPTUJICI USING (id_clovek) LEFT JOIN DOKUMENTY ON id_foto = id_dokument WHERE {ID_NAME} = :id", new OracleParameter("id", id));
 
             if (query.Rows.Count != 1)
             {
@@ -84,17 +98,65 @@ namespace TISBackend.Controllers
             return adopter;
         }
 
-        // POST: api/Adopter
-        public IHttpActionResult Post([FromBody] string value)
+        [NonAction]
+        protected override bool CheckObject(JObject value)
         {
-            if (!IsAdmin())
+            return PersonController.CheckObjectStatic(value) && ValidJSON(value, "Donation")
+                && int.TryParse(value["Donation"].ToString(), out _);
+        }
+
+        [NonAction]
+        protected override int SetObjectInternal(JObject value, AuthLevel authLevel, OracleTransaction transaction)
+        {
+            Adopter n = value.ToObject<Adopter>();
+            if (n.Role != PersonalRoles.ADOPTER)
             {
-                return StatusCode(HttpStatusCode.Unauthorized);
+                return ErrId;
             }
 
-            // TODO
+            int id_person = PersonController.SetObjectStatic(value, authLevel, transaction);
+            if (id_person == ErrId)
+            {
+                return ErrId;
+            }
 
-            return StatusCode(HttpStatusCode.OK);
+            OracleParameter p_id = new OracleParameter("p_id", id_person);
+            DatabaseController.Execute("PKG_MODEL_DML.UPSERT_ADOPTUJICI", transaction,
+                p_id,
+                new OracleParameter("p_prispevek", n.Donation));
+            int id = int.Parse(p_id.Value.ToString());
+
+            if (id != ErrId && cachedAdopters.Contains(id.ToString()))
+            {
+                n.Id = id;
+                cachedAdopters[id.ToString()] = n;
+            }
+
+            return id;
+        }
+
+        [NonAction]
+        public static bool CheckObjectStatic(JObject value)
+        {
+            return instance.CheckObject(value);
+        }
+
+        [NonAction]
+        public static int SetObjectStatic(JObject value, AuthLevel authLevel, OracleTransaction transaction = null)
+        {
+            return instance.SetObject(value, authLevel, transaction);
+        }
+
+        // POST: api/Adopter
+        public IHttpActionResult Post([FromBody] JObject value)
+        {
+            return PostUnknownNumber(value);
+        }
+
+        // POST : api/Adopter/5
+        public IHttpActionResult Post(int id, [FromBody] JObject value)
+        {
+            return PostSingle(id, value);
         }
 
         // DELETE: api/Adopter/5

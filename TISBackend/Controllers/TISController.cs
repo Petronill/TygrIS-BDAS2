@@ -176,7 +176,7 @@ namespace TISBackend.Controllers
             try { 
                 if (!CheckObject(value))
                 {
-                    return StatusCode(HttpStatusCode.BadRequest);
+                    return StatusCode(HttpStatusCode.Conflict);
                 }
 
                 TId id = SetObject(value, GetAuthLevel());
