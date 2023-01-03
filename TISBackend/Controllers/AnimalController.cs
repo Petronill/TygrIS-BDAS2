@@ -21,7 +21,7 @@ namespace TISBackend.Controllers
         private static readonly AnimalController instance = new AnimalController();
 
         [NonAction]
-        private static Animal New(DataRow dr, AuthLevel authLevel, string idName = AnimalController.ID_NAME)
+        public static Animal New(DataRow dr, AuthLevel authLevel, string idName = AnimalController.ID_NAME)
         {
             return new Animal()
             {
@@ -52,7 +52,7 @@ namespace TISBackend.Controllers
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t7.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
+                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
                     $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
                     $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
                     $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
@@ -80,7 +80,7 @@ namespace TISBackend.Controllers
                 return cachedAnimals[id.ToString()] as Animal;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t7.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
+            DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
                     $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
                     $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
                     $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
