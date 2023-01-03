@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
-using System;
 using System.Collections.Generic;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -38,7 +37,7 @@ namespace TISBackend.Controllers
                 OracleBlob blob = reader.GetOracleBlob(3);
                 byte[] blobBytes = new byte[blob.Length];
                 blob.Read(blobBytes, 0, blobBytes.Length);
-                document.Data = Convert.ToBase64String(blobBytes);
+                document.Data = Document.SerializeBytes(blobBytes);
             }
             reader.Close();
 
@@ -68,8 +67,10 @@ namespace TISBackend.Controllers
         {
             Document n = value.ToObject<Document>();
             OracleParameter p_id = new OracleParameter("p_id", n.Id);
-            OracleParameter p_data = new OracleParameter("p_data", OracleDbType.Blob);
-            p_data.Value = Convert.FromBase64String(n.Data);
+            OracleParameter p_data = new OracleParameter("p_data", OracleDbType.Blob)
+            {
+                Value = Document.DeserializeBytes(n.Data)
+            };
             DatabaseController.Execute("PKG_MODEL_DML.UPSERT_DOKUMENT", transaction,
                 p_id,
                 new OracleParameter("p_nazev", n.Name),
