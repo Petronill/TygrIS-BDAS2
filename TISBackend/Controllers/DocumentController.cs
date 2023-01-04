@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using Oracle.ManagedDataAccess.Client;
+﻿using Oracle.ManagedDataAccess.Client;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Data;
 using System.Runtime.Caching;
@@ -18,8 +18,6 @@ namespace TISBackend.Controllers
 
         protected static readonly ObjectCache cachedDocuments = MemoryCache.Default;
 
-        private static readonly DocumentController instance = new DocumentController();
-
         [NonAction]
         public static Document New(DataRow dr, AuthLevel authLevel, string idName = DocumentController.ID_NAME)
         {
@@ -27,7 +25,7 @@ namespace TISBackend.Controllers
             {
                 Id = int.Parse(dr[idName].ToString()),
                 Name = dr["nazev_souboru"].ToString(),
-                Extension = dr["pripona"].ToString()
+                Extension = dr["pripona"].ToString(),
             };
         }
 
@@ -44,7 +42,7 @@ namespace TISBackend.Controllers
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME}");
+                DataTable query = DatabaseController.Query($"SELECT {ID_NAME}, nazev_souboru, pripona FROM {TABLE_NAME}");
                 foreach (DataRow dr in query.Rows)
                 {
                     list.Add(New(dr, GetAuthLevel()));
@@ -67,7 +65,7 @@ namespace TISBackend.Controllers
                 return cachedDocuments[id.ToString()] as Document;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} WHERE {ID_NAME} = :id", new OracleParameter("id", id));
+            DataTable query = DatabaseController.Query($"SELECT {ID_NAME}, nazev_souboru, pripona FROM {TABLE_NAME} WHERE {ID_NAME} = :id", new OracleParameter("id", id));
 
             if (query.Rows.Count != 1)
             {

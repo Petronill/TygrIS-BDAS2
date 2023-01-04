@@ -34,7 +34,7 @@ namespace TISBackend.Controllers
                 AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
                 Address = AddressController.New(dr, authLevel),
                 Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString()),
-                Photo = (dr["id_foto"].ToString() == "") ? null : DocumentController.New(dr, authLevel),
+                PhotoId = (dr["id_foto"].ToString() == "") ? null : (int?)int.Parse(dr["id_foto"].ToString()),
                 Donation = int.Parse(dr["prispevek"].ToString())
             };
         }

@@ -166,7 +166,7 @@ namespace TISBackend.Controllers
             }
             catch (Exception ex)
             {
-                return Content(HttpStatusCode.BadRequest, ex.ToString());
+                return Content(HttpStatusCode.InternalServerError, ex.ToString());
             }
         }
 
@@ -176,7 +176,7 @@ namespace TISBackend.Controllers
             try { 
                 if (!CheckObject(value))
                 {
-                    return StatusCode(HttpStatusCode.Conflict);
+                    return StatusCode(HttpStatusCode.BadRequest);
                 }
 
                 TId id = SetObject(value, GetAuthLevel());
@@ -188,7 +188,7 @@ namespace TISBackend.Controllers
             }
             catch (Exception ex)
             {
-                return Content(HttpStatusCode.BadRequest, ex.ToString());
+                return Content(HttpStatusCode.InternalServerError, ex.ToString());
             }
         }
 
@@ -206,7 +206,7 @@ namespace TISBackend.Controllers
                 }
             catch (Exception ex)
             {
-                return Content(HttpStatusCode.BadRequest, ex.ToString());
+                return Content(HttpStatusCode.InternalServerError, ex.ToString());
             }
         }
     }

@@ -15,7 +15,7 @@ namespace TISModelLibrary
         public long? AccountNumber { get; set; }
         public Address Address { get; set; }
         public PersonalRoles Role { get; set; }
-        public Document Photo { get; set; }
+        public int? PhotoId { get; set; }
 
         public DateTime Birthday()
         {

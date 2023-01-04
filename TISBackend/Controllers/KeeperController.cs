@@ -34,7 +34,7 @@ namespace TISBackend.Controllers
                 AccountNumber = (dr["cislo_uctu"].ToString() == "") ? null : (long?)long.Parse(dr["cislo_uctu"].ToString()),
                 Address = AddressController.New(dr, authLevel),
                 Role = PersonalRoleUtils.FromDbString(dr["role_cloveka"].ToString()),
-                Photo = (dr["id_foto"].ToString() == "") ? null : DocumentController.New(dr, authLevel),
+                PhotoId = (dr["id_foto"].ToString() == "") ? null : (int?)int.Parse(dr["id_foto"].ToString()),
                 GrossWage = int.Parse(dr["hruba_mzda"].ToString()),
                 SupervisorId = (dr["id_nadrizeny"].ToString() == "") ? null : (int?)int.Parse(dr["id_nadrizeny"].ToString())
             };
@@ -98,6 +98,8 @@ namespace TISBackend.Controllers
             cachedKeepers.Add(id.ToString(), keeper, DateTimeOffset.Now.AddMinutes(15));
             return keeper;
         }
+
+        // TODO - hiearchical query
 
         [NonAction]
         protected override bool CheckObject(JObject value)

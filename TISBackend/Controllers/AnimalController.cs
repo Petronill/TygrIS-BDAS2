@@ -3,7 +3,6 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -22,7 +21,7 @@ namespace TISBackend.Controllers
         private static readonly AnimalController instance = new AnimalController();
 
         [NonAction]
-        private static Animal New(DataRow dr, AuthLevel authLevel, string idName = AnimalController.ID_NAME)
+        public static Animal New(DataRow dr, AuthLevel authLevel, string idName = AnimalController.ID_NAME)
         {
             return new Animal()
             {
@@ -36,7 +35,7 @@ namespace TISBackend.Controllers
                 MaintCosts = int.Parse(dr["naklady"].ToString()),
                 KeeperId = (dr["id_osetrovatel"].ToString() == "") ? null : (int?)int.Parse(dr["id_osetrovatel"].ToString()),
                 AdopterId = (dr["id_adoptujici"].ToString() == "") ? null : (int?)int.Parse(dr["id_adoptujici"].ToString()),
-                Photo = (dr["id_foto"].ToString() == "") ? null : DocumentController.New(dr, authLevel)
+                PhotoId = (dr["id_foto"].ToString() == "") ? null : (int?)int.Parse(dr["id_foto"].ToString())
             };
         }
 
@@ -53,13 +52,12 @@ namespace TISBackend.Controllers
 
             if (IsAuthorized())
             {
-                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t7.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
+                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
                     $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
                     $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
                     $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
                     $"LEFT JOIN VYBEHY t5 ON t1.id_vybeh = t5.id_vybeh " +
-                    $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon " +
-                    $"LEFT JOIN DOKUMENTY t7 ON t1.id_foto = t7.id_dokument");
+                    $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon");
                 foreach (DataRow dr in query.Rows)
                 {
                     list.Add(New(dr, GetAuthLevel()));
@@ -82,13 +80,12 @@ namespace TISBackend.Controllers
                 return cachedAnimals[id.ToString()] as Animal;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t7.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
+            DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
                     $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
                     $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
                     $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
                     $"LEFT JOIN VYBEHY t5 ON t1.id_vybeh = t5.id_vybeh " +
                     $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon " +
-                    $"LEFT JOIN DOKUMENTY t7 ON t1.id_foto = t7.id_dokument " +
                     $"WHERE {ID_NAME} = :id", new OracleParameter("id", id));
 
             if (query.Rows.Count != 1)
@@ -104,13 +101,14 @@ namespace TISBackend.Controllers
         [NonAction]
         protected override bool CheckObject(JObject value)
         {
-            bool intermediate = ValidJSON(value, "Id", "Name", "Species", "Sex", "Enclosure", "MaintCosts", "Birth", "Death", "KeeperId", "AdopterId", "Photo")
+            bool intermediate = ValidJSON(value, "Id", "Name", "Species", "Sex", "Enclosure", "MaintCosts", "Birth", "Death", "KeeperId", "AdopterId", "PhotoId")
                 && int.TryParse(value["Id"].ToString(), out _)
                 && int.TryParse(value["MaintCosts"].ToString(), out _)
                 && DateTime.TryParse(value["Birth"].ToString(), out DateTime birth)
                 && (value["Death"].Type == JTokenType.Null || (DateTime.TryParse(value["Death"].ToString(), out DateTime death) && birth.CompareTo(death) <= 0))
                 && (value["KeeperId"].Type == JTokenType.Null || int.TryParse(value["KeeperId"].ToString(), out _))
                 && (value["AdopterId"].Type == JTokenType.Null || int.TryParse(value["AdopterId"].ToString(), out _))
+                && (value["PhotoId"].Type == JTokenType.Null || int.TryParse(value["PhotoId"].ToString(), out _))
                 && ((value["Death"].Type == JTokenType.Null && value["KeeperId"].Type != JTokenType.Null && value["Enclosure"].Type != JTokenType.Null)
                     || (value["Death"].Type != JTokenType.Null && value["KeeperId"].Type == JTokenType.Null && value["Enclosure"].Type == JTokenType.Null))
                 && SpeciesController.CheckObjectStatic(value["Species"].ToObject<JObject>())
@@ -122,8 +120,7 @@ namespace TISBackend.Controllers
             }
 
             JObject enclosure = (value["Enclosure"]?.Type == JTokenType.Object) ? value["Enclosure"].ToObject<JObject>() : null;
-            JObject photo = (value["Photo"]?.Type == JTokenType.Object) ? value["Photo"].ToObject<JObject>() : null;
-            return (enclosure == null || EnclosureController.CheckObjectStatic(enclosure)) && (photo == null /* TODO */);
+            return enclosure == null || EnclosureController.CheckObjectStatic(enclosure);
         }
 
         [NonAction]
@@ -147,11 +144,6 @@ namespace TISBackend.Controllers
             {
                 return ErrId;
             }
-            int? id_photo = null; // TODO
-            if (id_photo != null && id_photo.Value == ErrId)
-            {
-                return ErrId;
-            }
 
             OracleParameter p_id = new OracleParameter("p_id", n.Id);
             DatabaseController.Execute("PKG_MODEL_DML.UPSERT_ZVIRE", transaction,
@@ -164,7 +156,7 @@ namespace TISBackend.Controllers
                 new OracleParameter("p_id_vybeh", id_enclosure),
                 new OracleParameter("p_id_adoptujici", n.AdopterId),
                 new OracleParameter("p_id_osetrovatel", n.KeeperId),
-                new OracleParameter("p_id_foto", id_photo),
+                new OracleParameter("p_id_foto", n.PhotoId),
                 new OracleParameter("p_naklady", n.MaintCosts)
             );
             int id = int.Parse(p_id.Value.ToString());
