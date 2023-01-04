@@ -10,7 +10,7 @@
             <StackPanel x:Name="animalList">
                 <StackPanel x:Name="threeAnimals" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
                         <StackPanel x:Name="animal" Orientation="Vertical">
-                            <Image x:Name="picture"  Source="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Raccoon_in_Central_Park_%2835264%29.jpg/1200px-Raccoon_in_Central_Park_%2835264%29.jpg" Width="100"></Image>
+                            <Image x:Name="picture"  Source="/Items/defaultAnimal.jpg" Width="100"></Image>
                             <TextBlock Text="Jméno: Adélka" x:Name="name" HorizontalAlignment="center"></TextBlock>
                             <TextBlock Text="Pohlaví: " x:Name="sex" HorizontalAlignment="center"></TextBlock>
                             <TextBlock Text="Rod: P. lotor" x:Name="species" HorizontalAlignment="center"></TextBlock>

@@ -5,57 +5,96 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TISWindows"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <StackPanel Orientation="Vertical" Background="Azure">
-            <DockPanel LastChildFill="False">
-                <StackPanel x:Name="Header" DockPanel.Dock="Top" Width="800" Background="Aqua"
-                        Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel.Resources>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="Margin" Value="90, 5, 10 5"/>
+        ResizeMode="NoResize"
+        Title="MainWindow" Height="763" Width="1124">
+    <Grid Background="Azure" Margin="0,0,-137,-16" Height="720">
+        <DockPanel LastChildFill="False" Background="Aqua" VerticalAlignment="Top" Height="47">
+            <DockPanel x:Name="Header" DockPanel.Dock="Top" Height="49" >
+                <DockPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="70, 5, 10 5"/>
+                    </Style>
+                </DockPanel.Resources>
+                <Label  Padding=" 10 0 0 4" FontSize="30" FontStyle="Italic" FontWeight="Black" VerticalAlignment="Center" HorizontalAlignment="Left" >Zoo Pardubice</Label>
+                <Button x:Name="zoo" Click="OnClickZoo" Content="Hlavní Stránka" HorizontalAlignment="Center" FontSize="15" VerticalAlignment="Center" Width="98">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
                         </Style>
-                    </StackPanel.Resources>
-                    <Label>Zoo Pardubice</Label>
-                    <Button x:Name="zoo" Click="OnClickZoo" Content="Hlavní Stránka"></Button>
-                    <Button x:Name="animals" Click="OnClickAnimals" Content="Zvířata"></Button>
-                    <Button x:Name="info" Click="OnClickInfo" Content="Profil"></Button>
-                    <Button x:Name="login" Click="OnClickLogin">Přihlášení</Button>
-                    <Label x:Name="userName" Content="Nepřihlášen"></Label>
-                </StackPanel>
+                    </Button.Resources>
+                </Button>
+                <Button x:Name="animals" Click="OnClickAnimals" Content="Zvířata" HorizontalAlignment="Center" FontSize="15" VerticalAlignment="Center" Width="98">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button x:Name="info" Click="OnClickInfo" Content="Profil" HorizontalAlignment="Center" FontSize="15" VerticalAlignment="Center" Width="98">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button x:Name="login" Click="OnClickLogin" HorizontalAlignment="Center" FontSize="15" VerticalAlignment="Center" Width="98">Přihlášení
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Label x:Name="userName" Content="Nepřihlášen" FontSize="22" DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Center" Padding=" 10 0 0 5"/>
             </DockPanel>
-            <DockPanel x:Name="Content">
-            <DockPanel DockPanel.Dock="Top">
-                <Image DockPanel.Dock="Left" x:Name="adoptPicture" 
-                       Source="/Items/alchemy_palette.png" Width="200" Height="200"
-                       HorizontalAlignment="Center"
-                       ></Image>
-                <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
-                    <TextBlock FontSize="20" FontWeight="Bold">Adoptuj zvíře</TextBlock>
-                    <TextBlock FontSize="15" TextWrapping="Wrap">Adopce zvířat je nyní možná! 
+        </DockPanel>
+        <DockPanel x:Name="Content">
+            <DockPanel DockPanel.Dock="Top" Margin=" 10 70 0 0" Height="196" Width="801">
+                <Grid>
+                    <Image DockPanel.Dock="Left" x:Name="adoptPicture" 
+                       Source="/Items/alchemy_palette.png" Stretch="UniformToFill" Width="200"
+                       HorizontalAlignment="Center" Margin="0,0,0,-2"
+                       />
+                </Grid>
+                <DockPanel Margin=" 10 0 0 0" LastChildFill="False" DockPanel.Dock="Right">
+                    <TextBlock DockPanel.Dock="Top" FontSize="30" FontWeight="Bold">Adoptuj zvíře</TextBlock>
+                    <TextBlock DockPanel.Dock="Left" FontSize="25" TextWrapping="Wrap" Width="374" Height="119">Adopce zvířat je nyní možná! 
                     Klikněte na tlačítko pro zobrazení zvířat!</TextBlock>
-                        <Button x:Name="animalButton" Content="Zvirata Zde" Click="OnClickAnimals" Width="100" HorizontalAlignment="Left" Margin="20"></Button>
-                </StackPanel>
-            </DockPanel>
-            <DockPanel LastChildFill="False">
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel DockPanel.Dock="Left" Orientation="Vertical" VerticalAlignment="Center" >
-                        <TextBlock FontSize="20" FontWeight="Bold">Hledáme nové zaměstnance!</TextBlock>
-                        <TextBlock FontSize="15">Máte rádi práci se zvířaty, nízký plat a smrad? máme práci přímo pro vás!</TextBlock>
-                        <Button x:Name="findOut" Click="OnClickEmployee" Width="100" HorizontalAlignment="Right" Margin="20">Zjistěte více!</Button>
-                    </StackPanel>
-                    <Image DockPanel.Dock="Right"
-                           Source="https://cdn.britannica.com/98/194098-050-AF1D1D85/Slave-Trade-paper-George-Morland-John-Raphael-1812.jpg"
-                           Width="200" ></Image>
-
-                </StackPanel>
-            </DockPanel>
+                    <Button DockPanel.Dock="Left" x:Name="animalButton" FontSize="16" Content="Zvirata Zde" Click="OnClickAnimals" Width="100" Margin="20" Height="41">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                 </DockPanel>
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
-                            Background="DarkGray" Height="64">
-                <TextBlock>bude nějaký popis informaci: kontakty, mail, vlastník a tak.. to je jen detail
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Bottom" Height="196" Width="801">
+                <DockPanel Margin="10 0 0 0" LastChildFill="False" Width="437" >
+                    <TextBlock FontSize="30" FontWeight="Bold" DockPanel.Dock="Top">Hledáme nové zaměstnance!</TextBlock>
+                    <TextBlock FontSize="25" DockPanel.Dock="Left" TextWrapping="Wrap" Height="101" Width="289">Máte rádi práci se zvířaty, nízký plat a smrad? Máme práci přímo pro vás!</TextBlock>
+                    <Button DockPanel.Dock="Right" x:Name="findOut" FontSize="16" Click="OnClickEmployee" Width="100" Margin="20" Height="41">Zjistěte více!
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </DockPanel>
+                <Grid>
+                    <Image DockPanel.Dock="Right" Stretch="UniformToFill"
+                           Source="https://cdn.britannica.com/98/194098-050-AF1D1D85/Slave-Trade-paper-George-Morland-John-Raphael-1812.jpg" Width="334"
+                       HorizontalAlignment="Center"/>
+                </Grid>
+            </DockPanel>
+        </DockPanel>
+        <DockPanel VerticalAlignment="Bottom" Background="DarkGray" Margin="0,446,0,0"  Grid.Row="4" Grid.Column="1" Height="50">
+            <DockPanel LastChildFill="False" VerticalAlignment="Bottom" DockPanel.Dock="Top" 
+              Height="50" HorizontalAlignment="Left">
+                <TextBlock Margin=" 10 0 0 0" TextWrapping="Wrap" Height="34" Width="1048">Tato aplikace je vytvořena duem Neustadt a Čech. V případě jakékoli ztráty mozkových buněk, během
+                    používání této aplikace, zavřete aplikaci a volejte 155. Neustadt a Čech nejsou zodpovědni, za jakékoliv fyzické či mentální poškození, které by mohlo uživateli nastat během používání
+                    této aplikace.
                 </TextBlock>
-            </StackPanel>
-        </StackPanel>
+            </DockPanel>
+        </DockPanel>
     </Grid>
 </Window>

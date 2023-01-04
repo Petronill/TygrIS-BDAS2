@@ -8,17 +8,27 @@ using System.Net.Http;
 using System.Text.Json;
 using TISModelLibrary;
 using System.Collections.Generic;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Timers;
 
 namespace TISWindows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+    /* TODO: 1. musím sprovoznit databázi a doupravit vzhled zamšstnanců a zvířat
+     * TODO: 2. U prvku zvirat, zamestnancu a USER profile umoznit editaci udaju
+     * TODO: 3. Dokumentace aplikace
+     */
+
     public partial class MainWindow : Window
     {
         HttpClient client;
         Person? user = null;
-        string BASE_ADDRESS = "https://localhost:44333/api/";
+        string BASE_ADDRESS = "https://localhost:42069/api/";
 
         public MainWindow()
         {
@@ -100,8 +110,8 @@ namespace TISWindows
                     list.Children.Add(threeAnimals);
                     threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
                 }
-            }
-            Content.Children.Add(animalGrid);
+            }   
+                Content.Children.Add(animalGrid);
         }
 
         private void OnClickEmployees()
@@ -145,8 +155,21 @@ namespace TISWindows
             Content.Children.Add(employeeGrid);
         }
 
-        private void OnClickInfo(object sender, RoutedEventArgs e)
+        private async void OnClickInfo(object sender, RoutedEventArgs e)
         {
+            if (userName.Content.Equals("Nepřihlášen"))
+            {
+                Image pokus = new Image();
+                Content.Children.Clear();
+                pokus.Source = new BitmapImage(new Uri(@"/Items/nejstePrihlasen.jpg", UriKind.RelativeOrAbsolute));
+                pokus.Width = Content.Width;
+                pokus.Height = Content.Height;
+                Content.Children.Add(pokus);
+                await Task.Delay(2500);
+                OnClickZoo(sender, e);
+            }
+            else
+            {
             Content.Children.Clear();
             UserProfile profile = new UserProfile();
             HttpResponseMessage result = client.GetAsync("User/").Result;
@@ -182,6 +205,8 @@ namespace TISWindows
             };
 
             Content.Children.Add(profileMenu);
+
+            }
 
         }
         private async void OnClickEmployee(object sender, RoutedEventArgs e)

@@ -11,7 +11,7 @@
             <StackPanel Orientation="Horizontal" Height="408" Margin="15,15,0,0">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Width="150" Margin="5,5,5,0">
-                        <Button x:Name="animalList" Margin="5,5,5,10">Podívat se na svá zvířata</Button>
+                        <Button x:Name="animalList" Margin="5,5,5,10">Podívat se na zvířata</Button>
                         <Button x:Name="keepers" Margin="5,5,5,10">Ošetřovatelé</Button>
                     </StackPanel>
                 </DockPanel>
@@ -20,23 +20,23 @@
                         <StackPanel Orientation="Vertical" Height="407" Width="249">
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>Jméno:</Label>
-                                <Label x:Name="name">Ondřej Neustadt</Label>
+                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="name">Ondřej Neustadt</TextBox>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                <Label>Věk:</Label>
-                                <Label x:Name="age">45</Label>
+                                <Label Content="Věk:"/>
+                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="age" Text="45"/>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>Adresa:</Label>
-                                <Label x:Name="address">Kbýlkova 420 Bolín 3</Label>
+                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="address">Kbýlkova 420 Bolín 3</TextBox>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>email:</Label>
-                                <Label x:Name="email">ondrej1303@hupsikdupsik.com</Label>
+                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="email">ondrej1303@hupsikdupsik.com</TextBox>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>Telefonní číslo:</Label>
-                                <Label x:Name="phone">123456</Label>
+                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="phone">123456789</TextBox>
                             </StackPanel>
                         </StackPanel>
                         <Image x:Name="picture" Source="/Items/defaultUser.png"
