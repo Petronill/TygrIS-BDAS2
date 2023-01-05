@@ -87,7 +87,7 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        protected override bool CheckObject(JObject value)
+        protected override bool CheckObject(JObject value, AuthLevel authLevel)
         {
             return ValidJSON(value, "Id", "FirstName", "LastName", "PIN", "PhoneNumber", "Email", "AccountNumber", "Address", "Role", "PhotoId")
                 && int.TryParse(value["Id"].ToString(), out _)
@@ -95,7 +95,7 @@ namespace TISBackend.Controllers
                 && (value["PhoneNumber"].Type == JTokenType.Null || long.TryParse(value["PhoneNumber"].ToString(), out _))
                 && (value["AccountNumber"].Type == JTokenType.Null || long.TryParse(value["AccountNumber"].ToString(), out _))
                 && (value["PhotoId"].Type == JTokenType.Null || int.TryParse(value["PhotoId"].ToString(), out _))
-                && AddressController.CheckObjectStatic(value["Address"].ToObject<JObject>())
+                && AddressController.CheckObjectStatic(value["Address"].ToObject<JObject>(), authLevel)
                 && Enum.TryParse<PersonalRoles>(value["Role"].ToString(), out _);
         }
 
@@ -135,9 +135,9 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        public static bool CheckObjectStatic(JObject value)
+        public static bool CheckObjectStatic(JObject value, AuthLevel authLevel)
         {
-            return instance.CheckObject(value);
+            return instance.CheckObject(value, authLevel);
         }
 
         [NonAction]

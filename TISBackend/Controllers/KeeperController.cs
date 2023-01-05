@@ -102,9 +102,9 @@ namespace TISBackend.Controllers
         // TODO - hiearchical query
 
         [NonAction]
-        protected override bool CheckObject(JObject value)
+        protected override bool CheckObject(JObject value, AuthLevel authLevel)
         {
-            return PersonController.CheckObjectStatic(value) && ValidJSON(value, "GrossWage", "SupervisorId")
+            return PersonController.CheckObjectStatic(value, authLevel) && ValidJSON(value, "GrossWage", "SupervisorId")
                 && int.TryParse(value["GrossWage"].ToString(), out _)
                 && (value["SupervisorId"].Type == JTokenType.Null || int.TryParse(value["SupervisorId"].ToString(), out _));
         }
@@ -141,9 +141,9 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        public static bool CheckObjectStatic(JObject value)
+        public static bool CheckObjectStatic(JObject value, AuthLevel authLevel)
         {
-            return instance.CheckObject(value);
+            return instance.CheckObject(value, authLevel);
         }
 
         [NonAction]

@@ -69,7 +69,7 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        protected virtual bool CheckObject(JObject value) { return true; }
+        protected virtual bool CheckObject(JObject value, AuthLevel authLevel) { return authLevel != AuthLevel.NONE; }
 
         [NonAction]
         protected virtual TId SetObjectInternal(JObject value, AuthLevel authLevel, OracleTransaction transaction) { return default; }
@@ -139,6 +139,7 @@ namespace TISBackend.Controllers
             {
                 List<TId> ids = new List<TId>();
                 HttpStatusCode statusCode = HttpStatusCode.OK;
+                AuthLevel authLevel = GetAuthLevel();
                 foreach (JToken token in array)
                 {
                     if (token.Type != JTokenType.Object)
@@ -148,13 +149,13 @@ namespace TISBackend.Controllers
                     }
 
                     JObject obj = token.ToObject<JObject>();
-                    if (!CheckObject(obj))
+                    if (!CheckObject(obj, authLevel))
                     {
                         statusCode = HttpStatusCode.BadRequest;
                         break;
                     }
 
-                    TId id = SetObject(obj, GetAuthLevel());
+                    TId id = SetObject(obj, authLevel);
                     if (id.Equals(ErrId))
                     {
                         statusCode = HttpStatusCode.BadRequest;
@@ -173,13 +174,15 @@ namespace TISBackend.Controllers
         [NonAction]
         public IHttpActionResult PostSingle(JObject value)
         {
-            try { 
-                if (!CheckObject(value))
+            try
+            {
+                AuthLevel authLevel = GetAuthLevel();
+                if (!CheckObject(value, authLevel))
                 {
                     return StatusCode(HttpStatusCode.BadRequest);
                 }
 
-                TId id = SetObject(value, GetAuthLevel());
+                TId id = SetObject(value, authLevel);
                 if (id.Equals(ErrId))
                 {
                     return StatusCode(HttpStatusCode.BadRequest);

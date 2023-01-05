@@ -1,6 +1,5 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using System;
-using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Data;
 using System.Runtime.Caching;

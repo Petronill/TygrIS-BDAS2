@@ -1,11 +1,5 @@
 ﻿using Oracle.ManagedDataAccess.Client;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Net.Configuration;
-using System.Web;
-using System.Web.Http.Results;
 
 namespace TISBackend.Db
 {
@@ -19,13 +13,17 @@ namespace TISBackend.Db
 
         private readonly OracleConnection con = new OracleConnection(CONSTR);
 
-        private DatabaseController()
+        private static void OpenDb()
         {
-            con.Open();
+            if (_databaseController.con.State != ConnectionState.Open)
+            {
+                _databaseController.con.Open();
+            }
         }
 
         public static DataTable Query(string sql, params OracleParameter[] parameters)
         {
+            OpenDb();
             DataTable dataTable = new DataTable();
             OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
             foreach (OracleParameter op in parameters)
@@ -40,6 +38,7 @@ namespace TISBackend.Db
 
         public static DataTable Query(string sql, OracleTransaction transaction, params OracleParameter[] parameters)
         {
+            OpenDb();
             DataTable dataTable = new DataTable();
             OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
             if (transaction != null)
@@ -58,6 +57,7 @@ namespace TISBackend.Db
 
         public static OracleDataReader Read(string sql, params OracleParameter[] parameters)
         {
+            OpenDb();
             OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
             foreach (OracleParameter op in parameters)
             {
@@ -70,6 +70,7 @@ namespace TISBackend.Db
 
         public static OracleDataReader Read(string sql, OracleTransaction transaction, params OracleParameter[] parameters)
         {
+            OpenDb();
             OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
             if (transaction != null)
             {
@@ -86,6 +87,7 @@ namespace TISBackend.Db
 
         public static void Execute(string sql, params OracleParameter[] parameters)
         {
+            OpenDb();
             OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
             foreach (OracleParameter op in parameters)
             {
@@ -97,6 +99,7 @@ namespace TISBackend.Db
 
         public static void Execute(string sql, OracleTransaction transaction, params OracleParameter[] parameters)
         {
+            OpenDb();
             OracleCommand cmd = new OracleCommand(sql, _databaseController.con);
             if (transaction != null)
             {
@@ -112,16 +115,19 @@ namespace TISBackend.Db
 
         public static OracleTransaction StartTransaction()
         {
+            OpenDb();
             return _databaseController.con.BeginTransaction();
         }
 
         public static void Commit(OracleTransaction transaction)
         {
+            OpenDb();
             transaction.Commit();
         }
 
         public static void Rollback(OracleTransaction transaction)
         {
+            OpenDb();
             transaction.Rollback();
         }
 

@@ -99,7 +99,7 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        protected override bool CheckObject(JObject value)
+        protected override bool CheckObject(JObject value, AuthLevel authLevel)
         {
             bool intermediate = ValidJSON(value, "Id", "Name", "Species", "Sex", "Enclosure", "MaintCosts", "Birth", "Death", "KeeperId", "AdopterId", "PhotoId")
                 && int.TryParse(value["Id"].ToString(), out _)
@@ -111,8 +111,8 @@ namespace TISBackend.Controllers
                 && (value["PhotoId"].Type == JTokenType.Null || int.TryParse(value["PhotoId"].ToString(), out _))
                 && ((value["Death"].Type == JTokenType.Null && value["KeeperId"].Type != JTokenType.Null && value["Enclosure"].Type != JTokenType.Null)
                     || (value["Death"].Type != JTokenType.Null && value["KeeperId"].Type == JTokenType.Null && value["Enclosure"].Type == JTokenType.Null))
-                && SpeciesController.CheckObjectStatic(value["Species"].ToObject<JObject>())
-                && SexController.CheckObjectStatic(value["Sex"].ToObject<JObject>());
+                && SpeciesController.CheckObjectStatic(value["Species"].ToObject<JObject>(), authLevel)
+                && SexController.CheckObjectStatic(value["Sex"].ToObject<JObject>(), authLevel);
 
             if (!intermediate)
             {
@@ -120,7 +120,7 @@ namespace TISBackend.Controllers
             }
 
             JObject enclosure = (value["Enclosure"]?.Type == JTokenType.Object) ? value["Enclosure"].ToObject<JObject>() : null;
-            return enclosure == null || EnclosureController.CheckObjectStatic(enclosure);
+            return enclosure == null || EnclosureController.CheckObjectStatic(enclosure, authLevel);
         }
 
         [NonAction]
@@ -171,9 +171,9 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        public static bool CheckObjectStatic(JObject value)
+        public static bool CheckObjectStatic(JObject value, AuthLevel authLevel)
         {
-            return instance.CheckObject(value);
+            return instance.CheckObject(value, authLevel);
         }
 
         [NonAction]
