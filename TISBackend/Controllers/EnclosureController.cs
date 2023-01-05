@@ -90,7 +90,7 @@ namespace TISBackend.Controllers
 
 
         [NonAction]
-        protected override bool CheckObject(JObject value)
+        protected override bool CheckObject(JObject value, AuthLevel authLevel)
         {
             bool intermediate = ValidJSON(value, "Id", "Name", "Capacity", "Pavilion")
                 && int.TryParse(value["Id"].ToString(), out _) && int.TryParse(value["Capacity"].ToString(), out _);
@@ -101,7 +101,7 @@ namespace TISBackend.Controllers
             }
 
             JObject pavilion = (value["Pavilion"]?.Type == JTokenType.Object) ? value["Pavilion"].ToObject<JObject>() : null;
-            return pavilion == null || PavilionController.CheckObjectStatic(pavilion);
+            return pavilion == null || PavilionController.CheckObjectStatic(pavilion, authLevel);
         }
 
         [NonAction]
@@ -133,9 +133,9 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        public static bool CheckObjectStatic(JObject value)
+        public static bool CheckObjectStatic(JObject value, AuthLevel authLevel)
         {
-            return instance.CheckObject(value);
+            return instance.CheckObject(value, authLevel);
         }
 
         [NonAction]

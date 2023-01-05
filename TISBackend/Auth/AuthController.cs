@@ -58,12 +58,12 @@ namespace TISBackend.Auth
 
         private static AuthLevel CheckInDatabase(AuthToken authToken)
         {
-            DataRow query = DatabaseController.Query(
+            DataTable query = DatabaseController.Query(
                 $"SELECT PKG_HESLA.ZJISTI_UROVEN(:jmeno, :hash) \"level\" FROM DUAL",
                 new OracleParameter("jmeno", authToken.Username),
                 new OracleParameter("hash", authToken.Hash)
-            ).Rows[0];
-            return Enum.TryParse(query["level"].ToString(), out AuthLevel result) ? result : AuthLevel.NONE;
+            );
+            return query.Rows.Count > 0 && Enum.TryParse((query.Rows[0])["level"].ToString(), out AuthLevel result) ? result : AuthLevel.NONE;
         }
 
         public static AuthLevel Check(AuthToken? authToken)
@@ -81,7 +81,7 @@ namespace TISBackend.Auth
             }
 
             AuthLevel level = CheckInDatabase(token);
-            cachedTokens.Add(token.Username+token.Hash, level, DateTimeOffset.Now.AddMinutes(15));
+            cachedTokens.Add(token.Username + token.Hash, level, DateTimeOffset.Now.AddMinutes(15));
             return (token.As is null || level != AuthLevel.ADMIN) ? level : token.As.Value;
         }
 

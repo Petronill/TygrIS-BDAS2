@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using Oracle.ManagedDataAccess.Client;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -11,6 +13,37 @@ namespace TISBackend.Controllers
     public class LoginController : TISControllerWithString
     {
         private static readonly LoginController instance = new LoginController();
+
+        [Route("api/logout")]
+        public bool GetLogout()
+        {
+            if (!IsAuthorized())
+            {
+                return false;
+            }
+
+            AuthController.InvalidateCache(AuthToken.From(Request.Headers));
+            return true;
+        }
+
+        [Route("api/level/login")]
+        public IEnumerable<AuthLevel> GetAllLevels()
+        {
+            List<AuthLevel> list = new List<AuthLevel>();
+
+            if (IsAdmin())
+            {
+                list = Enum.GetValues(typeof(AuthLevel)).Cast<AuthLevel>().ToList();
+            }
+
+            return list;
+        }
+
+        [Route("api/level/login/{id}")]
+        public bool GetIsLevel(string id)
+        {
+            return IsAuthorized() && Enum.TryParse(id, out AuthLevel _);
+        }
 
         // GET: api/Login
         public AuthLevel Get()
@@ -25,7 +58,7 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        protected override bool CheckObject(JObject value)
+        protected override bool CheckObject(JObject value, AuthLevel authLevel)
         {
             return ValidJSON(value, "user", "hash", "level") && int.TryParse(value["level"].ToString(), out _);
         }
@@ -49,9 +82,9 @@ namespace TISBackend.Controllers
 
 
         [NonAction]
-        public static bool CheckObjectStatic(JObject value)
+        public static bool CheckObjectStatic(JObject value, AuthLevel authLevel)
         {
-            return instance.CheckObject(value);
+            return instance.CheckObject(value, authLevel);
         }
 
         [NonAction]
@@ -85,6 +118,18 @@ namespace TISBackend.Controllers
         public IHttpActionResult Delete(string id)
         {
             return DeleteById("UCTY", "jmeno", id);
+        }
+
+        [Route("api/login/byid/{id}")]
+        public IHttpActionResult Delete(int id)
+        {
+            if (!IsAdmin())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            DatabaseController.Query($"DELETE FROM UCTY WHERE id_clovek = :id", new OracleParameter("id", id));
+            return StatusCode(HttpStatusCode.OK);
         }
     }
 }

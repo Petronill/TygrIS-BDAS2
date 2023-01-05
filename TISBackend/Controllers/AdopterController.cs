@@ -99,9 +99,9 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        protected override bool CheckObject(JObject value)
+        protected override bool CheckObject(JObject value, AuthLevel authLevel)
         {
-            return PersonController.CheckObjectStatic(value) && ValidJSON(value, "Donation")
+            return PersonController.CheckObjectStatic(value, authLevel) && ValidJSON(value, "Donation")
                 && int.TryParse(value["Donation"].ToString(), out _);
         }
 
@@ -136,9 +136,9 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        public static bool CheckObjectStatic(JObject value)
+        public static bool CheckObjectStatic(JObject value, AuthLevel authLevel)
         {
-            return instance.CheckObject(value);
+            return instance.CheckObject(value, authLevel);
         }
 
         [NonAction]
