@@ -27,13 +27,13 @@ namespace TISBackend.Controllers
         }
 
         [Route("api/level/login")]
-        public IEnumerable<int> GetAllLevels()
+        public IEnumerable<AuthLevel> GetAllLevels()
         {
-            List<int> list = new List<int>();
+            List<AuthLevel> list = new List<AuthLevel>();
 
             if (IsAdmin())
             {
-                list = Enum.GetValues(typeof(AuthLevel)).Cast<int>().ToList();
+                list = Enum.GetValues(typeof(AuthLevel)).Cast<AuthLevel>().ToList();
             }
 
             return list;
@@ -42,7 +42,7 @@ namespace TISBackend.Controllers
         [Route("api/level/login/{id}")]
         public bool GetIsLevel(string id)
         {
-            return IsAdmin() && Enum.TryParse(id, out AuthLevel _);
+            return IsAuthorized() && Enum.TryParse(id, out AuthLevel _);
         }
 
         // GET: api/Login
@@ -118,6 +118,18 @@ namespace TISBackend.Controllers
         public IHttpActionResult Delete(string id)
         {
             return DeleteById("UCTY", "jmeno", id);
+        }
+
+        [Route("api/login/byid/{id}")]
+        public IHttpActionResult Delete(int id)
+        {
+            if (!IsAdmin())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            DatabaseController.Query($"DELETE FROM UCTY WHERE id_clovek = :id", new OracleParameter("id", id));
+            return StatusCode(HttpStatusCode.OK);
         }
     }
 }

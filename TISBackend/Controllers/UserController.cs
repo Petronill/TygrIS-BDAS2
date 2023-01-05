@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -15,34 +16,54 @@ namespace TISBackend.Controllers
         protected static readonly ObjectCache cachedUsers = MemoryCache.Default;
 
         [Route("api/id/user")]
-        public IEnumerable<int> GetIds()
+        public int? GetId()
         {
-            List<int> list = new List<int>();
-
             AuthToken? authToken = AuthToken.From(Request.Headers);
-            if (AuthController.Check(authToken) != AuthLevel.NONE)
+            if (AuthController.Check(authToken) == AuthLevel.NONE)
             {
-                DataTable query = DatabaseController.Query($"SELECT t2.id_clovek FROM UCTY t1 JOIN LIDE t2 ON t1.id_clovek = t2.id_clovek WHERE t1.jmeno = :id", new OracleParameter("id", authToken.Value.Username));
-                foreach (DataRow dr in query.Rows)
-                {
-                    list.Add(int.Parse(dr["id_clovek"].ToString()));
-                }
+                return null;
             }
 
-            return list;
+            DataTable query = DatabaseController.Query($"SELECT id_clovek FROM UCTY t1.jmeno = :id", new OracleParameter("id", authToken.Value.Username));
+            
+            if (query.Rows.Count != 1)
+            {
+                return null;
+            }            
+
+            return int.Parse((query.Rows[0])["id_clovek"].ToString());
         }
 
         [Route("api/id/user/{id}")]
-        public IEnumerable<int> GetIds(string id)
+        public int? GetId(string id)
         {
-            List<int> list = new List<int>();
+            if (IsAdmin())
+            {
+                return null;
+            }
+
+            DataTable query = DatabaseController.Query($"SELECT id_clovek FROM UCTY t1.jmeno = :id", new OracleParameter("id", id));
+
+            if (query.Rows.Count != 1)
+            {
+                return null;
+            }
+
+            return int.Parse((query.Rows[0])["id_clovek"].ToString());
+        }
+
+        [Route("api/id/userbyid/{id}")]
+        public IEnumerable<string> GetAllIdsById(int id)
+        {
+            List<string> list = new List<string>();
 
             if (IsAdmin())
             {
-                DataTable query = DatabaseController.Query($"SELECT t2.id_clovek FROM UCTY t1 JOIN LIDE t2 ON t1.id_clovek = t2.id_clovek WHERE t1.jmeno = :id", new OracleParameter("id", id));
+                DataTable query = DatabaseController.Query($"SELECT jmeno FROM UCTY t1.id_clovek = :id", new OracleParameter("id", id));
+
                 foreach (DataRow dr in query.Rows)
                 {
-                    list.Add(int.Parse(dr["id_clovek"].ToString()));
+                    list.Add(dr["jmeno"].ToString());
                 }
             }
 
@@ -89,6 +110,48 @@ namespace TISBackend.Controllers
             Person user = PersonController.New(query.Rows[0], GetAuthLevel());
             cachedUsers.Add(id, user, DateTimeOffset.Now.AddMinutes(15));
             return user;
+        }
+
+        // POST: api/User/id
+        public IHttpActionResult Post(int id)
+        {
+            if (!IsAdmin())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            DatabaseController.Execute("PKG_HESLA.NASTAV_CLOVEKA",
+                    new OracleParameter("p_jmeno", AuthToken.From(Request.Headers)?.ToString()),
+                    new OracleParameter("p_id_clovek", id));
+            return StatusCode(HttpStatusCode.OK);
+        }
+
+        // DELETE: api/User
+        public IHttpActionResult Delete()
+        {
+            if (!IsAdmin())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            DatabaseController.Execute("PKG_HESLA.NASTAV_CLOVEKA",
+                    new OracleParameter("p_jmeno", AuthToken.From(Request.Headers)?.ToString()),
+                    new OracleParameter("p_id_clovek", null));
+            return StatusCode(HttpStatusCode.OK);
+        }
+
+        // DELETE: api/User/id
+        public IHttpActionResult Delete(string id)
+        {
+            if (!IsAdmin())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            DatabaseController.Execute("PKG_HESLA.NASTAV_CLOVEKA",
+                    new OracleParameter("p_jmeno", id),
+                    new OracleParameter("p_id_clovek", null));
+            return StatusCode(HttpStatusCode.OK);
         }
     }
 }

@@ -71,6 +71,31 @@ namespace TISBackend.Controllers
             return list;
         }
 
+        // GET: api/Died/5
+        public Animal Get(int id)
+        {
+            if (!IsAuthorized())
+            {
+                return null;
+            }
+
+            if (cachedDead[id.ToString()] is Animal)
+            {
+                return cachedDead[id.ToString()] as Animal;
+            }
+
+            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} t1 JOIN DRUHY USING (id_druh) JOIN RODY USING (id_rod) JOIN POHLAVI USING (id_pohlavi) WHERE datum_umrti IS NOT NULL AND {ID_NAME} = :id", new OracleParameter("id", id));
+
+            if (query.Rows.Count != 1)
+            {
+                return null;
+            }
+
+            Animal died = New(query.Rows[0], GetAuthLevel());
+            cachedDead.Add(id.ToString(), died, DateTimeOffset.Now.AddMinutes(15));
+            return died;
+        }
+
         // POST: api/Died/5
         public IHttpActionResult Post(int id,[FromBody] DateTime date)
         {
