@@ -19,9 +19,14 @@ namespace TISWindows
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-    /* TODO: 1. musím sprovoznit databázi a doupravit vzhled zamšstnanců a zvířat
-     * TODO: 2. U prvku zvirat, zamestnancu a USER profile umoznit editaci udaju
-     * TODO: 3. Dokumentace aplikace
+    /* 
+     * TODO: 3. Dokumentace aplikace - cca 80% done
+     * 
+     * TODO: 4. Combobox pro Admina pro "simulování" jiných uživatelů
+     * 
+     * TODO: 6. Opravit nezobrazujici se obrazek u zvirat - nvm jak + mozna by se hodil nejaky scrollbar
+     * 
+     * TODO: ukladani Editovanych prvku
      */
 
     public partial class MainWindow : Window
@@ -87,15 +92,16 @@ namespace TISWindows
             {
                 StackPanel animal = XamlReader.Parse(XamlWriter.Save(ogAnimal)) as StackPanel;
                 Image photo = (Image)animal.FindName("picture");
-                TextBlock name = (TextBlock)animal.FindName("name");
-                TextBlock sex = (TextBlock)animal.FindName("sex");
-                TextBlock species = (TextBlock)animal.FindName("species");
-                TextBlock genus = (TextBlock)animal.FindName("genus");
-                TextBlock birth = (TextBlock)animal.FindName("birth");
-                TextBlock death = (TextBlock)animal.FindName("death");
-                TextBlock cost = (TextBlock)animal.FindName("costs");
+                photo.Source = new BitmapImage(new Uri(@"/Items/defaultAnimal.jpg", UriKind.RelativeOrAbsolute));
+                photo.Width = 100;
+                TextBox name = (TextBox)animal.FindName("name");
+                TextBox sex = (TextBox)animal.FindName("sex");
+                TextBox species = (TextBox)animal.FindName("species");
+                TextBox genus = (TextBox)animal.FindName("genus");
+                TextBox birth = (TextBox)animal.FindName("birth");
+                TextBox death = (TextBox)animal.FindName("death");
+                TextBox cost = (TextBox)animal.FindName("costs");
 
-                //photo.DataContext = new Uri("Items/defaultUser.png");
                 name.Text = content[i].Name;
                 species.Text = content[i].Species.CzechName;
                 genus.Text = content[i].Species.Genus.CzechName;
@@ -110,8 +116,8 @@ namespace TISWindows
                     list.Children.Add(threeAnimals);
                     threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
                 }
-            }   
-                Content.Children.Add(animalGrid);
+            }
+            Content.Children.Add(animalGrid);
         }
 
         private void OnClickEmployees()
@@ -132,13 +138,12 @@ namespace TISWindows
             {
                 StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
                 Image photo = (Image)employee.FindName("piture");
-                TextBlock firstName = (TextBlock)employee.FindName("firstName");
-                TextBlock secondName = (TextBlock)employee.FindName("secondName");
-                TextBlock pin = (TextBlock)employee.FindName("pin");
-                TextBlock phone = (TextBlock)employee.FindName("phoneNumber");
-                TextBlock email = (TextBlock)employee.FindName("email");
+                TextBox firstName = (TextBox)employee.FindName("firstName");
+                TextBox secondName = (TextBox)employee.FindName("secondName");
+                TextBox pin = (TextBox)employee.FindName("pin");
+                TextBox phone = (TextBox)employee.FindName("phoneNumber");
+                TextBox email = (TextBox)employee.FindName("email");
 
-                //photo.DataContext = new Uri("Items/defaultUser.png");
                 firstName.Text = content[i].FirstName;
                 secondName.Text = content[i].LastName;
                 pin.Text = content[i].PIN.ToString();
@@ -159,52 +164,54 @@ namespace TISWindows
         {
             if (userName.Content.Equals("Nepřihlášen"))
             {
-                Image pokus = new Image();
+                Image warning = new Image();
                 Content.Children.Clear();
-                pokus.Source = new BitmapImage(new Uri(@"/Items/nejstePrihlasen.jpg", UriKind.RelativeOrAbsolute));
-                pokus.Width = Content.Width;
-                pokus.Height = Content.Height;
-                Content.Children.Add(pokus);
+                warning.Source = new BitmapImage(new Uri(@"/Items/nejstePrihlasen.jpg", UriKind.RelativeOrAbsolute));
+                warning.Width = Content.Width;
+                warning.Height = Content.Height;
+                warning.Margin = new Thickness(0, 0, 140, 0);
+                Content.Children.Add(warning);
                 await Task.Delay(2500);
                 OnClickZoo(sender, e);
             }
             else
             {
-            Content.Children.Clear();
-            UserProfile profile = new UserProfile();
-            HttpResponseMessage result = client.GetAsync("User/").Result;
-            string res = result.Content.ReadAsStringAsync().Result;
-            var content = JsonSerializer.Deserialize<Person>(res);
+                Content.Children.Clear();
+                UserProfile profile = new UserProfile();
+                HttpResponseMessage result = client.GetAsync("User/").Result;
+                string res = result.Content.ReadAsStringAsync().Result;
+                var content = JsonSerializer.Deserialize<Person>(res);
 
-            string panel = XamlWriter.Save(profile.profile);
-            StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
-            Button btnAnimal = (Button)profileMenu.FindName("animalList");
-            Button btnKeeper = (Button)profileMenu.FindName("keepers");
-            Label name = (Label)profileMenu.FindName("name");
-            Label age = (Label)profileMenu.FindName("age");
-            Label address = (Label)profileMenu.FindName("address");
-            Label email = (Label)profileMenu.FindName("email");
-            Label phone = (Label)profileMenu.FindName("phone");
+                string panel = XamlWriter.Save(profile.profile);
+                StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
+                Button btnAnimal = (Button)profileMenu.FindName("animalList");
+                Button btnKeeper = (Button)profileMenu.FindName("keepers");
+                TextBox name = (TextBox)profileMenu.FindName("name");
+                TextBox age = (TextBox)profileMenu.FindName("age");
+                TextBox address = (TextBox)profileMenu.FindName("address");
+                TextBox email = (TextBox)profileMenu.FindName("email");
+                TextBox phone = (TextBox)profileMenu.FindName("phone");
 
-            if (content != null)
-            {
-                name.Content = content.FirstName + " " + content.LastName;
-                age.Content = content.Birthday().ToString("dd. MM. YYYY");
-                address.Content = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City;
-                email.Content = content.Email;
-                phone.Content = content.PhoneNumber;
-            }
+               
+                if (content != null)
+                {
+                    name.Text = content.FirstName + " " + content.LastName;
+                    age.Text = content.Birthday().ToString("dd. MM. yyyy");
+                    address.Text = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City;
+                    email.Text = content.Email;
+                    phone.Text = content.PhoneNumber.ToString();
+                }
 
-            btnAnimal.Click += (s, e) =>
-            {
-                OnClickAnimals(sender, e);
-            };
-            btnKeeper.Click += (s, e) =>
-            {
-                OnClickEmployees();
-            };
+                btnAnimal.Click += (s, e) =>
+                {
+                    OnClickAnimals(sender, e);
+                };
+                btnKeeper.Click += (s, e) =>
+                {
+                    OnClickEmployees();
+                };
 
-            Content.Children.Add(profileMenu);
+                Content.Children.Add(profileMenu);
 
             }
 
@@ -231,7 +238,6 @@ namespace TISWindows
 
         private void OnClickLogin(object sender, RoutedEventArgs e)
         {
-
             Content.Children.Clear();
             Login login = new Login();
             string panel = XamlWriter.Save(login.loginMenu);
@@ -250,6 +256,7 @@ namespace TISWindows
                 if (Int32.Parse(bodyOfMessage) >= 0)
                 {
                     userName.Content = name.Text;
+                    loggOut.IsEnabled = true;
                     OnClickZoo(sender, e);
                 }
                 else
@@ -259,6 +266,20 @@ namespace TISWindows
                 }
             };
             Content.Children.Add(loginMenu);
+        }
+        private void OnClickLogOut(object sender, RoutedEventArgs e)
+        {
+            userName.Content = "Nepřihlášen";
+            user = null;
+            client.DefaultRequestHeaders.Clear();
+            loggOut.IsEnabled = false;
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
+
         }
     }
 }

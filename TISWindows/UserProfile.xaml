@@ -20,23 +20,23 @@
                         <StackPanel Orientation="Vertical" Height="407" Width="249">
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>Jméno:</Label>
-                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="name">Ondřej Neustadt</TextBox>
+                                <TextBox VerticalAlignment="Center" x:Name="name">Ondřej Neustadt</TextBox>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label Content="Věk:"/>
-                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="age" Text="45"/>
+                                <TextBox  VerticalAlignment="Center" x:Name="age" Text="45"/>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>Adresa:</Label>
-                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="address">Kbýlkova 420 Bolín 3</TextBox>
+                                <TextBox VerticalAlignment="Center" x:Name="address">Kbýlkova 420 Bolín 3</TextBox>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>email:</Label>
-                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="email">ondrej1303@hupsikdupsik.com</TextBox>
+                                <TextBox VerticalAlignment="Center" x:Name="email">ondrej1303@hupsikdupsik.com</TextBox>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>Telefonní číslo:</Label>
-                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="phone">123456789</TextBox>
+                                <TextBox VerticalAlignment="Center" x:Name="phone">123456789</TextBox>
                             </StackPanel>
                         </StackPanel>
                         <Image x:Name="picture" Source="/Items/defaultUser.png"

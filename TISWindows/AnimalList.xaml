@@ -7,19 +7,40 @@
         mc:Ignorable="d"
         Title="AnimalList" Height="450" Width="800">
     <Grid x:Name="grid">
-            <StackPanel x:Name="animalList">
-                <StackPanel x:Name="threeAnimals" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
-                        <StackPanel x:Name="animal" Orientation="Vertical">
-                            <Image x:Name="picture"  Source="/Items/defaultAnimal.jpg" Width="100"></Image>
-                            <TextBlock Text="Jméno: Adélka" x:Name="name" HorizontalAlignment="center"></TextBlock>
-                            <TextBlock Text="Pohlaví: " x:Name="sex" HorizontalAlignment="center"></TextBlock>
-                            <TextBlock Text="Rod: P. lotor" x:Name="species" HorizontalAlignment="center"></TextBlock>
-                            <TextBlock Text="Čeleď: Procyon" x:Name="genus" HorizontalAlignment="center"></TextBlock>
-                            <TextBlock Text="Narození: 13.2.2000" x:Name="birth" HorizontalAlignment="center"></TextBlock>
-                            <TextBlock Text="Smrt: ještě ne" x:Name="death" HorizontalAlignment="center"></TextBlock>
-                            <TextBlock Text="42069 KČ" x:Name="costs" HorizontalAlignment="center"></TextBlock>
-                        </StackPanel>
+        <StackPanel x:Name="animalList">
+            <StackPanel x:Name="threeAnimals" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,35,160,10">
+                <StackPanel x:Name="animal" Orientation="Vertical">
+                    <Image x:Name="picture" Source="/Items/defaultAnimal.jpg" Width="100"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Jméno:" HorizontalAlignment="center"></TextBlock>
+                        <TextBox x:Name="name" Text="Adélka" HorizontalAlignment="center"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Pohlaví: " HorizontalAlignment="center"></TextBlock>
+                        <TextBox x:Name="sex" Text="žena" HorizontalAlignment="center"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Rod:" HorizontalAlignment="center"></TextBlock>
+                        <TextBox x:Name="species" Text="P. lotor" HorizontalAlignment="center"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Čeleď:" HorizontalAlignment="center"></TextBlock>
+                        <TextBox x:Name="genus" Text=" Procyon" HorizontalAlignment="center"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Narození: " HorizontalAlignment="center"></TextBlock>
+                        <TextBox x:Name="birth" Text="13.2.2000" HorizontalAlignment="center"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Smrt: " HorizontalAlignment="center"></TextBlock>
+                        <TextBox x:Name="death" Text="ještě ne" HorizontalAlignment="center"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Cena: " HorizontalAlignment="center"></TextBlock>
+                        <TextBox x:Name="costs" Text="42069 Kč" HorizontalAlignment="center"></TextBox>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

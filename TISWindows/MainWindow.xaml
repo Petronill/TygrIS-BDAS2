@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TISWindows"
+        Closing="Window_Closed"
         mc:Ignorable="d"
         ResizeMode="NoResize"
         Title="MainWindow" Height="763" Width="1124">
@@ -12,7 +13,7 @@
             <DockPanel x:Name="Header" DockPanel.Dock="Top" Height="49" >
                 <DockPanel.Resources>
                     <Style TargetType="{x:Type Button}">
-                        <Setter Property="Margin" Value="70, 5, 10 5"/>
+                        <Setter Property="Margin" Value="50, 5, 10 5"/>
                     </Style>
                 </DockPanel.Resources>
                 <Label  Padding=" 10 0 0 4" FontSize="30" FontStyle="Italic" FontWeight="Black" VerticalAlignment="Center" HorizontalAlignment="Left" >Zoo Pardubice</Label>
@@ -44,7 +45,15 @@
                         </Style>
                     </Button.Resources>
                 </Button>
-                <Label x:Name="userName" Content="Nepřihlášen" FontSize="22" DockPanel.Dock="Right" HorizontalAlignment="Left" VerticalAlignment="Center" Padding=" 10 0 0 5"/>
+                <Label x:Name="userName" Content="Nepřihlášen" FontSize="22" DockPanel.Dock="Left" HorizontalAlignment="Left" VerticalAlignment="Center" Padding=" 10 0 0 5"/>
+                <Button  x:Name="loggOut" Click="OnClickLogOut" DockPanel.Dock="Left" HorizontalAlignment="Left" FontSize="15" 
+                         VerticalAlignment="Center" Width="98" Height="23.95" Margin=" 10 0 85  0" Content="Odhlásit" IsEnabled="False">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
             </DockPanel>
         </DockPanel>
         <DockPanel x:Name="Content">
@@ -59,7 +68,7 @@
                     <TextBlock DockPanel.Dock="Top" FontSize="30" FontWeight="Bold">Adoptuj zvíře</TextBlock>
                     <TextBlock DockPanel.Dock="Left" FontSize="25" TextWrapping="Wrap" Width="374" Height="119">Adopce zvířat je nyní možná! 
                     Klikněte na tlačítko pro zobrazení zvířat!</TextBlock>
-                    <Button DockPanel.Dock="Left" x:Name="animalButton" FontSize="16" Content="Zvirata Zde" Click="OnClickAnimals" Width="100" Margin="20" Height="41">
+                    <Button DockPanel.Dock="Left" x:Name="animalButton" FontSize="16" Content="Zvířata zde" Click="OnClickAnimals" Width="100" Margin="20" Height="41">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="10"/>
