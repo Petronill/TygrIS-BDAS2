@@ -88,8 +88,8 @@ namespace TISBackend.Controllers
             catch (Exception)
             {
                 // TODO - logging?
-#if DEBUG
                 if (newTransaction) DatabaseController.Rollback(transaction);
+#if DEBUG
                 throw;
 #endif
             }
