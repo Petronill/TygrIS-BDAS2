@@ -12,6 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Timers;
+using System.Reflection;
+using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace TISWindows
 {
@@ -20,23 +23,26 @@ namespace TISWindows
     /// </summary>
     /// 
     /* 
-     * TODO: 3. Dokumentace aplikace - cca 80% done
-     * 
      * TODO: 4. Combobox pro Admina pro "simulování" jiných uživatelů
      * 
-     * TODO: 6. Opravit nezobrazujici se obrazek u zvirat - nvm jak + mozna by se hodil nejaky scrollbar
-     * 
      * TODO: ukladani Editovanych prvku
+     * 
      */
 
     public partial class MainWindow : Window
     {
         HttpClient client;
         Person? user = null;
-        string BASE_ADDRESS = "https://localhost:42069/api/";
+        static string BASE_ADDRESS = "";
+        static int skipAddress = 0;
 
         public MainWindow()
         {
+            if (skipAddress == 0)
+            {
+                CreateAddress();
+                skipAddress = 1;
+            }
             InitializeComponent();
             SetUpClient();
         }
@@ -86,14 +92,13 @@ namespace TISWindows
             StackPanel list = (StackPanel)animalGrid.FindName("animalList");
             StackPanel ogThreeAnimals = (StackPanel)list.FindName("threeAnimals");
             StackPanel ogAnimal = (StackPanel)ogThreeAnimals.FindName("animal");
+            Button edit = (Button)animalGrid.FindName("editSave");
             ogThreeAnimals.Children.Clear();
             StackPanel threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
             for (int i = 0; i < content.Count; i++)
             {
                 StackPanel animal = XamlReader.Parse(XamlWriter.Save(ogAnimal)) as StackPanel;
-                Image photo = (Image)animal.FindName("picture");
-                photo.Source = new BitmapImage(new Uri(@"/Items/defaultAnimal.jpg", UriKind.RelativeOrAbsolute));
-                photo.Width = 100;
+                Image photo = (Image)ogThreeAnimals.FindName("picture");
                 TextBox name = (TextBox)animal.FindName("name");
                 TextBox sex = (TextBox)animal.FindName("sex");
                 TextBox species = (TextBox)animal.FindName("species");
@@ -101,7 +106,6 @@ namespace TISWindows
                 TextBox birth = (TextBox)animal.FindName("birth");
                 TextBox death = (TextBox)animal.FindName("death");
                 TextBox cost = (TextBox)animal.FindName("costs");
-
                 name.Text = content[i].Name;
                 species.Text = content[i].Species.CzechName;
                 genus.Text = content[i].Species.Genus.CzechName;
@@ -117,7 +121,13 @@ namespace TISWindows
                     threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
                 }
             }
-            Content.Children.Add(animalGrid);
+            edit.Click += (s, e) =>
+            {
+                var ress = JsonSerializer.Serialize(content);
+                var send = client.PostAsync("Animal/",new StringContent(ress,Encoding.UTF8, "application/json")).Result;
+            };
+
+                Content.Children.Add(animalGrid);
         }
 
         private void OnClickEmployees()
@@ -191,16 +201,52 @@ namespace TISWindows
                 TextBox address = (TextBox)profileMenu.FindName("address");
                 TextBox email = (TextBox)profileMenu.FindName("email");
                 TextBox phone = (TextBox)profileMenu.FindName("phone");
+                ComboBox users = (ComboBox)profileMenu.FindName("users");
 
-               
-                if (content != null)
+                HttpResponseMessage people = client.GetAsync("Person/").Result;
+                string toString = people.Content.ReadAsStringAsync().Result;
+                var userList = JsonSerializer.Deserialize<List<Person>>(toString);
+
+                HttpResponseMessage nowLogged = client.GetAsync("Login/").Result;
+                nowLogged.EnsureSuccessStatusCode();
+                string bodyOfMessage = nowLogged.Content.ReadAsStringAsync().Result;
+                if (Int32.Parse(bodyOfMessage) == 0)
                 {
-                    name.Text = content.FirstName + " " + content.LastName;
-                    age.Text = content.Birthday().ToString("dd. MM. yyyy");
-                    address.Text = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City;
-                    email.Text = content.Email;
-                    phone.Text = content.PhoneNumber.ToString();
+                    users.Visibility = Visibility.Visible;
+
+                    for (int i = 0; i < userList.Count; i++)
+                    {
+                        users.Items.Add(userList[i].FirstName);
+                    }
+                    users.SelectedIndex = 0;
                 }
+                else
+                {
+                    if (content != null)
+                    {
+                        name.Text = content.FirstName + " " + content.LastName;
+                        age.Text = content.Birthday().ToString("dd. MM. yyyy");
+                        address.Text = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City;
+                        email.Text = content.Email;
+                        phone.Text = content.PhoneNumber.ToString();
+                    }
+                }
+                users.SelectionChanged += (s, e) =>
+                {
+                    var peopleIWant = new Person();
+                    for (int i = 0; i < userList.Count; i++)
+                    {
+                        if (userList[i].FirstName.Equals(users.SelectedItem.ToString()))
+                        {
+                            name.Text = userList[i].FirstName + " " + userList[i].LastName;
+                            age.Text = userList[i].Birthday().ToString("dd. MM. yyyy");
+                            address.Text = userList[i].Address.Street + " " + userList[i].Address.HouseNumber + " " + userList[i].Address.City;
+                            email.Text = userList[i].Email;
+                            phone.Text = userList[i].PhoneNumber.ToString();
+                            break;
+                        }
+                    }
+                };
 
                 btnAnimal.Click += (s, e) =>
                 {
@@ -280,6 +326,35 @@ namespace TISWindows
             base.OnClosed(e);
             Application.Current.Shutdown();
 
+        }
+
+        private void CreateAddress()
+        {
+            //"https://localhost:42069/api/";
+            string wholeAddress = "https://";
+            Address addressWindow = new Address();
+            string panel = XamlWriter.Save(addressWindow.addressFinder);
+            StackPanel addressMenu = (StackPanel)XamlReader.Parse(panel);
+            Button def = (Button)addressMenu.FindName("default");
+            Button accept = (Button)addressMenu.FindName("accept");
+            TextBox address = (TextBox)addressMenu.FindName("address");
+
+            Window window = new Window();
+            window.Title = "zadávání adresy";
+            window.Content = addressMenu;
+                def.Click += (s, e) =>
+                {
+
+                    wholeAddress += "localhost:42069/api/";
+                    window.Close();
+                };
+                accept.Click += (s, e) =>
+                {
+                    wholeAddress += address.Text + "/api/";
+                    window.Close();
+                };
+            window.ShowDialog();
+            BASE_ADDRESS= wholeAddress;
         }
     }
 }

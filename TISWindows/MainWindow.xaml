@@ -7,8 +7,8 @@
         Closing="Window_Closed"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="MainWindow" Height="763" Width="1124">
-    <Grid Background="Azure" Margin="0,0,-137,-16" Height="720">
+        Title="MainWindow" Height="850" Width="1124">
+    <Grid Background="Azure" Margin="0,0,-137,-16" Height="807">
         <DockPanel LastChildFill="False" Background="Aqua" VerticalAlignment="Top" Height="47">
             <DockPanel x:Name="Header" DockPanel.Dock="Top" Height="49" >
                 <DockPanel.Resources>

@@ -7,6 +7,16 @@
         mc:Ignorable="d"
         Title="AnimalList" Height="450" Width="800">
     <Grid x:Name="grid">
+        <Button Margin="717,375,5,38" Width="80" Height="20" Content="Uložit změny" x:Name="editSave">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0.677"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
         <StackPanel x:Name="animalList">
             <StackPanel x:Name="threeAnimals" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,35,160,10">
                 <StackPanel x:Name="animal" Orientation="Vertical">

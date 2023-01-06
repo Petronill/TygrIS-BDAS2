@@ -7,12 +7,13 @@
         mc:Ignorable="d"
         Title="UserProfile" Height="450" Width="800">
     <Grid>
-        <StackPanel x:Name="profile" Background="Azure">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="profile" Background="Azure">
             <StackPanel Orientation="Horizontal" Height="408" Margin="15,15,0,0">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Width="150" Margin="5,5,5,0">
                         <Button x:Name="animalList" Margin="5,5,5,10">Podívat se na zvířata</Button>
                         <Button x:Name="keepers" Margin="5,5,5,10">Ošetřovatelé</Button>
+                        <ComboBox x:Name="users" Visibility="Hidden" Margin="5,5,5,10"></ComboBox>
                     </StackPanel>
                 </DockPanel>
                 <StackPanel>
