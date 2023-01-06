@@ -134,8 +134,6 @@ namespace TISBackend.Controllers
             return keeper;
         }
 
-        // TODO - hiearchical query
-
         [NonAction]
         protected override bool CheckObject(JObject value, AuthLevel authLevel)
         {
