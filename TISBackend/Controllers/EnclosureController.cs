@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -42,7 +43,7 @@ namespace TISBackend.Controllers
         [Route("api/id/enclosure")]
         public IEnumerable<int> GetIds()
         {
-            return GetIds(TABLE_NAME, ID_NAME);
+            return GetIds(TABLE_NAME, ID_NAME, true);
         }
 
         // GET: api/Enclosure
@@ -50,13 +51,10 @@ namespace TISBackend.Controllers
         {
             List<Enclosure> list = new List<Enclosure>();
 
-            if (IsAuthorized())
+            DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS {OTHER_NAZEV_NAME} FROM {TABLE_NAME} t1 LEFT JOIN {SUPER_TABLE_NAME} t2 ON t1.{SUPER_ID_NAME} = t2.{SUPER_ID_NAME}");
+            foreach (DataRow dr in query.Rows)
             {
-                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t2.nazev AS {OTHER_NAZEV_NAME} FROM {TABLE_NAME} t1 LEFT JOIN {SUPER_TABLE_NAME} t2 ON t1.{SUPER_ID_NAME} = t2.{SUPER_ID_NAME}");
-                foreach (DataRow dr in query.Rows)
-                {
-                    list.Add(New(dr, GetAuthLevel()));
-                }
+                list.Add(New(dr, GetAuthLevel()));
             }
 
             return list;
@@ -65,11 +63,6 @@ namespace TISBackend.Controllers
         // GET: api/Enclosure/5
         public Enclosure Get(int id)
         {
-            if (!IsAuthorized())
-            {
-                return null;
-            }
-
             if (cachedEnclosures[id.ToString()] is Enclosure)
             {
                 return cachedEnclosures[id.ToString()] as Enclosure;
@@ -147,13 +140,13 @@ namespace TISBackend.Controllers
         // POST: api/Enclosure
         public IHttpActionResult Post([FromBody] JObject value)
         {
-            return PostUnknownNumber(value);
+            return HasHigherAuth() ? PostUnknownNumber(value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // POST : api/Enclosure/5
         public IHttpActionResult Post(int id, [FromBody] JObject value)
         {
-            return PostSingle(id, value);
+            return HasHigherAuth() ? PostSingle(id, value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // DELETE: api/Enclosure/5

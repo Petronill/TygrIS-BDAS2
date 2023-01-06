@@ -35,6 +35,13 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
+        protected bool HasHigherAuth()
+        {
+            AuthLevel authLevel = GetAuthLevel();
+            return authLevel == AuthLevel.ADMIN || authLevel == AuthLevel.INNER;
+        }
+
+        [NonAction]
         protected bool ValidJSON(JObject value, params string[] keys)
         {
             if (value == null)
@@ -52,12 +59,12 @@ namespace TISBackend.Controllers
         }
 
         [NonAction]
-        protected abstract List<TId> GetIds(string tableName, string idName);
+        protected abstract List<TId> GetIds(string tableName, string idName, bool allowUnauthorized = false);
 
         [NonAction]
         protected StatusCodeResult DeleteById(string tableName, string idName, TId id, ObjectCache cache = null)
         {
-            if (!IsAuthorized())
+            if (!IsAdmin())
             {
                 return StatusCode(HttpStatusCode.Forbidden);
             }
@@ -219,11 +226,11 @@ namespace TISBackend.Controllers
         protected override int ErrId => -1;
 
         [NonAction]
-        protected override List<int> GetIds(string tableName, string idName)
+        protected override List<int> GetIds(string tableName, string idName, bool allowUnauthorized = false)
         {
             List<int> list = new List<int>();
 
-            if (IsAuthorized())
+            if (allowUnauthorized || IsAuthorized())
             {
                 DataTable query = DatabaseController.Query($"SELECT {idName} FROM {tableName}");
                 foreach (DataRow dr in query.Rows)
@@ -241,11 +248,11 @@ namespace TISBackend.Controllers
         protected override string ErrId => "";
 
         [NonAction]
-        protected override List<string> GetIds(string tableName, string idName)
+        protected override List<string> GetIds(string tableName, string idName, bool allowUnauthorized = false)
         {
             List<string> list = new List<string>();
 
-            if (IsAuthorized())
+            if (allowUnauthorized || IsAuthorized())
             {
                 DataTable query = DatabaseController.Query($"SELECT {idName} FROM {tableName}");
                 foreach (DataRow dr in query.Rows)

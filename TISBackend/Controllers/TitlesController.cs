@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Net;
-using System.Security.Cryptography;
 using System.Web.Http;
 using TISBackend.Auth;
 using TISBackend.Db;

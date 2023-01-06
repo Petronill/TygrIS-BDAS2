@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -42,18 +43,7 @@ namespace TISBackend.Controllers
         [Route("api/id/adopter")]
         public IEnumerable<int> GetIds()
         {
-            List<int> list = new List<int>();
-
-            if (IsAuthorized())
-            {
-                DataTable query = DatabaseController.Query($"SELECT {ID_NAME} FROM ADOPTUJICI");
-                foreach (DataRow dr in query.Rows)
-                {
-                    list.Add(int.Parse(dr[ID_NAME].ToString()));
-                }
-            }
-
-            return list;
+            return GetIds("ADOPTUJICI", ID_NAME);
         }
 
         // GET: api/Adopter
@@ -150,13 +140,13 @@ namespace TISBackend.Controllers
         // POST: api/Adopter
         public IHttpActionResult Post([FromBody] JObject value)
         {
-            return PostUnknownNumber(value);
+            return IsAdmin() ? PostUnknownNumber(value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // POST : api/Adopter/5
         public IHttpActionResult Post(int id, [FromBody] JObject value)
         {
-            return PostSingle(id, value);
+            return IsAdmin() ? PostSingle(id, value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // DELETE: api/Adopter/5

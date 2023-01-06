@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -41,7 +42,7 @@ namespace TISBackend.Controllers
         [Route("api/id/person")]
         public IEnumerable<int> GetIds()
         {
-            return GetIds(TABLE_NAME, ID_NAME);
+            return HasHigherAuth() ? GetIds(TABLE_NAME, ID_NAME) : Enumerable.Empty<int>();
         }
 
         // GET: api/Person
@@ -49,7 +50,7 @@ namespace TISBackend.Controllers
         {
             List<Person> list = new List<Person>();
 
-            if (IsAuthorized())
+            if (HasHigherAuth())
             {
                 DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN ADRESY USING (id_adresa)");
                 foreach (DataRow dr in query.Rows)
@@ -64,7 +65,7 @@ namespace TISBackend.Controllers
         // GET: api/Person/5
         public Person Get(int id)
         {
-            if (!IsAuthorized())
+            if (!HasHigherAuth())
             {
                 return null;
             }
