@@ -8,16 +8,31 @@
         Title="Employees" Height="450" Width="800">
     <Grid x:Name="grid">
         <StackPanel x:Name="employeeList">
-            <StackPanel x:Name="threeEmployees" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
-                    <StackPanel x:Name="employee" Orientation="Vertical">
-                        <Image x:Name="picture"  Source="/Items/defaultUser.png" Width="100"></Image>
-                        <TextBlock Text="Petr" x:Name="firstName" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="Sobotka" x:Name="secondName" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="8756" x:Name="pin" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="SobotkaFFS@poop.com" x:Name="email" HorizontalAlignment="center"></TextBlock>
-                        <TextBlock Text="123 456 789" x:Name="phoneNumber" HorizontalAlignment="center"></TextBlock>
-                    </StackPanel>
+            <StackPanel x:Name="threeEmployees" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,35,150,0">
+                <StackPanel x:Name="employee" Orientation="Vertical">
+                    <Image x:Name="picture"  Source="/Items/defaultUser.png" Width="100"></Image>
+                    <DockPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Jméno: "  HorizontalAlignment="center"></TextBlock>
+                        <TextBox Text="Petr" x:Name="firstName" HorizontalAlignment="center"></TextBox>
+                    </DockPanel>
+                    <DockPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Příjmení: "  HorizontalAlignment="center"></TextBlock>
+                        <TextBox Text="Sobotka" x:Name="secondName" HorizontalAlignment="center"></TextBox>
+                    </DockPanel>
+                    <DockPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Rodné číslo: "  HorizontalAlignment="center"></TextBlock>
+                        <TextBox Text="8756" x:Name="pin" HorizontalAlignment="center"></TextBox>
+                    </DockPanel>
+                    <DockPanel HorizontalAlignment="Center">
+                        <TextBlock Text="E-mail: "  HorizontalAlignment="center"></TextBlock>
+                        <TextBox Text="SobotkaFFS@poop.com" x:Name="email" HorizontalAlignment="center"></TextBox>
+                    </DockPanel>
+                    <DockPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Telefon: "  HorizontalAlignment="center"></TextBlock>
+                        <TextBox Text="123 456 789" x:Name="phoneNumber" HorizontalAlignment="center"></TextBox>
+                    </DockPanel>
                 </StackPanel>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>
