@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -127,13 +128,13 @@ namespace TISBackend.Controllers
         // POST: api/Address
         public IHttpActionResult Post([FromBody] JObject value)
         {
-            return PostUnknownNumber(value);
+            return IsAdmin() ? PostUnknownNumber(value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // POST : api/Address/5
         public IHttpActionResult Post(int id, [FromBody] JObject value)
         {
-            return PostSingle(id, value);
+            return IsAdmin() ? PostSingle(id, value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // DELETE: api/Address/5

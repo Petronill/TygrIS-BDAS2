@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -37,7 +38,7 @@ namespace TISBackend.Controllers
         [Route("api/id/species")]
         public IEnumerable<int> GetIds()
         {
-            return GetIds(TABLE_NAME, ID_NAME);
+            return GetIds(TABLE_NAME, ID_NAME, true);
         }
 
         // GET: api/Species
@@ -45,13 +46,10 @@ namespace TISBackend.Controllers
         {
             List<Species> list = new List<Species>();
 
-            if (IsAuthorized())
+           DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN {SUPER_TABLE_NAME} USING ({SUPER_ID_NAME})");
+            foreach (DataRow dr in query.Rows)
             {
-                DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} JOIN {SUPER_TABLE_NAME} USING ({SUPER_ID_NAME})");
-                foreach (DataRow dr in query.Rows)
-                {
-                    list.Add(New(dr, GetAuthLevel()));
-                }
+                list.Add(New(dr, GetAuthLevel()));
             }
 
             return list;
@@ -60,11 +58,6 @@ namespace TISBackend.Controllers
         // GET: api/Species/5
         public Species Get(int id)
         {
-            if (!IsAuthorized())
-            {
-                return null;
-            }
-
             if (cachedSpecies[id.ToString()] is Species)
             {
                 return cachedSpecies[id.ToString()] as Species;
@@ -134,13 +127,13 @@ namespace TISBackend.Controllers
         // POST: api/Species
         public IHttpActionResult Post([FromBody] JObject value)
         {
-            return PostUnknownNumber(value);
+            return HasHigherAuth() ? PostUnknownNumber(value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // POST : api/Species/5
         public IHttpActionResult Post(int id, [FromBody] JObject value)
         {
-            return PostSingle(id, value);
+            return HasHigherAuth() ? PostSingle(id, value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // DELETE: api/Species/5

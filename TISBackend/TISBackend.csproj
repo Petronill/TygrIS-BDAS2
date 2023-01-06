@@ -127,6 +127,7 @@
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\GenusController.cs" />
     <Compile Include="Controllers\KeeperController.cs" />
+    <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PavilionController.cs" />
     <Compile Include="Controllers\PersonController.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Controllers\SpeciesController.cs" />
     <Compile Include="Controllers\TISController.cs" />
     <Compile Include="Controllers\TitleController.cs" />
+    <Compile Include="Controllers\TitlesController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Db\DatabaseController.cs" />
     <Compile Include="Global.asax.cs">

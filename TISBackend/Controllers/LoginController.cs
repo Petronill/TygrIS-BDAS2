@@ -29,20 +29,13 @@ namespace TISBackend.Controllers
         [Route("api/level/login")]
         public IEnumerable<AuthLevel> GetAllLevels()
         {
-            List<AuthLevel> list = new List<AuthLevel>();
-
-            if (IsAdmin())
-            {
-                list = Enum.GetValues(typeof(AuthLevel)).Cast<AuthLevel>().ToList();
-            }
-
-            return list;
+            return Enum.GetValues(typeof(AuthLevel)).Cast<AuthLevel>();
         }
 
         [Route("api/level/login/{id}")]
         public bool GetIsLevel(string id)
         {
-            return IsAuthorized() && Enum.TryParse(id, out AuthLevel _);
+            return Enum.TryParse(id, out AuthLevel _);
         }
 
         // GET: api/Login
@@ -96,22 +89,13 @@ namespace TISBackend.Controllers
         // POST: api/Login
         public IHttpActionResult Post([FromBody] JObject value)
         {
-            if (!IsAdmin()) {
-                return StatusCode(HttpStatusCode.Unauthorized);
-            }
-
-            return PostUnknownNumber(value);
+            return IsAdmin() ? PostUnknownNumber(value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // POST: api/Login/5
         public IHttpActionResult Post(string id, [FromBody] JObject value)
         {
-            if (!IsAdmin())
-            {
-                return StatusCode(HttpStatusCode.Unauthorized);
-            }
-
-            return PostSingle(id, value);
+            return IsAdmin() ? PostSingle(id, value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // DELETE: api/Login/ucet

@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -42,7 +43,7 @@ namespace TISBackend.Controllers
         [Route("api/id/animal")]
         public IEnumerable<int> GetIds()
         {
-            return GetIds(TABLE_NAME, ID_NAME);
+            return GetIds(TABLE_NAME, ID_NAME, true);
         }
 
         // GET: api/Animal
@@ -50,18 +51,15 @@ namespace TISBackend.Controllers
         {
             List<Animal> list = new List<Animal>();
 
-            if (IsAuthorized())
+            DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
+                $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
+                $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
+                $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
+                $"LEFT JOIN VYBEHY t5 ON t1.id_vybeh = t5.id_vybeh " +
+                $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon");
+            foreach (DataRow dr in query.Rows)
             {
-                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
-                    $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
-                    $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
-                    $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
-                    $"LEFT JOIN VYBEHY t5 ON t1.id_vybeh = t5.id_vybeh " +
-                    $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon");
-                foreach (DataRow dr in query.Rows)
-                {
-                    list.Add(New(dr, GetAuthLevel()));
-                }
+                list.Add(New(dr, GetAuthLevel()));
             }
 
             return list;
@@ -70,23 +68,18 @@ namespace TISBackend.Controllers
         // GET: api/Animal/5
         public Animal Get(int id)
         {
-            if (!IsAuthorized())
-            {
-                return null;
-            }
-
             if (cachedAnimals[id.ToString()] is Animal)
             {
                 return cachedAnimals[id.ToString()] as Animal;
             }
 
             DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
-                    $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
-                    $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
-                    $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
-                    $"LEFT JOIN VYBEHY t5 ON t1.id_vybeh = t5.id_vybeh " +
-                    $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon " +
-                    $"WHERE {ID_NAME} = :id", new OracleParameter("id", id));
+                $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
+                $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
+                $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
+                $"LEFT JOIN VYBEHY t5 ON t1.id_vybeh = t5.id_vybeh " +
+                $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon " +
+                $"WHERE {ID_NAME} = :id", new OracleParameter("id", id));
 
             if (query.Rows.Count != 1)
             {
@@ -185,13 +178,13 @@ namespace TISBackend.Controllers
         // POST: api/Animal
         public IHttpActionResult Post([FromBody] JObject value)
         {
-            return PostUnknownNumber(value);
+            return HasHigherAuth() ? PostUnknownNumber(value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // POST : api/Animal/5
         public IHttpActionResult Post(int id, [FromBody] JObject value)
         {
-            return PostSingle(id, value);
+            return HasHigherAuth() ? PostSingle(id, value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // DELETE: api/Animal/5

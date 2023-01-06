@@ -23,7 +23,7 @@ namespace TISBackend.Controllers
         {
             List<int> list = new List<int>();
 
-            if (IsAuthorized())
+            if (HasHigherAuth())
             {
                 DataTable query = DatabaseController.Query($"SELECT {ID_NAME} FROM {TABLE_NAME} WHERE datum_umrti IS NOT NULL");
                 foreach (DataRow dr in query.Rows)
@@ -59,7 +59,7 @@ namespace TISBackend.Controllers
         {
             List<Animal> list = new List<Animal>();
 
-            if (IsAuthorized())
+            if (HasHigherAuth())
             {
                 DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME} t1 JOIN DRUHY USING (id_druh) JOIN RODY USING (id_rod) JOIN POHLAVI USING (id_pohlavi) WHERE datum_umrti IS NOT NULL");
                 foreach (DataRow dr in query.Rows)
@@ -74,7 +74,7 @@ namespace TISBackend.Controllers
         // GET: api/Died/5
         public Animal Get(int id)
         {
-            if (!IsAuthorized())
+            if (!HasHigherAuth())
             {
                 return null;
             }
@@ -101,9 +101,9 @@ namespace TISBackend.Controllers
         {
             try
             {
-                if (!IsAuthorized())
+                if (!HasHigherAuth())
                 {
-                    return StatusCode(HttpStatusCode.Unauthorized);
+                    return StatusCode(HttpStatusCode.Forbidden);
                 }
 
                 OracleParameter p_id = new OracleParameter("p_id", id);

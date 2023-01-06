@@ -31,7 +31,7 @@ namespace TISBackend.Controllers
         [Route("api/id/document")]
         public IEnumerable<int> GetIds()
         {
-            return GetIds(TABLE_NAME, ID_NAME);
+            return GetIds(TABLE_NAME, ID_NAME, true);
         }
 
         // GET: api/Document
@@ -39,13 +39,10 @@ namespace TISBackend.Controllers
         {
             List<Document> list = new List<Document>();
 
-            if (IsAuthorized())
+            DataTable query = DatabaseController.Query($"SELECT {ID_NAME}, nazev_souboru, pripona FROM {TABLE_NAME}");
+            foreach (DataRow dr in query.Rows)
             {
-                DataTable query = DatabaseController.Query($"SELECT {ID_NAME}, nazev_souboru, pripona FROM {TABLE_NAME}");
-                foreach (DataRow dr in query.Rows)
-                {
-                    list.Add(New(dr, GetAuthLevel()));
-                }
+                list.Add(New(dr, GetAuthLevel()));
             }
 
             return list;
@@ -54,11 +51,6 @@ namespace TISBackend.Controllers
         // GET: api/Document/5
         public Document Get(int id)
         {
-            if (!IsAuthorized())
-            {
-                return null;
-            }
-
             if (cachedDocuments[id.ToString()] is Document)
             {
                 return cachedDocuments[id.ToString()] as Document;

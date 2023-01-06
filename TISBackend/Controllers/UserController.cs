@@ -24,7 +24,7 @@ namespace TISBackend.Controllers
                 return null;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT id_clovek FROM UCTY t1.jmeno = :id", new OracleParameter("id", authToken.Value.Username));
+            DataTable query = DatabaseController.Query($"SELECT id_clovek FROM UCTY jmeno = :id", new OracleParameter("id", authToken.Value.Username));
             
             if (query.Rows.Count != 1)
             {
@@ -42,7 +42,7 @@ namespace TISBackend.Controllers
                 return null;
             }
 
-            DataTable query = DatabaseController.Query($"SELECT id_clovek FROM UCTY t1.jmeno = :id", new OracleParameter("id", id));
+            DataTable query = DatabaseController.Query($"SELECT id_clovek FROM UCTY jmeno = :id", new OracleParameter("id", id));
 
             if (query.Rows.Count != 1)
             {
@@ -59,7 +59,7 @@ namespace TISBackend.Controllers
 
             if (IsAdmin())
             {
-                DataTable query = DatabaseController.Query($"SELECT jmeno FROM UCTY t1.id_clovek = :id", new OracleParameter("id", id));
+                DataTable query = DatabaseController.Query($"SELECT jmeno FROM UCTY id_clovek = :id", new OracleParameter("id", id));
 
                 foreach (DataRow dr in query.Rows)
                 {

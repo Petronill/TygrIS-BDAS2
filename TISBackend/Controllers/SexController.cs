@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Runtime.Caching;
 using System.Web.Http;
 using TISBackend.Auth;
@@ -33,7 +34,7 @@ namespace TISBackend.Controllers
         [Route("api/id/sex")]
         public IEnumerable<int> GetIds()
         {
-            return GetIds(TABLE_NAME, ID_NAME);
+            return GetIds(TABLE_NAME, ID_NAME, true);
         }
 
         // GET: api/Sex
@@ -41,13 +42,10 @@ namespace TISBackend.Controllers
         {
             List<Sex> list = new List<Sex>();
 
-            if (IsAuthorized())
+            DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME}");
+            foreach (DataRow dr in query.Rows)
             {
-                DataTable query = DatabaseController.Query($"SELECT * FROM {TABLE_NAME}");
-                foreach (DataRow dr in query.Rows)
-                {
-                    list.Add(New(dr, GetAuthLevel()));
-                }
+                list.Add(New(dr, GetAuthLevel()));
             }
 
             return list;
@@ -56,11 +54,6 @@ namespace TISBackend.Controllers
         // GET: api/Sex/5
         public Sex Get(int id)
         {
-            if (!IsAuthorized())
-            {
-                return null;
-            }
-
             if (cachedSexes[id.ToString()] is Sex)
             {
                 return cachedSexes[id.ToString()] as Sex;
@@ -117,13 +110,13 @@ namespace TISBackend.Controllers
         // POST: api/Sex
         public IHttpActionResult Post([FromBody] JObject value)
         {
-            return PostUnknownNumber(value);
+            return HasHigherAuth() ? PostUnknownNumber(value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // POST: api/Sex/5
         public IHttpActionResult Post(int id, [FromBody] JObject value)
         {
-            return PostSingle(id, value);
+            return HasHigherAuth() ? PostSingle(id, value) : StatusCode(HttpStatusCode.Forbidden);
         }
 
         // DELETE: api/Sex/5
