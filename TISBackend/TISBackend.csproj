@@ -127,6 +127,7 @@
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\GenusController.cs" />
     <Compile Include="Controllers\KeeperController.cs" />
+    <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PavilionController.cs" />
     <Compile Include="Controllers\PersonController.cs" />

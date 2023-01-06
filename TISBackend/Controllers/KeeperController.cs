@@ -58,6 +58,40 @@ namespace TISBackend.Controllers
             return list;
         }
 
+        [Route("api/id/subordinates/{id}")]
+        public IEnumerable<int> GetSubordinateIds(int id)
+        {
+            List<int> list = new List<int>();
+
+            if (HasHigherAuth())
+            {
+                DataTable query = DatabaseController.Query($"SELECT * FROM (SELECT {ID_NAME} FROM OSETROVATELE START WITH {ID_NAME} = :id CONNECT BY PRIOR {ID_NAME} = id_nadrizeny) WHERE {ID_NAME} != :id", new OracleParameter(":id", id));
+                foreach (DataRow dr in query.Rows)
+                {
+                    list.Add(int.Parse(dr[ID_NAME].ToString()));
+                }
+            }
+
+            return list;
+        }
+
+        [Route("api/subordinates/{id}")]
+        public IEnumerable<Keeper> GetSubordinates(int id)
+        {
+            List<Keeper> list = new List<Keeper>();
+
+            if (HasHigherAuth())
+            {
+                DataTable query = DatabaseController.Query($"SELECT * FROM (SELECT * FROM OSETROVATELE START WITH {ID_NAME} = :id CONNECT BY PRIOR {ID_NAME} = id_nadrizeny) JOIN {TABLE_NAME} USING (id_clovek) JOIN ADRESY USING (id_adresa) LEFT JOIN DOKUMENTY ON id_foto = id_dokument WHERE {ID_NAME} != :id", new OracleParameter(":id", id));
+                foreach (DataRow dr in query.Rows)
+                {
+                    list.Add(New(dr, GetAuthLevel()));
+                }
+            }
+
+            return list;
+        }
+
         // GET: api/Keeper
         public IEnumerable<Keeper> Get()
         {
