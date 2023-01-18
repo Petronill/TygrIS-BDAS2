@@ -21,13 +21,10 @@ namespace TISBackend.Controllers
         {
             List<int> list = new List<int>();
 
-            if (IsAuthorized())
+            DataTable query = DatabaseController.Query($"SELECT {ID_NAME} FROM {TABLE_NAME} WHERE {ID_ADOPTUJICI} IS NOT NULL");
+            foreach (DataRow dr in query.Rows)
             {
-                DataTable query = DatabaseController.Query($"SELECT {ID_NAME} FROM {TABLE_NAME} WHERE {ID_ADOPTUJICI} IS NOT NULL");
-                foreach (DataRow dr in query.Rows)
-                {
-                    list.Add(int.Parse(dr[ID_NAME].ToString()));
-                }
+                list.Add(int.Parse(dr[ID_NAME].ToString()));
             }
 
             return list;
@@ -75,16 +72,19 @@ namespace TISBackend.Controllers
         {
             List<Animal> list = new List<Animal>();
 
-            DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
-                $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
-                $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
-                $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
-                $"LEFT JOIN VYBEHY t5 ON t1.id_vybeh = t5.id_vybeh " +
-                $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon " +
-                $"WHERE t1.{ID_ADOPTUJICI}  = :id", new OracleParameter("id", id));
-            foreach (DataRow dr in query.Rows)
+            if (IsAuthorized())
             {
-                list.Add(AnimalController.New(dr, GetAuthLevel()));
+                DataTable query = DatabaseController.Query($"SELECT t1.*, t2.*, t3.*, t4.*, t5.*, t6.*, t6.nazev AS nazev2 FROM {TABLE_NAME} t1 " +
+                    $"JOIN DRUHY t2 ON t1.id_druh = t2.id_druh " +
+                    $"JOIN RODY t3 ON t2.id_rod = t3.id_rod " +
+                    $"JOIN POHLAVI t4 ON t1.id_pohlavi = t4.id_pohlavi " +
+                    $"LEFT JOIN VYBEHY t5 ON t1.id_vybeh = t5.id_vybeh " +
+                    $"LEFT JOIN PAVILONY t6 ON t5.id_pavilon = t6.id_pavilon " +
+                    $"WHERE t1.{ID_ADOPTUJICI}  = :id", new OracleParameter("id", id));
+                foreach (DataRow dr in query.Rows)
+                {
+                    list.Add(AnimalController.New(dr, GetAuthLevel()));
+                }
             }
 
             return list;
