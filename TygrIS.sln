@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TISWindows", "TISWindows\TI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TISBackend", "TISBackend\TISBackend.csproj", "{1DCA7C2B-DD3B-46C0-A675-840526C3E2E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TISModelLibrary", "TISModelLibrary\TISModelLibrary.csproj", "{33C9015A-3B7C-477F-82E2-94B9016B75DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TISModelLibrary", "TISModelLibrary\TISModelLibrary.csproj", "{33C9015A-3B7C-477F-82E2-94B9016B75DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
