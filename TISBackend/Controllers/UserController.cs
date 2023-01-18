@@ -1,9 +1,11 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Net;
 using System.Runtime.Caching;
+using System.Security.Cryptography;
 using System.Web.Http;
 using TISBackend.Auth;
 using TISBackend.Db;
@@ -110,6 +112,44 @@ namespace TISBackend.Controllers
             Person user = PersonController.New(query.Rows[0], GetAuthLevel());
             cachedUsers.Add(id, user, DateTimeOffset.Now.AddMinutes(15));
             return user;
+        }
+
+        // POST: api/User/
+        public IHttpActionResult Post([FromBody] JObject value)
+        {
+            if (!IsAuthorized())
+            {
+                return StatusCode(HttpStatusCode.Forbidden);
+            }
+
+            OracleTransaction transaction = DatabaseController.StartTransaction();
+            try
+            {
+                AuthLevel authLevel = GetAuthLevel();
+                if (!PersonController.CheckObjectStatic(value, authLevel))
+                {
+                    return StatusCode(HttpStatusCode.BadRequest);
+                }
+
+                
+                int id = PersonController.SetObjectStatic(value, authLevel, transaction);
+                if (id.Equals(ErrId))
+                {
+                    return StatusCode(HttpStatusCode.BadRequest);
+                }
+
+                DatabaseController.Execute("PKG_HESLA.NASTAV_CLOVEKA", transaction,
+                    new OracleParameter("p_jmeno", AuthToken.From(Request.Headers)?.ToString()),
+                    new OracleParameter("p_id_clovek", id));
+
+                DatabaseController.Commit(transaction);
+                return Content(HttpStatusCode.OK, id);
+            }
+            catch (Exception ex)
+            {
+                DatabaseController.Rollback(transaction);
+                return Content(HttpStatusCode.InternalServerError, ex.ToString());
+            }
         }
 
         // POST: api/User/id

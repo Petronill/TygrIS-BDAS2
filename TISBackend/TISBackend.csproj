@@ -119,6 +119,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Auth\AuthController.cs" />
     <Compile Include="Controllers\AddressController.cs" />
+    <Compile Include="Controllers\AdoptedAnimalController.cs" />
     <Compile Include="Controllers\AdopterController.cs" />
     <Compile Include="Controllers\AnimalController.cs" />
     <Compile Include="Controllers\DiedController.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\GenusController.cs" />
     <Compile Include="Controllers\KeeperController.cs" />
+    <Compile Include="Controllers\KeptAnimalController.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PavilionController.cs" />
