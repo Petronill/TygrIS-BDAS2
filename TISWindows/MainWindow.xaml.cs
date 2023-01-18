@@ -169,6 +169,28 @@ namespace TISWindows
             Content.Children.Add(employeeGrid);
         }
 
+        private void UpdateUserPic()
+        {
+            if (user != null)
+            {
+                UserProfile profile = new UserProfile();
+                string panel = XamlWriter.Save(profile.profile);
+                StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
+                Image profilePic = (Image)profileMenu.FindName("picture");
+
+                HttpResponseMessage imageFile = client.GetAsync("File/" + user.PhotoId).Result;
+                string readToString = imageFile.Content.ReadAsStringAsync().Result;
+                Document deserializace = JsonSerializer.Deserialize<Document>(readToString);
+                if (deserializace?.Data != null)
+                {
+                    byte[] data = deserializace.GetBytes();
+                    var format = PixelFormats.Bgr32;
+                    var stride = (profilePic.Width * format.BitsPerPixel + 31) / 32;
+                    profilePic.Source = BitmapSource.Create((int)profilePic.Width, (int)profilePic.Height, 96, 96, format, null, data, (int)stride);
+                }
+            }
+        }
+
         private async void OnClickInfo(object sender, RoutedEventArgs e)
         {
             if (userName.Content.Equals("Nepřihlášen"))
@@ -230,25 +252,16 @@ namespace TISWindows
                     }
                     users.SelectedIndex = 0;
                 }
-                
+
                 if (user != null)
                 {
-                    HttpResponseMessage imageFile = client.GetAsync("File/" + user.PhotoId).Result;
-                    string readToString = imageFile.Content.ReadAsStringAsync().Result;
-                    Document deserializace = JsonSerializer.Deserialize<Document>(readToString);
-                    if (deserializace.Data != null)
-                    {
-                        byte[] data = Document.DeserializeBytes(File.ReadAllText(deserializace.Data));
-                        var format = PixelFormats.Bgr32;
-                        var stride = (profilePic.Width * format.BitsPerPixel + 31) / 32;
-                        profilePic.Source = BitmapSource.Create((int)profilePic.Width, (int)profilePic.Height, 96, 96, format, null, data, (int)stride);
-                    }
                     name.Text = user.FirstName + " " + user.LastName;
                     age.Text = user.Birthday().ToString("dd. MM. yyyy");
                     address.Text = user.Address.Street + " " + user.Address.HouseNumber + " " + user.Address.City;
                     email.Text = user.Email;
                     phone.Text = user.PhoneNumber.ToString();
                 }
+                UpdateUserPic();
 
                 users.SelectionChanged += (s, e) =>
                 {
@@ -421,6 +434,7 @@ namespace TISWindows
                     var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
                     user.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
                     UserProfileChange();
+                    UpdateUserPic();
                 }
             }
         }
