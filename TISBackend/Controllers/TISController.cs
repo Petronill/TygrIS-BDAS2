@@ -123,7 +123,7 @@ namespace TISBackend.Controllers
             {
                 if (!IsAuthorized())
                 {
-                    return StatusCode(HttpStatusCode.Unauthorized);
+                    return StatusCode(HttpStatusCode.Forbidden);
                 }
 
                 if (value.Type == JTokenType.Array)
@@ -186,13 +186,13 @@ namespace TISBackend.Controllers
                 AuthLevel authLevel = GetAuthLevel();
                 if (!CheckObject(value, authLevel))
                 {
-                    return StatusCode(HttpStatusCode.BadRequest);
+                    return Content(HttpStatusCode.BadRequest, "Check failed.");
                 }
 
                 TId id = SetObject(value, authLevel);
                 if (id.Equals(ErrId))
                 {
-                    return StatusCode(HttpStatusCode.BadRequest);
+                    return Content(HttpStatusCode.BadRequest, id);
                 }
                 return Content(HttpStatusCode.OK, id);
             }

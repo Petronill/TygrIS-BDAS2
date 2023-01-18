@@ -92,13 +92,13 @@ namespace TISBackend.Controllers
             return instance.SetObject(value, authLevel, transaction);
         }
 
-        // POST: api/Document
+        // POST: api/File
         public IHttpActionResult Post([FromBody] JObject value)
         {
             return PostUnknownNumber(value);
         }
 
-        // POST: api/Document/5
+        // POST: api/File/5
         public IHttpActionResult Post(int id, [FromBody] JObject value)
         {
             return PostSingle(id, value);
