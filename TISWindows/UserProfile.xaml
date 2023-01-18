@@ -39,9 +39,13 @@
                                 <Label>Telefonní číslo:</Label>
                                 <TextBox VerticalAlignment="Center" x:Name="phone">123456789</TextBox>
                             </StackPanel>
+                            <Button Content="Uložit změny" Margin="0 20 0 0" x:Name="saveChange" IsEnabled="False"></Button>
                         </StackPanel>
+                        <StackPanel>
                         <Image x:Name="picture" Source="/Items/defaultUser.png"
                                Width="200" VerticalAlignment="Top" Height="100"></Image>
+                            <Button Content="Změnit obrázek" x:Name="pictureChange" Margin="0 10 0 0" Width="115"></Button>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

@@ -15,6 +15,9 @@ using System.Timers;
 using System.Reflection;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Win32;
+using System.IO;
+using System.Collections.ObjectModel;
 
 namespace TISWindows
 {
@@ -196,12 +199,23 @@ namespace TISWindows
                 StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
                 Button btnAnimal = (Button)profileMenu.FindName("animalList");
                 Button btnKeeper = (Button)profileMenu.FindName("keepers");
+                Button btnChange = (Button)profileMenu.FindName("pictureChange");
+                Button saveChange = (Button)profileMenu.FindName("saveChange");
+                Image profilePic = (Image)profileMenu.FindName("picture");
                 TextBox name = (TextBox)profileMenu.FindName("name");
                 TextBox age = (TextBox)profileMenu.FindName("age");
                 TextBox address = (TextBox)profileMenu.FindName("address");
                 TextBox email = (TextBox)profileMenu.FindName("email");
                 TextBox phone = (TextBox)profileMenu.FindName("phone");
                 ComboBox users = (ComboBox)profileMenu.FindName("users");
+                var pokus = new ObservableCollection<TextBox>
+                {
+                    name,
+                    age,
+                    address,
+                    email,
+                    phone
+                };
 
                 HttpResponseMessage people = client.GetAsync("Person/").Result;
                 string toString = people.Content.ReadAsStringAsync().Result;
@@ -246,6 +260,21 @@ namespace TISWindows
                             break;
                         }
                     }
+                };
+
+                pokus.CollectionChanged += (s, e) =>
+                {
+                    saveChange.IsEnabled= true;
+                };
+
+
+                saveChange.Click += (s, e) =>
+                {
+
+                };
+
+                btnChange.Click += (s, e) => {
+                    UserPhotoChange();
                 };
 
                 btnAnimal.Click += (s, e) =>
@@ -356,5 +385,29 @@ namespace TISWindows
             window.ShowDialog();
             BASE_ADDRESS= wholeAddress;
         }
+
+        private void UserPhotoChange()
+        {
+            OpenFileDialog change = new OpenFileDialog();
+            change.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+            change.Multiselect = false;
+            if (change.ShowDialog() == true)
+            {
+                var pic = new Document()
+                {
+                    Name = change.FileName,
+                    Extension = Path.GetExtension(change.FileName),
+                    Data = Document.SerializeBytes(File.ReadAllBytes(change.FileName)),
+                };
+                var content = JsonSerializer.Serialize(pic);
+
+                var fileID = client.PostAsync("api/file/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
+                user.PhotoId = Int32.Parse(fileID.Content.ToString());
+
+
+                //změnu uživatele poslat na server
+            }
+        }
+
     }
 }
