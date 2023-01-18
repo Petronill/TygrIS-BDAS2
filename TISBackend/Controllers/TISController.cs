@@ -190,11 +190,7 @@ namespace TISBackend.Controllers
                 }
 
                 TId id = SetObject(value, authLevel);
-                if (id.Equals(ErrId))
-                {
-                    return Content(HttpStatusCode.BadRequest, id);
-                }
-                return Content(HttpStatusCode.OK, id);
+                return Content((id.Equals(ErrId)) ? HttpStatusCode.BadRequest : HttpStatusCode.OK, id);
             }
             catch (Exception ex)
             {
