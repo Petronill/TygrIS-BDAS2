@@ -9,7 +9,7 @@ namespace TISBackend.Db
             "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=fei-sql3.upceucebny.cz)(PORT=1521)))(CONNECT_DATA=(SID=BDAS)));" +
             "user id=st64113;password=pgxjm;" +
             "Connection Timeout=120;Validate connection=true;Min Pool Size=4;";
-        private static DatabaseController _databaseController = new DatabaseController();
+        private readonly static DatabaseController _databaseController = new DatabaseController();
 
         private readonly OracleConnection con = new OracleConnection(CONSTR);
 
