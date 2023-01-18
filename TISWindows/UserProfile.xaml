@@ -25,11 +25,11 @@
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label Content="Věk:"/>
-                                <TextBox  VerticalAlignment="Center" x:Name="age" Text="45"/>
+                                <TextBox IsReadOnly="True" VerticalAlignment="Center" x:Name="age" Text="45"/>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>Adresa:</Label>
-                                <TextBox VerticalAlignment="Center" x:Name="address">Kbýlkova 420 Bolín 3</TextBox>
+                                <TextBox VerticalAlignment="Center" x:Name="address">Kbýlkova 420 Bolín</TextBox>
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <Label>email:</Label>

@@ -127,10 +127,10 @@ namespace TISWindows
             edit.Click += (s, e) =>
             {
                 var ress = JsonSerializer.Serialize(content);
-                var send = client.PostAsync("Animal/",new StringContent(ress,Encoding.UTF8, "application/json")).Result;
+                var send = client.PostAsync("Animal/", new StringContent(ress, Encoding.UTF8, "application/json")).Result;
             };
 
-                Content.Children.Add(animalGrid);
+            Content.Children.Add(animalGrid);
         }
 
         private void OnClickEmployees()
@@ -193,7 +193,7 @@ namespace TISWindows
                 UserProfile profile = new UserProfile();
                 HttpResponseMessage result = client.GetAsync("User/").Result;
                 string res = result.Content.ReadAsStringAsync().Result;
-                var content = JsonSerializer.Deserialize<Person>(res);
+                user = JsonSerializer.Deserialize<Person>(res);
 
                 string panel = XamlWriter.Save(profile.profile);
                 StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
@@ -236,13 +236,23 @@ namespace TISWindows
                 }
                 else
                 {
-                    if (content != null)
+                    if (user != null)
                     {
-                        name.Text = content.FirstName + " " + content.LastName;
-                        age.Text = content.Birthday().ToString("dd. MM. yyyy");
-                        address.Text = content.Address.Street + " " + content.Address.HouseNumber + " " + content.Address.City;
-                        email.Text = content.Email;
-                        phone.Text = content.PhoneNumber.ToString();
+                        HttpResponseMessage imageFile = client.GetAsync("File/" + user.PhotoId).Result;
+                        string readToString = imageFile.Content.ReadAsStringAsync().Result;
+                        Document deserializace = JsonSerializer.Deserialize<Document>(readToString);
+                        if (deserializace.Data != null)
+                        {
+                            byte[] data = Document.DeserializeBytes(File.ReadAllText(deserializace.Data));
+                            var format = PixelFormats.Bgr32;
+                            var stride = (profilePic.Width * format.BitsPerPixel + 31) / 32;
+                            profilePic.Source = BitmapSource.Create((int)profilePic.Width, (int)profilePic.Height, 96, 96, format, null, data, (int)stride);
+                        }
+                        name.Text = user.FirstName + " " + user.LastName;
+                        age.Text = user.Birthday().ToString("dd. MM. yyyy");
+                        address.Text = user.Address.Street + " " + user.Address.HouseNumber + " " + user.Address.City;
+                        email.Text = user.Email;
+                        phone.Text = user.PhoneNumber.ToString();
                     }
                 }
                 users.SelectionChanged += (s, e) =>
@@ -264,16 +274,26 @@ namespace TISWindows
 
                 pokus.CollectionChanged += (s, e) =>
                 {
-                    saveChange.IsEnabled= true;
+                    saveChange.IsEnabled = true;
                 };
 
 
                 saveChange.Click += (s, e) =>
                 {
-
+                    string[] splitName = name.Text.Split(' ');
+                    user.FirstName = splitName[0];
+                    user.LastName = splitName[1];
+                    string[] splitAddress = address.Text.Split(' ');
+                    user.Address.Street = splitAddress[0];
+                    user.Address.HouseNumber = Int32.Parse(splitAddress[1]);
+                    user.Address.City = splitAddress[2];
+                    user.Email = email.Text;
+                    user.PhoneNumber = Int64.Parse(phone.Text);
+                    UserProfileChange();
                 };
 
-                btnChange.Click += (s, e) => {
+                btnChange.Click += (s, e) =>
+                {
                     UserPhotoChange();
                 };
 
@@ -371,19 +391,19 @@ namespace TISWindows
             Window window = new Window();
             window.Title = "zadávání adresy";
             window.Content = addressMenu;
-                def.Click += (s, e) =>
-                {
+            def.Click += (s, e) =>
+            {
 
-                    wholeAddress += "localhost:42069/api/";
-                    window.Close();
-                };
-                accept.Click += (s, e) =>
-                {
-                    wholeAddress += address.Text + "/api/";
-                    window.Close();
-                };
+                wholeAddress += "localhost:42069/api/";
+                window.Close();
+            };
+            accept.Click += (s, e) =>
+            {
+                wholeAddress += address.Text + "/api/";
+                window.Close();
+            };
             window.ShowDialog();
-            BASE_ADDRESS= wholeAddress;
+            BASE_ADDRESS = wholeAddress;
         }
 
         private void UserPhotoChange()
@@ -401,12 +421,17 @@ namespace TISWindows
                 };
                 var content = JsonSerializer.Serialize(pic);
 
-                var fileID = client.PostAsync("api/file/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
-                user.PhotoId = Int32.Parse(fileID.Content.ToString());
-
+                var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
+                user.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
+                UserProfileChange();
 
                 //změnu uživatele poslat na server
             }
+        }
+        private void UserProfileChange()
+        {
+            var changedUser = JsonSerializer.Serialize(user);
+            client.PostAsync("User/", new StringContent(changedUser, Encoding.UTF8, "application/json"));
         }
 
     }
