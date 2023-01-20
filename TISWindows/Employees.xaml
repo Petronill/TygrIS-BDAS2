@@ -21,7 +21,7 @@
                     </DockPanel>
                     <DockPanel HorizontalAlignment="Center">
                         <TextBlock Text="Rodné číslo: "  HorizontalAlignment="center"></TextBlock>
-                        <TextBox Text="8756" x:Name="pin" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" Text="8756" x:Name="pin" HorizontalAlignment="center"></TextBox>
                     </DockPanel>
                     <DockPanel HorizontalAlignment="Center">
                         <TextBlock Text="E-mail: "  HorizontalAlignment="center"></TextBlock>

@@ -14,6 +14,10 @@ using System.Text;
 using Microsoft.Win32;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Xml.Linq;
+using System.Windows.Automation.Provider;
+using System.Windows.Input;
 
 namespace TISWindows
 {
@@ -94,6 +98,7 @@ namespace TISWindows
             Button edit = (Button)animalGrid.FindName("editSave");
             ogThreeAnimals.Children.Clear();
             StackPanel threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
+            List<StackPanel> elements = new List<StackPanel>();
             for (int i = 0; i < content.Count; i++)
             {
                 StackPanel animal = XamlReader.Parse(XamlWriter.Save(ogAnimal)) as StackPanel;
@@ -105,6 +110,7 @@ namespace TISWindows
                 TextBox birth = (TextBox)animal.FindName("birth");
                 TextBox death = (TextBox)animal.FindName("death");
                 TextBox cost = (TextBox)animal.FindName("costs");
+
                 name.Text = content[i].Name;
                 species.Text = content[i].Species.CzechName;
                 genus.Text = content[i].Species.Genus.CzechName;
@@ -119,9 +125,34 @@ namespace TISWindows
                     list.Children.Add(threeAnimals);
                     threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
                 }
+                elements.Add(animal);
+
+                photo.MouseDown += (s, e) =>
+                {
+
+                };
             }
+
+
             edit.Click += (s, e) =>
             {
+                for (int i = 0; i < content.Count; i++)
+                {
+                    StackPanel actual = elements[i];
+                    TextBox name = (TextBox)actual.FindName("name");
+                    TextBox sex = (TextBox)actual.FindName("sex");
+                    TextBox species = (TextBox)actual.FindName("species");
+                    TextBox genus = (TextBox)actual.FindName("genus");
+                    TextBox birth = (TextBox)actual.FindName("birth");
+                    TextBox death = (TextBox)actual.FindName("death");
+                    TextBox cost = (TextBox)actual.FindName("costs");
+
+                    content[i].Name = name.Text;
+                    content[i].Species.CzechName = species.Text;
+                    content[i].Species.Genus.CzechName = genus.Text;
+                    content[i].MaintCosts = Int32.Parse(cost.Text);
+                    content[i].Sex.Abbreviation = sex.Text;
+                }
                 var ress = JsonSerializer.Serialize(content);
                 var send = client.PostAsync("Animal/", new StringContent(ress, Encoding.UTF8, "application/json")).Result;
             };
@@ -169,28 +200,6 @@ namespace TISWindows
             Content.Children.Add(employeeGrid);
         }
 
-        private void UpdateUserPic()
-        {
-            if (user != null)
-            {
-                UserProfile profile = new UserProfile();
-                string panel = XamlWriter.Save(profile.profile);
-                StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
-                Image profilePic = (Image)profileMenu.FindName("picture");
-
-                HttpResponseMessage imageFile = client.GetAsync("File/" + user.PhotoId).Result;
-                string readToString = imageFile.Content.ReadAsStringAsync().Result;
-                Document deserializace = JsonSerializer.Deserialize<Document>(readToString);
-                if (deserializace?.Data != null)
-                {
-                    byte[] data = deserializace.GetBytes();
-                    var format = PixelFormats.Bgr32;
-                    var stride = (profilePic.Width * format.BitsPerPixel + 31) / 32;
-                    profilePic.Source = BitmapSource.Create((int)profilePic.Width, (int)profilePic.Height, 96, 96, format, null, data, (int)stride);
-                }
-            }
-        }
-
         private async void OnClickInfo(object sender, RoutedEventArgs e)
         {
             if (userName.Content.Equals("Nepřihlášen"))
@@ -226,14 +235,6 @@ namespace TISWindows
                 TextBox email = (TextBox)profileMenu.FindName("email");
                 TextBox phone = (TextBox)profileMenu.FindName("phone");
                 ComboBox users = (ComboBox)profileMenu.FindName("users");
-                var pokus = new ObservableCollection<TextBox>
-                {
-                    name,
-                    age,
-                    address,
-                    email,
-                    phone
-                };
 
                 HttpResponseMessage people = client.GetAsync("Person/").Result;
                 string toString = people.Content.ReadAsStringAsync().Result;
@@ -261,7 +262,6 @@ namespace TISWindows
                     email.Text = user.Email;
                     phone.Text = user.PhoneNumber.ToString();
                 }
-                UpdateUserPic();
 
                 users.SelectionChanged += (s, e) =>
                 {
@@ -302,7 +302,7 @@ namespace TISWindows
 
                 btnChange.Click += (s, e) =>
                 {
-                    UserPhotoChange();
+                   profilePic = UserPhotoChange(profileMenu);
                 };
 
                 btnAnimal.Click += (s, e) =>
@@ -414,7 +414,14 @@ namespace TISWindows
             BASE_ADDRESS = wholeAddress;
         }
 
-        private void UserPhotoChange()
+        private Image UserPhotoChange(StackPanel profileMenu)
+        {
+            PhotoChange();
+            UserProfileChange();
+            return RefreshPhoto(profileMenu);
+
+        }
+        private void PhotoChange()
         {
             if (user != null)
             {
@@ -433,8 +440,6 @@ namespace TISWindows
 
                     var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
                     user.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
-                    UserProfileChange();
-                    UpdateUserPic();
                 }
             }
         }
@@ -442,6 +447,56 @@ namespace TISWindows
         {
             var changedUser = JsonSerializer.Serialize(user);
             client.PostAsync("User/", new StringContent(changedUser, Encoding.UTF8, "application/json"));
+        }
+
+        //TODO TADY TA MRDKA NECHCE NEJEN NACIST TEN POSRANY OBRAZEK, ALE DOKONCE SI FURT STEZUJE NA HODNOTY KURVA FIX, KTERÝ DEBBUGER TVRDÍ, ŽE NEJSOU PŘITOM KRUVA JSOU
+        private Image RefreshPhoto(StackPanel profileMenu)
+        {
+            Image profilePic = (Image)profileMenu.FindName("picture");
+
+            HttpResponseMessage imageFile = client.GetAsync("File/" + user.PhotoId).Result;
+            string readToString = imageFile.Content.ReadAsStringAsync().Result;
+
+            Document deserializace = JsonSerializer.Deserialize<Document>(readToString);
+            if (deserializace?.Data != null)
+            {
+                byte[] data = deserializace.GetBytes();
+              /*  string message = "";
+                for (int i = 0; i < data.Length; i++)
+                {
+                    message += data[i] + " ";
+                }
+
+                MessageBox.Show(message);
+              */
+                var format = PixelFormats.Gray8;
+                int height = 200;
+                int width = 200;
+                int xDpi = 96;
+                int yDpi = 96;
+                int stride = width/8;
+                List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
+                colors.Add(System.Windows.Media.Colors.Red);
+                colors.Add(System.Windows.Media.Colors.Blue);
+                colors.Add(System.Windows.Media.Colors.Green);
+                BitmapPalette myPalette = new BitmapPalette(colors);
+
+                BitmapSource pokus = BitmapSource.Create(width, height, xDpi, yDpi, format, myPalette, data, stride);
+                Image pokusImage = new Image();
+                pokusImage.Source = pokus;
+                Window window = new Window();
+                window.Content = pokusImage;
+                window.ShowDialog();
+
+
+                profilePic.Source = BitmapSource.Create(width, height, xDpi, yDpi, format, myPalette, data, stride);
+            }
+            else
+            {   
+                profilePic.Source = new BitmapImage(new Uri(@"/Items/defaultUser.png", UriKind.RelativeOrAbsolute));
+            }
+
+            return profilePic;
         }
 
     }
