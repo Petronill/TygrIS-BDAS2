@@ -8,13 +8,9 @@ using System.Net.Http;
 using System.Text.Json;
 using TISModelLibrary;
 using System.Collections.Generic;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Timers;
-using System.Reflection;
 using System.Text;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.Win32;
 using System.IO;
 using System.Collections.ObjectModel;
@@ -173,6 +169,28 @@ namespace TISWindows
             Content.Children.Add(employeeGrid);
         }
 
+        private void UpdateUserPic()
+        {
+            if (user != null)
+            {
+                UserProfile profile = new UserProfile();
+                string panel = XamlWriter.Save(profile.profile);
+                StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
+                Image profilePic = (Image)profileMenu.FindName("picture");
+
+                HttpResponseMessage imageFile = client.GetAsync("File/" + user.PhotoId).Result;
+                string readToString = imageFile.Content.ReadAsStringAsync().Result;
+                Document deserializace = JsonSerializer.Deserialize<Document>(readToString);
+                if (deserializace?.Data != null)
+                {
+                    byte[] data = deserializace.GetBytes();
+                    var format = PixelFormats.Bgr32;
+                    var stride = (profilePic.Width * format.BitsPerPixel + 31) / 32;
+                    profilePic.Source = BitmapSource.Create((int)profilePic.Width, (int)profilePic.Height, 96, 96, format, null, data, (int)stride);
+                }
+            }
+        }
+
         private async void OnClickInfo(object sender, RoutedEventArgs e)
         {
             if (userName.Content.Equals("Nepřihlášen"))
@@ -234,27 +252,17 @@ namespace TISWindows
                     }
                     users.SelectedIndex = 0;
                 }
-                else
+
+                if (user != null)
                 {
-                    if (user != null)
-                    {
-                        HttpResponseMessage imageFile = client.GetAsync("File/" + user.PhotoId).Result;
-                        string readToString = imageFile.Content.ReadAsStringAsync().Result;
-                        Document deserializace = JsonSerializer.Deserialize<Document>(readToString);
-                        if (deserializace.Data != null)
-                        {
-                            byte[] data = Document.DeserializeBytes(File.ReadAllText(deserializace.Data));
-                            var format = PixelFormats.Bgr32;
-                            var stride = (profilePic.Width * format.BitsPerPixel + 31) / 32;
-                            profilePic.Source = BitmapSource.Create((int)profilePic.Width, (int)profilePic.Height, 96, 96, format, null, data, (int)stride);
-                        }
-                        name.Text = user.FirstName + " " + user.LastName;
-                        age.Text = user.Birthday().ToString("dd. MM. yyyy");
-                        address.Text = user.Address.Street + " " + user.Address.HouseNumber + " " + user.Address.City;
-                        email.Text = user.Email;
-                        phone.Text = user.PhoneNumber.ToString();
-                    }
+                    name.Text = user.FirstName + " " + user.LastName;
+                    age.Text = user.Birthday().ToString("dd. MM. yyyy");
+                    address.Text = user.Address.Street + " " + user.Address.HouseNumber + " " + user.Address.City;
+                    email.Text = user.Email;
+                    phone.Text = user.PhoneNumber.ToString();
                 }
+                UpdateUserPic();
+
                 users.SelectionChanged += (s, e) =>
                 {
                     var peopleIWant = new Person();
@@ -408,24 +416,26 @@ namespace TISWindows
 
         private void UserPhotoChange()
         {
-            OpenFileDialog change = new OpenFileDialog();
-            change.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
-            change.Multiselect = false;
-            if (change.ShowDialog() == true)
+            if (user != null)
             {
-                var pic = new Document()
+                OpenFileDialog change = new OpenFileDialog();
+                change.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+                change.Multiselect = false;
+                if (change.ShowDialog() == true)
                 {
-                    Name = change.FileName,
-                    Extension = Path.GetExtension(change.FileName),
-                    Data = Document.SerializeBytes(File.ReadAllBytes(change.FileName)),
-                };
-                var content = JsonSerializer.Serialize(pic);
+                    var pic = new Document()
+                    {
+                        Name = change.SafeFileName,
+                        Extension = Path.GetExtension(change.FileName),
+                        Data = Document.SerializeBytes(File.ReadAllBytes(change.FileName)),
+                    };
+                    var content = JsonSerializer.Serialize(pic);
 
-                var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
-                user.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
-                UserProfileChange();
-
-                //změnu uživatele poslat na server
+                    var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
+                    user.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
+                    UserProfileChange();
+                    UpdateUserPic();
+                }
             }
         }
         private void UserProfileChange()
