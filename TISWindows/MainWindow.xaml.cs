@@ -272,7 +272,7 @@ namespace TISWindows
                     }
                 };
 
-                pokus.CollectionChanged += (s, e) =>
+                name.TextChanged += (s, e) =>
                 {
                     saveChange.IsEnabled = true;
                 };
