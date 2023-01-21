@@ -18,6 +18,7 @@ using System.Net;
 using System.Xml.Linq;
 using System.Windows.Automation.Provider;
 using System.Windows.Input;
+using System.Reflection;
 
 namespace TISWindows
 {
@@ -85,79 +86,85 @@ namespace TISWindows
         }
         private void OnClickAnimals(object sender, RoutedEventArgs e)
         {
-            Content.Children.Clear();
-            HttpResponseMessage result = client.GetAsync("Animal/").Result;
-            string res = result.Content.ReadAsStringAsync().Result;
-            var content = JsonSerializer.Deserialize<List<Animal>>(res);
-
-            AnimalList animalList = new AnimalList();
-            Grid animalGrid = (Grid)XamlReader.Parse(XamlWriter.Save(animalList.grid));
-            StackPanel list = (StackPanel)animalGrid.FindName("animalList");
-            StackPanel ogThreeAnimals = (StackPanel)list.FindName("threeAnimals");
-            StackPanel ogAnimal = (StackPanel)ogThreeAnimals.FindName("animal");
-            Button edit = (Button)animalGrid.FindName("editSave");
-            ogThreeAnimals.Children.Clear();
-            StackPanel threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
-            List<StackPanel> elements = new List<StackPanel>();
-            for (int i = 0; i < content.Count; i++)
+            if (userName.Content.Equals("Nepřihlášen"))
             {
-                StackPanel animal = XamlReader.Parse(XamlWriter.Save(ogAnimal)) as StackPanel;
-                Image photo = (Image)ogThreeAnimals.FindName("picture");
-                TextBox name = (TextBox)animal.FindName("name");
-                TextBox sex = (TextBox)animal.FindName("sex");
-                TextBox species = (TextBox)animal.FindName("species");
-                TextBox genus = (TextBox)animal.FindName("genus");
-                TextBox birth = (TextBox)animal.FindName("birth");
-                TextBox death = (TextBox)animal.FindName("death");
-                TextBox cost = (TextBox)animal.FindName("costs");
-
-                name.Text = content[i].Name;
-                species.Text = content[i].Species.CzechName;
-                genus.Text = content[i].Species.Genus.CzechName;
-                birth.Text = content[i].Birth.ToString("dd. MM. yyyy");
-                death.Text = content[i].Death?.ToString("dd. MM. yyyy") ?? "Ještě žije";
-                cost.Text = content[i].MaintCosts.ToString() + " Kč";
-                sex.Text = content[i].Sex.Abbreviation;
-
-                threeAnimals.Children.Add(animal);
-                if (i % 5 == 4 || i == content.Count - 1)
-                {
-                    list.Children.Add(threeAnimals);
-                    threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
-                }
-                elements.Add(animal);
-
-                photo.MouseDown += (s, e) =>
-                {
-
-                };
+                NotLoggedIn(sender, e);
             }
-
-
-            edit.Click += (s, e) =>
+            else
             {
+                Content.Children.Clear();
+                HttpResponseMessage result = client.GetAsync("Animal/").Result;
+                string res = result.Content.ReadAsStringAsync().Result;
+                var content = JsonSerializer.Deserialize<List<Animal>>(res);
+
+                AnimalList animalList = new AnimalList();
+                Grid animalGrid = (Grid)XamlReader.Parse(XamlWriter.Save(animalList.grid));
+                StackPanel list = (StackPanel)animalGrid.FindName("animalList");
+                StackPanel ogThreeAnimals = (StackPanel)list.FindName("threeAnimals");
+                StackPanel ogAnimal = (StackPanel)ogThreeAnimals.FindName("animal");
+                Button edit = (Button)animalGrid.FindName("editSave");
+                ogThreeAnimals.Children.Clear();
+                StackPanel threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
+                List<StackPanel> elements = new List<StackPanel>();
                 for (int i = 0; i < content.Count; i++)
                 {
-                    StackPanel actual = elements[i];
-                    TextBox name = (TextBox)actual.FindName("name");
-                    TextBox sex = (TextBox)actual.FindName("sex");
-                    TextBox species = (TextBox)actual.FindName("species");
-                    TextBox genus = (TextBox)actual.FindName("genus");
-                    TextBox birth = (TextBox)actual.FindName("birth");
-                    TextBox death = (TextBox)actual.FindName("death");
-                    TextBox cost = (TextBox)actual.FindName("costs");
+                    StackPanel animal = XamlReader.Parse(XamlWriter.Save(ogAnimal)) as StackPanel;
+                    Image photo = (Image)ogThreeAnimals.FindName("picture");
+                    TextBox name = (TextBox)animal.FindName("name");
+                    TextBox sex = (TextBox)animal.FindName("sex");
+                    TextBox species = (TextBox)animal.FindName("species");
+                    TextBox genus = (TextBox)animal.FindName("genus");
+                    TextBox birth = (TextBox)animal.FindName("birth");
+                    TextBox death = (TextBox)animal.FindName("death");
+                    TextBox cost = (TextBox)animal.FindName("costs");
 
-                    content[i].Name = name.Text;
-                    content[i].Species.CzechName = species.Text;
-                    content[i].Species.Genus.CzechName = genus.Text;
-                    content[i].MaintCosts = Int32.Parse(cost.Text);
-                    content[i].Sex.Abbreviation = sex.Text;
+                    name.Text = content[i].Name;
+                    species.Text = content[i].Species.CzechName;
+                    genus.Text = content[i].Species.Genus.CzechName;
+                    birth.Text = content[i].Birth.ToString("dd. MM. yyyy");
+                    death.Text = content[i].Death?.ToString("dd. MM. yyyy") ?? "Ještě žije";
+                    cost.Text = content[i].MaintCosts.ToString() + " Kč";
+                    sex.Text = content[i].Sex.Abbreviation;
+
+                    threeAnimals.Children.Add(animal);
+                    if (i % 5 == 4 || i == content.Count - 1)
+                    {
+                        list.Children.Add(threeAnimals);
+                        threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
+                    }
+                    elements.Add(animal);
+
+                    photo.MouseDown += (s, e) =>
+                    {
+
+                    };
                 }
-                var ress = JsonSerializer.Serialize(content);
-                var send = client.PostAsync("Animal/", new StringContent(ress, Encoding.UTF8, "application/json")).Result;
-            };
 
-            Content.Children.Add(animalGrid);
+                edit.Click += (s, e) =>
+                {
+                    for (int i = 0; i < content.Count; i++)
+                    {
+                        StackPanel actual = elements[i];
+                        TextBox name = (TextBox)actual.FindName("name");
+                        TextBox sex = (TextBox)actual.FindName("sex");
+                        TextBox species = (TextBox)actual.FindName("species");
+                        TextBox genus = (TextBox)actual.FindName("genus");
+                        TextBox birth = (TextBox)actual.FindName("birth");
+                        TextBox death = (TextBox)actual.FindName("death");
+                        TextBox cost = (TextBox)actual.FindName("costs");
+
+                        content[i].Name = name.Text;
+                        content[i].Species.CzechName = species.Text;
+                        content[i].Species.Genus.CzechName = genus.Text;
+                        content[i].MaintCosts = Int32.Parse(cost.Text);
+                        content[i].Sex.Abbreviation = sex.Text;
+                    }
+                    var ress = JsonSerializer.Serialize(content);
+                    var send = client.PostAsync("Animal/", new StringContent(ress, Encoding.UTF8, "application/json")).Result;
+                };
+
+                Content.Children.Add(animalGrid);
+            }
         }
 
         private void OnClickEmployees()
@@ -165,7 +172,7 @@ namespace TISWindows
             Content.Children.Clear();
             HttpResponseMessage result = client.GetAsync("Keeper/").Result;
             string res = result.Content.ReadAsStringAsync().Result;
-            var content = JsonSerializer.Deserialize<List<Person>>(res);
+            var content = JsonSerializer.Deserialize<List<Keeper>>(res);
 
             Employees employeeList = new Employees();
             Grid employeeGrid = (Grid)XamlReader.Parse(XamlWriter.Save(employeeList.grid));
@@ -176,25 +183,28 @@ namespace TISWindows
             StackPanel threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
             for (int i = 0; i < content.Count; i++)
             {
-                StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
-                Image photo = (Image)employee.FindName("piture");
-                TextBox firstName = (TextBox)employee.FindName("firstName");
-                TextBox secondName = (TextBox)employee.FindName("secondName");
-                TextBox pin = (TextBox)employee.FindName("pin");
-                TextBox phone = (TextBox)employee.FindName("phoneNumber");
-                TextBox email = (TextBox)employee.FindName("email");
-
-                firstName.Text = content[i].FirstName;
-                secondName.Text = content[i].LastName;
-                pin.Text = content[i].PIN.ToString();
-                phone.Text = content[i].PhoneNumber.ToString();
-                email.Text = content[i].Email;
-
-                threeEmployees.Children.Add(employee);
-                if (i % 5 == 4 || i == content.Count - 1)
+                if (content[i].SupervisorId == user.Id /*TODO || LINQ select a join na tabulku zvirat... mě poser*/)
                 {
-                    list.Children.Add(threeEmployees);
-                    threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
+                    StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
+                    Image photo = (Image)employee.FindName("piture");
+                    TextBox firstName = (TextBox)employee.FindName("firstName");
+                    TextBox secondName = (TextBox)employee.FindName("secondName");
+                    TextBox pin = (TextBox)employee.FindName("pin");
+                    TextBox phone = (TextBox)employee.FindName("phoneNumber");
+                    TextBox email = (TextBox)employee.FindName("email");
+
+                    firstName.Text = content[i].FirstName;
+                    secondName.Text = content[i].LastName;
+                    pin.Text = content[i].PIN.ToString();
+                    phone.Text = content[i].PhoneNumber.ToString();
+                    email.Text = content[i].Email;
+
+                    threeEmployees.Children.Add(employee);
+                    if (i % 5 == 4 || i == content.Count - 1)
+                    {
+                        list.Children.Add(threeEmployees);
+                        threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
+                    }
                 }
             }
             Content.Children.Add(employeeGrid);
@@ -204,15 +214,7 @@ namespace TISWindows
         {
             if (userName.Content.Equals("Nepřihlášen"))
             {
-                Image warning = new Image();
-                Content.Children.Clear();
-                warning.Source = new BitmapImage(new Uri(@"/Items/nejstePrihlasen.jpg", UriKind.RelativeOrAbsolute));
-                warning.Width = Content.Width;
-                warning.Height = Content.Height;
-                warning.Margin = new Thickness(0, 0, 140, 0);
-                Content.Children.Add(warning);
-                await Task.Delay(2500);
-                OnClickZoo(sender, e);
+                NotLoggedIn(sender, e);
             }
             else
             {
@@ -228,6 +230,7 @@ namespace TISWindows
                 Button btnKeeper = (Button)profileMenu.FindName("keepers");
                 Button btnChange = (Button)profileMenu.FindName("pictureChange");
                 Button saveChange = (Button)profileMenu.FindName("saveChange");
+                Button emulator = (Button)profileMenu.FindName("emulator");
                 Image profilePic = (Image)profileMenu.FindName("picture");
                 TextBox name = (TextBox)profileMenu.FindName("name");
                 TextBox age = (TextBox)profileMenu.FindName("age");
@@ -246,6 +249,7 @@ namespace TISWindows
                 if (Int32.Parse(bodyOfMessage) == 0)
                 {
                     users.Visibility = Visibility.Visible;
+                    emulator.Visibility = Visibility.Visible;
 
                     for (int i = 0; i < userList.Count; i++)
                     {
@@ -263,9 +267,10 @@ namespace TISWindows
                     phone.Text = user.PhoneNumber.ToString();
                 }
 
+                Content.Children.Add(profileMenu);
+
                 users.SelectionChanged += (s, e) =>
                 {
-                    var peopleIWant = new Person();
                     for (int i = 0; i < userList.Count; i++)
                     {
                         if (userList[i].FirstName.Equals(users.SelectedItem.ToString()))
@@ -279,12 +284,26 @@ namespace TISWindows
                         }
                     }
                 };
-
                 name.TextChanged += (s, e) =>
                 {
                     saveChange.IsEnabled = true;
                 };
-
+                age.TextChanged += (s, e) =>
+                {
+                    saveChange.IsEnabled = true;
+                };
+                address.TextChanged += (s, e) =>
+                {
+                    saveChange.IsEnabled = true;
+                };
+                email.TextChanged += (s, e) =>
+                {
+                    saveChange.IsEnabled = true;
+                };
+                phone.TextChanged += (s, e) =>
+                {
+                    saveChange.IsEnabled = true;
+                };
 
                 saveChange.Click += (s, e) =>
                 {
@@ -302,20 +321,21 @@ namespace TISWindows
 
                 btnChange.Click += (s, e) =>
                 {
-                   profilePic = UserPhotoChange(profileMenu);
+                    profilePic = UserPhotoChange(profileMenu);
                 };
-
                 btnAnimal.Click += (s, e) =>
                 {
-                    OnClickAnimals(sender, e);
+                    OnClickAnimalsOfUser(sender, e);
                 };
                 btnKeeper.Click += (s, e) =>
                 {
                     OnClickEmployees();
                 };
 
-                Content.Children.Add(profileMenu);
-
+                emulator.Click += (s, e) =>
+                {
+                    
+                };
             }
 
         }
@@ -376,6 +396,7 @@ namespace TISWindows
             user = null;
             client.DefaultRequestHeaders.Clear();
             loggOut.IsEnabled = false;
+            OnClickZoo(sender, e);
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -461,24 +482,24 @@ namespace TISWindows
             if (deserializace?.Data != null)
             {
                 byte[] data = deserializace.GetBytes();
-              /*  string message = "";
-                for (int i = 0; i < data.Length; i++)
-                {
-                    message += data[i] + " ";
-                }
+                /*  string message = "";
+                  for (int i = 0; i < data.Length; i++)
+                  {
+                      message += data[i] + " ";
+                  }
 
-                MessageBox.Show(message);
-              */
+                  MessageBox.Show(message);
+                */
                 var format = PixelFormats.Gray8;
                 int height = 200;
                 int width = 200;
                 int xDpi = 96;
                 int yDpi = 96;
-                int stride = width/8;
-                List<System.Windows.Media.Color> colors = new List<System.Windows.Media.Color>();
-                colors.Add(System.Windows.Media.Colors.Red);
-                colors.Add(System.Windows.Media.Colors.Blue);
-                colors.Add(System.Windows.Media.Colors.Green);
+                int stride = width / 8;
+                List<Color> colors = new List<Color>();
+                colors.Add(Colors.Red);
+                colors.Add(Colors.Blue);
+                colors.Add(Colors.Green);
                 BitmapPalette myPalette = new BitmapPalette(colors);
 
                 BitmapSource pokus = BitmapSource.Create(width, height, xDpi, yDpi, format, myPalette, data, stride);
@@ -492,12 +513,280 @@ namespace TISWindows
                 profilePic.Source = BitmapSource.Create(width, height, xDpi, yDpi, format, myPalette, data, stride);
             }
             else
-            {   
+            {
                 profilePic.Source = new BitmapImage(new Uri(@"/Items/defaultUser.png", UriKind.RelativeOrAbsolute));
             }
 
             return profilePic;
         }
 
+        private async Task NotLoggedIn(object sender, RoutedEventArgs e)
+        {
+            Image warning = new Image();
+            Content.Children.Clear();
+            warning.Source = new BitmapImage(new Uri(@"/Items/nejstePrihlasen.jpg", UriKind.RelativeOrAbsolute));
+            warning.Width = Content.Width;
+            warning.Height = Content.Height;
+            warning.Margin = new Thickness(0, 0, 140, 0);
+            Content.Children.Add(warning);
+            await Task.Delay(2500);
+            OnClickZoo(sender, e);
+        }
+
+        private void OnClickAnimalsOfUser(object sender, RoutedEventArgs e)
+        {
+            Content.Children.Clear();
+            HttpResponseMessage result = client.GetAsync("Animal/").Result;
+            string res = result.Content.ReadAsStringAsync().Result;
+            var content = JsonSerializer.Deserialize<List<Animal>>(res);
+
+            AnimalList animalList = new AnimalList();
+            Grid animalGrid = (Grid)XamlReader.Parse(XamlWriter.Save(animalList.grid));
+            StackPanel list = (StackPanel)animalGrid.FindName("animalList");
+            StackPanel ogThreeAnimals = (StackPanel)list.FindName("threeAnimals");
+            StackPanel ogAnimal = (StackPanel)ogThreeAnimals.FindName("animal");
+            Button edit = (Button)animalGrid.FindName("editSave");
+            ogThreeAnimals.Children.Clear();
+            StackPanel threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
+            List<StackPanel> elements = new List<StackPanel>();
+            int counter = 0;
+            for (int i = 0; i < content.Count; i++)
+            {
+                if (content[i].AdopterId == user.Id)
+                {
+                    StackPanel animal = XamlReader.Parse(XamlWriter.Save(ogAnimal)) as StackPanel;
+                    Image photo = (Image)ogThreeAnimals.FindName("picture");
+                    TextBox name = (TextBox)animal.FindName("name");
+                    TextBox sex = (TextBox)animal.FindName("sex");
+                    TextBox species = (TextBox)animal.FindName("species");
+                    TextBox genus = (TextBox)animal.FindName("genus");
+                    TextBox birth = (TextBox)animal.FindName("birth");
+                    TextBox death = (TextBox)animal.FindName("death");
+                    TextBox cost = (TextBox)animal.FindName("costs");
+
+                    name.Text = content[i].Name;
+                    species.Text = content[i].Species.CzechName;
+                    genus.Text = content[i].Species.Genus.CzechName;
+                    birth.Text = content[i].Birth.ToString("dd. MM. yyyy");
+                    death.Text = content[i].Death?.ToString("dd. MM. yyyy") ?? "Ještě žije";
+                    cost.Text = content[i].MaintCosts.ToString() + " Kč";
+                    sex.Text = content[i].Sex.Abbreviation;
+
+                    threeAnimals.Children.Add(animal);
+                    counter++;
+                    if (i % 5 == 4 || i == content.Count - 1)
+                    {
+                        list.Children.Add(threeAnimals);
+                        threeAnimals = XamlReader.Parse(XamlWriter.Save(ogThreeAnimals)) as StackPanel;
+                    }
+                    elements.Add(animal);
+                }
+            }
+            if (counter % 5 != 0)
+            {
+                list.Children.Add(threeAnimals);
+            }
+            Content.Children.Add(animalGrid);
+
+            edit.Click += (s, e) =>
+            {
+                for (int i = 0; i < content.Count; i++)
+                {
+                    StackPanel actual = elements[i];
+                    TextBox name = (TextBox)actual.FindName("name");
+                    TextBox sex = (TextBox)actual.FindName("sex");
+                    TextBox species = (TextBox)actual.FindName("species");
+                    TextBox genus = (TextBox)actual.FindName("genus");
+                    TextBox birth = (TextBox)actual.FindName("birth");
+                    TextBox death = (TextBox)actual.FindName("death");
+                    TextBox cost = (TextBox)actual.FindName("costs");
+
+                    content[i].Name = name.Text;
+                    content[i].Species.CzechName = species.Text;
+                    content[i].Species.Genus.CzechName = genus.Text;
+                    content[i].MaintCosts = Int32.Parse(cost.Text);
+                    content[i].Sex.Abbreviation = sex.Text;
+                }
+                var ress = JsonSerializer.Serialize(content);
+                var send = client.PostAsync("Animal/", new StringContent(ress, Encoding.UTF8, "application/json")).Result;
+            };
+        }
+
+        /*TODO: 1. Pridat listBox nebo jak se to jmenuje a nahazet tam logg zaznamy
+         *  2. Udelat todle, aby se to volalo na vlakne
+         *  3. Jeste aby to nastavovalo pri zmene uzivatele usera v main window... to bude ostry...
+         */
+        private void EmulatorShenanigans(object sender, RoutedEventArgs e)
+        {
+            Content.Children.Clear();
+            Emulator profile = new Emulator();
+            HttpResponseMessage result = client.GetAsync("User/").Result;
+            string res = result.Content.ReadAsStringAsync().Result;
+            user = JsonSerializer.Deserialize<Person>(res);
+
+            string panel = XamlWriter.Save(profile.adminWindow);
+            StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
+            StackPanel donationPanel = (StackPanel)profileMenu.FindName("donationPanel");
+            StackPanel wagePanel = (StackPanel)profileMenu.FindName("wagePanel");
+            Button btnChange = (Button)profileMenu.FindName("pictureChange");
+            Button saveChange = (Button)profileMenu.FindName("saveChange");
+            Image profilePic = (Image)profileMenu.FindName("picture");
+            TextBox name = (TextBox)profileMenu.FindName("name");
+            TextBox pin = (TextBox)profileMenu.FindName("pin");
+            TextBox account = (TextBox)profileMenu.FindName("account");  
+            TextBox wage = (TextBox)profileMenu.FindName("wage");
+            TextBox donation = (TextBox)profileMenu.FindName("donation");
+            TextBox address = (TextBox)profileMenu.FindName("address");
+            TextBox email = (TextBox)profileMenu.FindName("email");
+            TextBox phone = (TextBox)profileMenu.FindName("phone");
+            ComboBox users = (ComboBox)profileMenu.FindName("users");
+            ComboBox role = (ComboBox)profileMenu.FindName("role");
+
+            HttpResponseMessage people = client.GetAsync("Person/").Result;
+            string toString = people.Content.ReadAsStringAsync().Result;
+            var userList = JsonSerializer.Deserialize<List<Person>>(toString);
+
+            for (int i = 0; i < userList.Count; i++)
+            {
+                users.Items.Add(userList[i].FirstName);
+            }
+            users.SelectedIndex = 0;
+            role.Items.Add("KEEPER");
+            role.Items.Add("ADOPTER");
+                
+
+            if (user != null)
+            {
+                if (user.Role == PersonalRoles.KEEPER)
+                {
+                    donationPanel.Visibility = Visibility.Hidden;
+                    wagePanel.Visibility = Visibility.Visible;
+                    //TODO Jak to ale budu ukladat jajajajajajaajajj
+                    Keeper pokus = (Keeper)user;
+                    wage.Text = pokus.GrossWage.ToString();
+                }
+                else
+                {
+                    donationPanel.Visibility = Visibility.Visible;
+                    wagePanel.Visibility = Visibility.Hidden;
+                    //TODO Jak todle ale potom budu ukladat k sakra jajajajajaj
+                    Adopter pokus = (Adopter)user;
+                    donation.Text = pokus.Donation.ToString();
+                }
+                name.Text = user.FirstName + " " + user.LastName;
+                pin.Text = user.PIN.ToString();
+                account.Text = user.AccountNumber.ToString();
+                address.Text = user.Address.Street + " " + user.Address.HouseNumber + " " + user.Address.City + " " + user.Address.Country + " " + user.Address.PostalCode;
+                email.Text = user.Email;
+                phone.Text = user.PhoneNumber.ToString();
+            }
+
+            Content.Children.Add(profileMenu);
+            users.SelectionChanged += (s, e) =>
+            {
+                for (int i = 0; i < userList.Count; i++)
+                {
+                    if (userList[i].FirstName.Equals(users.SelectedItem.ToString()))
+                    {
+                        if (user.Role == PersonalRoles.KEEPER)
+                        {
+                            donationPanel.Visibility = Visibility.Hidden;
+                            wagePanel.Visibility = Visibility.Visible;
+                            //TODO Jak to ale budu ukladat jajajajajajaajajj
+                            Keeper pokus = (Keeper)user;
+                            wage.Text = pokus.GrossWage.ToString();
+                        }
+                        else
+                        {
+                            donationPanel.Visibility = Visibility.Visible;
+                            wagePanel.Visibility = Visibility.Hidden;
+                            //TODO Jak todle ale potom budu ukladat k sakra jajajajajaj
+                            Adopter pokus = (Adopter)user;
+                            donation.Text = pokus.Donation.ToString();
+                        }
+                        name.Text = user.FirstName + " " + user.LastName;
+                        pin.Text = user.PIN.ToString();
+                        account.Text = user.AccountNumber.ToString();
+                        address.Text = user.Address.Street + " " + user.Address.HouseNumber + " " + user.Address.City + " " + user.Address.Country + " " + user.Address.PostalCode;
+                        email.Text = user.Email;
+                        phone.Text = user.PhoneNumber.ToString();
+                        break;
+                    }
+                }
+            };
+            name.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+            pin.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+            address.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+            email.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+            phone.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+            account.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+            wage.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+            account.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+            donation.TextChanged += (s, e) =>
+            {
+                saveChange.IsEnabled = true;
+            };
+
+
+
+            saveChange.Click += (s, e) =>
+            {
+                string[] splitName = name.Text.Split(' ');
+                user.FirstName = splitName[0];
+                user.LastName = splitName[1];
+                string[] splitAddress = address.Text.Split(' ');
+                user.Address.Street = splitAddress[0];
+                user.Address.HouseNumber = Int32.Parse(splitAddress[1]);
+                user.Address.City = splitAddress[2];
+                user.Address.Country = splitAddress[3];
+                user.Address.PostalCode = Int32.Parse(splitAddress[4]);
+                user.Email = email.Text;
+                user.PhoneNumber = Int64.Parse(phone.Text);
+                user.PIN = Int64.Parse(pin.Text);
+                user.AccountNumber= Int32.Parse(account.Text);
+                if(role.SelectedItem.ToString() == "KEEPER")
+                {
+                    user.Role = PersonalRoles.KEEPER;
+                    //TODO tady mu přidělit hrubou mzdu
+                }
+                else
+                {
+                    user.Role = PersonalRoles.ADOPTER;
+                    //TODO tady mu přidělit donation
+                }
+
+                UserProfileChange();
+            };
+
+            btnChange.Click += (s, e) =>
+            {
+                profilePic = UserPhotoChange(profileMenu);
+            };
+        }
     }
+
 }
