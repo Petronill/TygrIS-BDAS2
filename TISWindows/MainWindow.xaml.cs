@@ -29,7 +29,7 @@ namespace TISWindows
     /// </summary>
     /// 
     /* 
-     * TODO: 4. Combobox pro Admina pro "simulování" jiných uživatelů
+     * TODO:
      * 
      * TODO: ukladani Editovanych prvku
      * 
@@ -185,7 +185,7 @@ namespace TISWindows
             StackPanel threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
             for (int i = 0; i < content.Count; i++)
             {
-                if (content[i].SupervisorId == user.Id /*TODO || LINQ select a join na tabulku zvirat... mě poser*/)
+                if (content[i].SupervisorId == user.Id) /*TODO || LINQ select a join na tabulku zvirat... mě poser*/
                 {
                     StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
                     Image photo = (Image)employee.FindName("piture");
@@ -331,7 +331,15 @@ namespace TISWindows
                 };
                 btnKeeper.Click += (s, e) =>
                 {
-                    OnClickEmployees();
+                    if(user.Role == PersonalRoles.KEEPER)
+                    {
+                        OnClickEmployees();
+                    }
+                    else
+                    {
+                        OnClickEmployeeOfAnimals();
+                    }
+                    
                 };
 
                 emulator.Click += (s, e) =>
@@ -620,9 +628,7 @@ namespace TISWindows
             };
         }
 
-        /*TODO: 1. Pridat listBox nebo jak se to jmenuje a nahazet tam logg zaznamy
-         *  2. Udelat todle, aby se to volalo na vlakne
-         *  3. Jeste aby to nastavovalo pri zmene uzivatele usera v main window... to bude ostry...
+        /*TODO:Jeste aby to nastavovalo pri zmene uzivatele usera v main window... to bude ostry...
          */
         private void EmulatorShenanigans()
         {
@@ -636,6 +642,10 @@ namespace TISWindows
             }*/
         }  
 
+        private void OnClickEmployeeOfAnimals()
+        {
+
+        }
     }
 
 }

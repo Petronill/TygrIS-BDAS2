@@ -201,11 +201,18 @@ namespace TISWindows
                     thread.IsBackground = true;
                     thread.Start();
 
+                    LoggRefresh(loggList);
+
                     //TODO zavolat okno s prvky a okey tlačítkem, co by mělo 
                 }
                 else if (userAnimal.SelectedItem.ToString() == "Users")
                 {
-                    
+                    Thread thread = new Thread(new ThreadStart(AddUser));
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.IsBackground = true;
+                    thread.Start();
+
+                    LoggRefresh(loggList);
                 }
               
             };
@@ -551,6 +558,12 @@ namespace TISWindows
         private void AddAnimal()
         {
             AddingAnimal profile = new AddingAnimal(client);
+            profile.Show();
+            System.Windows.Threading.Dispatcher.Run();
+        }
+        private void AddUser()
+        {
+            AddingUser profile = new AddingUser(client);
             profile.Show();
             System.Windows.Threading.Dispatcher.Run();
         }

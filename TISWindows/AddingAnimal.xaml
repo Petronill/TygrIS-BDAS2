@@ -24,11 +24,11 @@
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                         <Label>Pohlaví:</Label>
-                        <TextBox VerticalAlignment="Center" x:Name="sex" Width="178"></TextBox>
+                        <ComboBox VerticalAlignment="Center" x:Name="sex" Width="178"></ComboBox>
                     </StackPanel>
-                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Width="180">
                         <Label>Výběh:</Label>
-                        <ComboBox VerticalAlignment="Center" x:Name="enclosure" Width="130"></ComboBox>
+                        <ComboBox Margin="4 0 0 0" VerticalAlignment="Center" x:Name="enclosure" Width="130"></ComboBox>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                         <Label>Pavilón:</Label>
