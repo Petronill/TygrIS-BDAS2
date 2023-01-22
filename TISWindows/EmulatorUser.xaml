@@ -1,0 +1,67 @@
+﻿<Window x:Class="TISWindows.EmulatorUser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TISWindows"
+        mc:Ignorable="d"
+        Title="EmulatorUser" Height="450" Width="850">
+    <Grid>
+        <StackPanel x:Name="adminWindow" Orientation="Horizontal" Height="408" Margin="30,75,0,0">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Width="150" Margin="5,5,5,0">
+                    <Label Content="Emulovaný uživatel:"></Label>
+                    <ComboBox x:Name="users" Margin="5,5,5,10"></ComboBox>
+                </StackPanel>
+            </DockPanel>
+            <StackPanel>
+                <StackPanel x:Name="userProfile" Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" Height="407" Width="249">
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Label>Jméno:</Label>
+                            <TextBox VerticalAlignment="Center" x:Name="name" Width="156"></TextBox>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Label Content="Rodné číslo:"/>
+                            <TextBox VerticalAlignment="Center" x:Name="pin" Text="" Width="130"/>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Label>Adresa:</Label>
+                            <TextBox VerticalAlignment="Center" x:Name="address" Width="154"></TextBox>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Label>E-mail:</Label>
+                            <TextBox VerticalAlignment="Center" x:Name="email" Width="158"></TextBox>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Label>Telefonní číslo:</Label>
+                            <TextBox VerticalAlignment="Center" x:Name="phone" Width="115"></TextBox>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Label>Číslo účtu:</Label>
+                            <TextBox VerticalAlignment="Center" x:Name="account" Width="138"></TextBox>
+                        </StackPanel>
+                        <StackPanel x:Name="donationPanel" Visibility="Visible" HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Label>Donation:</Label>
+                            <TextBox VerticalAlignment="Center" x:Name="donation" Width="141"></TextBox>
+                        </StackPanel>
+                        <StackPanel x:Name="wagePanel" Visibility="Hidden" HorizontalAlignment="Left" Orientation="Horizontal">
+                            <Label>Hrubá mzda:</Label>
+                            <TextBox VerticalAlignment="Center" x:Name="wage" Width="84"></TextBox>
+                        </StackPanel>
+                        <Button Content="Uložit změny" Margin="20 20 20 0" x:Name="btnChange" IsEnabled="False"></Button>
+                    </StackPanel>
+                    <StackPanel>
+                        <Image x:Name="picture" Source="/Items/defaultUser.png"
+                               Width="161" Height="147"/>
+                        <Button Content="Změnit obrázek" x:Name="pictureChange" Margin="0 10 0 0" Width="115"></Button>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel x:Name="loggPanel" Width="241" Height="406">
+                <ListBox Height="250" x:Name="loggList" Width="226">
+                </ListBox>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

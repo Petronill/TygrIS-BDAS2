@@ -19,6 +19,8 @@ using System.Xml.Linq;
 using System.Windows.Automation.Provider;
 using System.Windows.Input;
 using System.Reflection;
+using System.Threading;
+using System.Net.Http.Headers;
 
 namespace TISWindows
 {
@@ -334,11 +336,17 @@ namespace TISWindows
 
                 emulator.Click += (s, e) =>
                 {
-                    
+                    Thread thread = new Thread(new ThreadStart(EmulatorShenanigans));
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.IsBackground= true;
+                    thread.Start();
                 };
+
+
             }
 
         }
+
         private async void OnClickEmployee(object sender, RoutedEventArgs e)
         {
             await Task.Run(() =>
@@ -616,177 +624,18 @@ namespace TISWindows
          *  2. Udelat todle, aby se to volalo na vlakne
          *  3. Jeste aby to nastavovalo pri zmene uzivatele usera v main window... to bude ostry...
          */
-        private void EmulatorShenanigans(object sender, RoutedEventArgs e)
+        private void EmulatorShenanigans()
         {
-            Content.Children.Clear();
-            Emulator profile = new Emulator();
-            HttpResponseMessage result = client.GetAsync("User/").Result;
-            string res = result.Content.ReadAsStringAsync().Result;
-            user = JsonSerializer.Deserialize<Person>(res);
-
-            string panel = XamlWriter.Save(profile.adminWindow);
-            StackPanel profileMenu = (StackPanel)XamlReader.Parse(panel);
-            StackPanel donationPanel = (StackPanel)profileMenu.FindName("donationPanel");
-            StackPanel wagePanel = (StackPanel)profileMenu.FindName("wagePanel");
-            Button btnChange = (Button)profileMenu.FindName("pictureChange");
-            Button saveChange = (Button)profileMenu.FindName("saveChange");
-            Image profilePic = (Image)profileMenu.FindName("picture");
-            TextBox name = (TextBox)profileMenu.FindName("name");
-            TextBox pin = (TextBox)profileMenu.FindName("pin");
-            TextBox account = (TextBox)profileMenu.FindName("account");  
-            TextBox wage = (TextBox)profileMenu.FindName("wage");
-            TextBox donation = (TextBox)profileMenu.FindName("donation");
-            TextBox address = (TextBox)profileMenu.FindName("address");
-            TextBox email = (TextBox)profileMenu.FindName("email");
-            TextBox phone = (TextBox)profileMenu.FindName("phone");
-            ComboBox users = (ComboBox)profileMenu.FindName("users");
-            ComboBox role = (ComboBox)profileMenu.FindName("role");
-
-            HttpResponseMessage people = client.GetAsync("Person/").Result;
-            string toString = people.Content.ReadAsStringAsync().Result;
-            var userList = JsonSerializer.Deserialize<List<Person>>(toString);
-
-            for (int i = 0; i < userList.Count; i++)
-            {
-                users.Items.Add(userList[i].FirstName);
-            }
-            users.SelectedIndex = 0;
-            role.Items.Add("KEEPER");
-            role.Items.Add("ADOPTER");
-                
-
-            if (user != null)
-            {
-                if (user.Role == PersonalRoles.KEEPER)
-                {
-                    donationPanel.Visibility = Visibility.Hidden;
-                    wagePanel.Visibility = Visibility.Visible;
-                    //TODO Jak to ale budu ukladat jajajajajajaajajj
-                    Keeper pokus = (Keeper)user;
-                    wage.Text = pokus.GrossWage.ToString();
-                }
-                else
-                {
-                    donationPanel.Visibility = Visibility.Visible;
-                    wagePanel.Visibility = Visibility.Hidden;
-                    //TODO Jak todle ale potom budu ukladat k sakra jajajajajaj
-                    Adopter pokus = (Adopter)user;
-                    donation.Text = pokus.Donation.ToString();
-                }
-                name.Text = user.FirstName + " " + user.LastName;
-                pin.Text = user.PIN.ToString();
-                account.Text = user.AccountNumber.ToString();
-                address.Text = user.Address.Street + " " + user.Address.HouseNumber + " " + user.Address.City + " " + user.Address.Country + " " + user.Address.PostalCode;
-                email.Text = user.Email;
-                phone.Text = user.PhoneNumber.ToString();
-            }
-
+            Emulator profile = new Emulator(user, client);
+            profile.Show();
+            user = profile.User;
+            System.Windows.Threading.Dispatcher.Run();
+            
+            /*lock(profileMenu){
             Content.Children.Add(profileMenu);
-            users.SelectionChanged += (s, e) =>
-            {
-                for (int i = 0; i < userList.Count; i++)
-                {
-                    if (userList[i].FirstName.Equals(users.SelectedItem.ToString()))
-                    {
-                        if (user.Role == PersonalRoles.KEEPER)
-                        {
-                            donationPanel.Visibility = Visibility.Hidden;
-                            wagePanel.Visibility = Visibility.Visible;
-                            //TODO Jak to ale budu ukladat jajajajajajaajajj
-                            Keeper pokus = (Keeper)user;
-                            wage.Text = pokus.GrossWage.ToString();
-                        }
-                        else
-                        {
-                            donationPanel.Visibility = Visibility.Visible;
-                            wagePanel.Visibility = Visibility.Hidden;
-                            //TODO Jak todle ale potom budu ukladat k sakra jajajajajaj
-                            Adopter pokus = (Adopter)user;
-                            donation.Text = pokus.Donation.ToString();
-                        }
-                        name.Text = user.FirstName + " " + user.LastName;
-                        pin.Text = user.PIN.ToString();
-                        account.Text = user.AccountNumber.ToString();
-                        address.Text = user.Address.Street + " " + user.Address.HouseNumber + " " + user.Address.City + " " + user.Address.Country + " " + user.Address.PostalCode;
-                        email.Text = user.Email;
-                        phone.Text = user.PhoneNumber.ToString();
-                        break;
-                    }
-                }
-            };
-            name.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
-            pin.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
-            address.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
-            email.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
-            phone.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
-            account.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
-            wage.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
-            account.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
-            donation.TextChanged += (s, e) =>
-            {
-                saveChange.IsEnabled = true;
-            };
+            }*/
+        }  
 
-
-
-            saveChange.Click += (s, e) =>
-            {
-                string[] splitName = name.Text.Split(' ');
-                user.FirstName = splitName[0];
-                user.LastName = splitName[1];
-                string[] splitAddress = address.Text.Split(' ');
-                user.Address.Street = splitAddress[0];
-                user.Address.HouseNumber = Int32.Parse(splitAddress[1]);
-                user.Address.City = splitAddress[2];
-                user.Address.Country = splitAddress[3];
-                user.Address.PostalCode = Int32.Parse(splitAddress[4]);
-                user.Email = email.Text;
-                user.PhoneNumber = Int64.Parse(phone.Text);
-                user.PIN = Int64.Parse(pin.Text);
-                user.AccountNumber= Int32.Parse(account.Text);
-                if(role.SelectedItem.ToString() == "KEEPER")
-                {
-                    user.Role = PersonalRoles.KEEPER;
-                    //TODO tady mu přidělit hrubou mzdu
-                }
-                else
-                {
-                    user.Role = PersonalRoles.ADOPTER;
-                    //TODO tady mu přidělit donation
-                }
-
-                UserProfileChange();
-            };
-
-            btnChange.Click += (s, e) =>
-            {
-                profilePic = UserPhotoChange(profileMenu);
-            };
-        }
     }
 
 }

@@ -1,0 +1,63 @@
+﻿<Window x:Class="TISWindows.AddingUser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TISWindows"
+        mc:Ignorable="d"
+        Title="AddingUser" Height="450" Width="800">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel x:Name="userProfile" Orientation="Horizontal">
+                <StackPanel Orientation="Vertical" Height="407" Width="394">
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>Role:</Label>
+                        <ComboBox VerticalAlignment="Center" x:Name="role" Width="156"></ComboBox>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>Jméno(křestní příjmení):</Label>
+                        <TextBox VerticalAlignment="Center" x:Name="name" Width="156"></TextBox>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label Content="Rodné číslo:"/>
+                        <TextBox VerticalAlignment="Center" x:Name="pin" Text="" Width="130"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>Adresa(ulice, číslo domu, město, PSČ, stát):</Label>
+                        <TextBox VerticalAlignment="Center" x:Name="address" Width="154"></TextBox>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>E-mail:</Label>
+                        <TextBox VerticalAlignment="Center" x:Name="email" Width="158"></TextBox>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>Telefonní číslo:</Label>
+                        <TextBox VerticalAlignment="Center" x:Name="phone" Width="115"></TextBox>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>Číslo účtu:</Label>
+                        <TextBox VerticalAlignment="Center" x:Name="account" Width="138"></TextBox>
+                    </StackPanel>
+                    <StackPanel x:Name="donationPanel" Visibility="Visible" HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>Donation:</Label>
+                        <TextBox VerticalAlignment="Center" x:Name="donation" Width="141"></TextBox>
+                    </StackPanel>
+                    <StackPanel x:Name="wagePanel" Visibility="Hidden" HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>Hrubá mzda:</Label>
+                        <TextBox VerticalAlignment="Center" x:Name="wage" Width="84"></TextBox>
+                    </StackPanel>
+                    <StackPanel x:Name="supervisorPanel" Visibility="Hidden" HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Label>ID nadřízeného:</Label>
+                        <TextBox VerticalAlignment="Center" x:Name="supervisorId" Width="84"></TextBox>
+                    </StackPanel>
+                    <Button Content="Uložit změny" Margin="20 20 20 0" x:Name="btnChange" IsEnabled="False"></Button>
+                </StackPanel>
+                <StackPanel>
+                    <Image x:Name="picture" Source="/Items/defaultUser.png"
+                               Width="161" Height="147"/>
+                    <Button Content="Změnit obrázek" x:Name="pictureChange" Margin="0 10 0 0" Width="115"></Button>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
