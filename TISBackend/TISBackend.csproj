@@ -146,6 +146,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="TygrIS API Endpoints.xlsx" />
     <None Include="Oracle.DataAccess.Common.Configuration.Section.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -153,7 +154,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <Content Include="TygrIS API Endpoints.xlsx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
