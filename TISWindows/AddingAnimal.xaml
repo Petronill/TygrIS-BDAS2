@@ -54,7 +54,7 @@
                         <Label>Adopter ID:</Label>
                         <TextBox VerticalAlignment="Center" x:Name="adopterId" Width="117"></TextBox>
                     </StackPanel>
-                    <Button Content="Uložit změny" Margin="20 20 20 0" x:Name="btnChange" IsEnabled="False"></Button>
+                    <Button Content="Uložit změny" Margin="20 20 20 0" x:Name="btnChange"></Button>
                 </StackPanel>
                 <StackPanel>
                     <Image x:Name="picture" Source="/Items/defaultAnimal.jpg"

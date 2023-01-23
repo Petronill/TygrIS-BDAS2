@@ -172,7 +172,7 @@ namespace TISWindows
         private void OnClickEmployees()
         {
             Content.Children.Clear();
-            HttpResponseMessage result = client.GetAsync("Keeper/").Result;
+            HttpResponseMessage result = client.GetAsync("Subordinate/" + user.Id).Result;
             string res = result.Content.ReadAsStringAsync().Result;
             var content = JsonSerializer.Deserialize<List<Keeper>>(res);
 
@@ -183,31 +183,34 @@ namespace TISWindows
             StackPanel ogEmployee = (StackPanel)ogThreeEmployees.FindName("employee");
             ogThreeEmployees.Children.Clear();
             StackPanel threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
+            int counter = 0;
             for (int i = 0; i < content.Count; i++)
             {
-                if (content[i].SupervisorId == user.Id) /*TODO || LINQ select a join na tabulku zvirat... mě poser*/
+                StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
+                Image photo = (Image)employee.FindName("piture");
+                TextBox firstName = (TextBox)employee.FindName("firstName");
+                TextBox secondName = (TextBox)employee.FindName("secondName");
+                TextBox pin = (TextBox)employee.FindName("pin");
+                TextBox phone = (TextBox)employee.FindName("phoneNumber");
+                TextBox email = (TextBox)employee.FindName("email");
+
+                firstName.Text = content[i].FirstName;
+                secondName.Text = content[i].LastName;
+                pin.Text = content[i].PIN.ToString();
+                phone.Text = content[i].PhoneNumber.ToString();
+                email.Text = content[i].Email;
+
+                threeEmployees.Children.Add(employee);
+                counter++;
+                if (i % 5 == 4 || i == content.Count - 1)
                 {
-                    StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
-                    Image photo = (Image)employee.FindName("piture");
-                    TextBox firstName = (TextBox)employee.FindName("firstName");
-                    TextBox secondName = (TextBox)employee.FindName("secondName");
-                    TextBox pin = (TextBox)employee.FindName("pin");
-                    TextBox phone = (TextBox)employee.FindName("phoneNumber");
-                    TextBox email = (TextBox)employee.FindName("email");
-
-                    firstName.Text = content[i].FirstName;
-                    secondName.Text = content[i].LastName;
-                    pin.Text = content[i].PIN.ToString();
-                    phone.Text = content[i].PhoneNumber.ToString();
-                    email.Text = content[i].Email;
-
-                    threeEmployees.Children.Add(employee);
-                    if (i % 5 == 4 || i == content.Count - 1)
-                    {
-                        list.Children.Add(threeEmployees);
-                        threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
-                    }
-                }
+                    list.Children.Add(threeEmployees);
+                    threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
+                }  
+            }
+            if (counter % 5 != 0)
+            {
+                list.Children.Add(threeEmployees);
             }
             Content.Children.Add(employeeGrid);
         }
@@ -240,6 +243,9 @@ namespace TISWindows
                 TextBox email = (TextBox)profileMenu.FindName("email");
                 TextBox phone = (TextBox)profileMenu.FindName("phone");
                 ComboBox users = (ComboBox)profileMenu.FindName("users");
+
+                //TODO pridat RefreshPhoto na Image, aby se nacetl hnedka...
+
 
                 HttpResponseMessage people = client.GetAsync("Person/").Result;
                 string toString = people.Content.ReadAsStringAsync().Result;
@@ -331,7 +337,7 @@ namespace TISWindows
                 };
                 btnKeeper.Click += (s, e) =>
                 {
-                    if(user.Role == PersonalRoles.KEEPER)
+                    if (user.Role == PersonalRoles.KEEPER)
                     {
                         OnClickEmployees();
                     }
@@ -339,14 +345,14 @@ namespace TISWindows
                     {
                         OnClickEmployeeOfAnimals();
                     }
-                    
+
                 };
 
                 emulator.Click += (s, e) =>
                 {
                     Thread thread = new Thread(new ThreadStart(EmulatorShenanigans));
                     thread.SetApartmentState(ApartmentState.STA);
-                    thread.IsBackground= true;
+                    thread.IsBackground = true;
                     thread.Start();
                 };
 
@@ -486,7 +492,6 @@ namespace TISWindows
             client.PostAsync("User/", new StringContent(changedUser, Encoding.UTF8, "application/json"));
         }
 
-        //TODO TADY TA MRDKA NECHCE NEJEN NACIST TEN POSRANY OBRAZEK, ALE DOKONCE SI FURT STEZUJE NA HODNOTY KURVA FIX, KTERÝ DEBBUGER TVRDÍ, ŽE NEJSOU PŘITOM KRUVA JSOU
         private Image RefreshPhoto(StackPanel profileMenu)
         {
             Image profilePic = (Image)profileMenu.FindName("picture");
@@ -498,41 +503,24 @@ namespace TISWindows
             if (deserializace?.Data != null)
             {
                 byte[] data = deserializace.GetBytes();
-                /*  string message = "";
-                  for (int i = 0; i < data.Length; i++)
-                  {
-                      message += data[i] + " ";
-                  }
-
-                  MessageBox.Show(message);
-                */
-                var format = PixelFormats.Gray8;
-                int height = 200;
-                int width = 200;
-                int xDpi = 96;
-                int yDpi = 96;
-                int stride = width / 8;
-                List<Color> colors = new List<Color>();
-                colors.Add(Colors.Red);
-                colors.Add(Colors.Blue);
-                colors.Add(Colors.Green);
-                BitmapPalette myPalette = new BitmapPalette(colors);
-
-                BitmapSource pokus = BitmapSource.Create(width, height, xDpi, yDpi, format, myPalette, data, stride);
-                Image pokusImage = new Image();
-                pokusImage.Source = pokus;
-                Window window = new Window();
-                window.Content = pokusImage;
-                window.ShowDialog();
-
-
-                profilePic.Source = BitmapSource.Create(width, height, xDpi, yDpi, format, myPalette, data, stride);
+                var image = new BitmapImage();
+                using (var mem = new MemoryStream(data))
+                {
+                    mem.Position = 0;
+                    image.BeginInit();
+                    image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.UriSource = null;
+                    image.StreamSource = mem;
+                    image.EndInit();
+                }
+                image.Freeze();
+                profilePic.Source = image;
             }
             else
             {
                 profilePic.Source = new BitmapImage(new Uri(@"/Items/defaultUser.png", UriKind.RelativeOrAbsolute));
             }
-
             return profilePic;
         }
 
@@ -634,17 +622,56 @@ namespace TISWindows
         {
             Emulator profile = new Emulator(user, client);
             profile.Show();
-            user = profile.User;
+            profile.OnUserChanged += (newUser) => 
+            {
+                user = newUser;
+            };
             System.Windows.Threading.Dispatcher.Run();
-            
+
             /*lock(profileMenu){
             Content.Children.Add(profileMenu);
             }*/
-        }  
+        }
 
         private void OnClickEmployeeOfAnimals()
         {
+            Content.Children.Clear();
+            HttpResponseMessage result = client.GetAsync("Keeper/").Result;
+            string res = result.Content.ReadAsStringAsync().Result;
+            var content = JsonSerializer.Deserialize<List<Keeper>>(res);
 
+            Employees employeeList = new Employees();
+            Grid employeeGrid = (Grid)XamlReader.Parse(XamlWriter.Save(employeeList.grid));
+            StackPanel list = (StackPanel)employeeGrid.FindName("employeeList");
+            StackPanel ogThreeEmployees = (StackPanel)list.FindName("threeEmployees");
+            StackPanel ogEmployee = (StackPanel)ogThreeEmployees.FindName("employee");
+            ogThreeEmployees.Children.Clear();
+            StackPanel threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
+            for (int i = 0; i < content.Count; i++)
+            {
+                StackPanel employee = XamlReader.Parse(XamlWriter.Save(ogEmployee)) as StackPanel;
+                Image photo = (Image)employee.FindName("piture");
+                TextBox firstName = (TextBox)employee.FindName("firstName");
+                TextBox secondName = (TextBox)employee.FindName("secondName");
+                TextBox pin = (TextBox)employee.FindName("pin");
+                TextBox phone = (TextBox)employee.FindName("phoneNumber");
+                TextBox email = (TextBox)employee.FindName("email");
+
+                firstName.Text = content[i].FirstName;
+                secondName.Text = content[i].LastName;
+                pin.Text = content[i].PIN.ToString();
+                phone.Text = content[i].PhoneNumber.ToString();
+                email.Text = content[i].Email;
+
+                threeEmployees.Children.Add(employee);
+                if (i % 5 == 4 || i == content.Count - 1)
+                {
+                    list.Children.Add(threeEmployees);
+                    threeEmployees = XamlReader.Parse(XamlWriter.Save(ogThreeEmployees)) as StackPanel;
+                }
+
+            }
+            Content.Children.Add(employeeGrid);
         }
     }
 

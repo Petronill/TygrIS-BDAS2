@@ -204,12 +204,12 @@ namespace TISBackend.Controllers
             try {
                 if (!IsAuthorized())
                 {
-                    return StatusCode(HttpStatusCode.Unauthorized);
+                    return StatusCode(HttpStatusCode.Forbidden);
                 }
 
                 value["Id"] = JToken.FromObject(id);
                 return PostSingle(value);
-                }
+            }
             catch (Exception ex)
             {
                 return Content(HttpStatusCode.InternalServerError, ex.ToString());

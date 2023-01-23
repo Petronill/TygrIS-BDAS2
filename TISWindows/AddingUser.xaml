@@ -19,7 +19,7 @@
                         <TextBox VerticalAlignment="Center" x:Name="name" Width="156"></TextBox>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                        <Label Content="Rodné číslo:"/>
+                        <Label Content="Rodné číslo(min.9):"/>
                         <TextBox VerticalAlignment="Center" x:Name="pin" Text="" Width="130"/>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -50,7 +50,7 @@
                         <Label>ID nadřízeného:</Label>
                         <TextBox VerticalAlignment="Center" x:Name="supervisorId" Width="84"></TextBox>
                     </StackPanel>
-                    <Button Content="Uložit změny" Margin="20 20 20 0" x:Name="btnChange" IsEnabled="False"></Button>
+                    <Button Content="Uložit změny" Margin="20 20 20 0" x:Name="btnChange"></Button>
                 </StackPanel>
                 <StackPanel>
                     <Image x:Name="picture" Source="/Items/defaultUser.png"
