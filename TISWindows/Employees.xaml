@@ -13,11 +13,11 @@
                     <Image x:Name="picture"  Source="/Items/defaultUser.png" Width="100"></Image>
                     <DockPanel HorizontalAlignment="Center">
                         <TextBlock Text="Jméno: "  HorizontalAlignment="center"></TextBlock>
-                        <TextBox Text="Petr" x:Name="firstName" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" Text="Petr" x:Name="firstName" HorizontalAlignment="center"></TextBox>
                     </DockPanel>
                     <DockPanel HorizontalAlignment="Center">
                         <TextBlock Text="Příjmení: "  HorizontalAlignment="center"></TextBlock>
-                        <TextBox Text="Sobotka" x:Name="secondName" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" Text="Sobotka" x:Name="secondName" HorizontalAlignment="center"></TextBox>
                     </DockPanel>
                     <DockPanel HorizontalAlignment="Center">
                         <TextBlock Text="Rodné číslo: "  HorizontalAlignment="center"></TextBlock>
@@ -25,11 +25,11 @@
                     </DockPanel>
                     <DockPanel HorizontalAlignment="Center">
                         <TextBlock Text="E-mail: "  HorizontalAlignment="center"></TextBlock>
-                        <TextBox Text="SobotkaFFS@poop.com" x:Name="email" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" Text="SobotkaFFS@poop.com" x:Name="email" HorizontalAlignment="center"></TextBox>
                     </DockPanel>
                     <DockPanel HorizontalAlignment="Center">
                         <TextBlock Text="Telefon: "  HorizontalAlignment="center"></TextBlock>
-                        <TextBox Text="123 456 789" x:Name="phoneNumber" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" Text="123 456 789" x:Name="phoneNumber" HorizontalAlignment="center"></TextBox>
                     </DockPanel>
                 </StackPanel>
             </StackPanel>

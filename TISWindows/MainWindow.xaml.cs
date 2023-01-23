@@ -88,7 +88,7 @@ namespace TISWindows
         }
         private void OnClickAnimals(object sender, RoutedEventArgs e)
         {
-            if (userName.Content.Equals("Nepřihlášen"))
+            if (userName.Content.Equals("Nepřihlášen") && user == null)
             {
                 NotLoggedIn(sender, e);
             }
@@ -217,7 +217,7 @@ namespace TISWindows
 
         private async void OnClickInfo(object sender, RoutedEventArgs e)
         {
-            if (userName.Content.Equals("Nepřihlášen"))
+            if (userName.Content.Equals("Nepřihlášen") && user == null)
             {
                 NotLoggedIn(sender, e);
             }
@@ -243,7 +243,7 @@ namespace TISWindows
                 TextBox email = (TextBox)profileMenu.FindName("email");
                 TextBox phone = (TextBox)profileMenu.FindName("phone");
                 ComboBox users = (ComboBox)profileMenu.FindName("users");
-
+                profilePic = RefreshPhoto(profileMenu);
                 //TODO pridat RefreshPhoto na Image, aby se nacetl hnedka...
 
 
@@ -622,10 +622,6 @@ namespace TISWindows
         {
             Emulator profile = new Emulator(user, client);
             profile.Show();
-            profile.OnUserChanged += (newUser) => 
-            {
-                user = newUser;
-            };
             System.Windows.Threading.Dispatcher.Run();
 
             /*lock(profileMenu){

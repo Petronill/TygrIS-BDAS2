@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -28,15 +29,15 @@ namespace TISWindows
     public partial class Emulator : Window
     {
         Person user;
+        Person admin;
         Animal animal;
         HttpClient client;
         int counter = 0;
 
-        public event UserChanged OnUserChanged;
-
         public Emulator(Person user, HttpClient client)
         {
             this.client = client;
+            admin = user;
             this.user = user;
             InitializeComponent();
             LoadDataIntoComponents();
@@ -66,6 +67,7 @@ namespace TISWindows
             TextBox donation = (TextBox)profileMenu.FindName("donation");
             TextBox wage = (TextBox)profileMenu.FindName("wage");
 
+
             Button btnChange = (Button)profileMenu.FindName("btnChange");
             Button pictureChange = (Button)profileMenu.FindName("pictureChange");
             Image picture = (Image)profileMenu.FindName("picture");
@@ -87,7 +89,6 @@ namespace TISWindows
             }
             users.SelectedIndex = 0;
 
-            //TODO volat na server dotaz s poslanim keepera s ID usera
             Keeper keeper = new Keeper();
             Adopter adopter = new Adopter();
 
@@ -96,8 +97,8 @@ namespace TISWindows
                 if (user.Role == PersonalRoles.KEEPER)
                 {
                     HttpResponseMessage response = client.GetAsync("Keeper/" + user.Id).Result;
-                    string keeperString = people.Content.ReadAsStringAsync().Result;
-                    keeper = JsonSerializer.Deserialize<Keeper>(toString);
+                    string keeperString = response.Content.ReadAsStringAsync().Result;
+                    keeper = JsonSerializer.Deserialize<Keeper>(keeperString);
 
                     donationPanel.Visibility = Visibility.Hidden;
                     wagePanel.Visibility = Visibility.Visible;
@@ -107,8 +108,9 @@ namespace TISWindows
                 else
                 {
                     HttpResponseMessage response = client.GetAsync("Adopter/" + user.Id).Result;
-                    string keeperString = people.Content.ReadAsStringAsync().Result;
-                    adopter = JsonSerializer.Deserialize<Adopter>(toString);
+                    string adopterString = response.Content.ReadAsStringAsync().Result;
+                    adopter = JsonSerializer.Deserialize<Adopter>(adopterString);
+
 
                     donationPanel.Visibility = Visibility.Visible;
                     wagePanel.Visibility = Visibility.Hidden;
@@ -125,18 +127,33 @@ namespace TISWindows
             users.SelectionChanged += (s, e) =>
             {
                 btnChange.IsEnabled = false;
+
+                //users.Items.Clear();
+                //for (int i = 0; i < userList.Count; i++)
+                //{
+                //    users.Items.Add(userList[i].FirstName);
+
+                //}
+                //for (int i = 0; i < users.Items.Count; i++)
+                //{
+                //    users.SelectedIndex = i;
+                //    if (users.SelectedItem.ToString().Equals(user.FirstName))
+                //    {
+                //        break;
+                //    }
+                //}
+
                 for (int i = 0; i < userList.Count; i++)
                 {
                     if (userList[i].FirstName.Equals(users.SelectedItem.ToString()))
                     {
                         user = userList[i];
-                        OnUserChanged?.Invoke(user);
                         if (userList[i].Role == PersonalRoles.KEEPER)
                         {
                             donationPanel.Visibility = Visibility.Hidden;
                             wagePanel.Visibility = Visibility.Visible;
                             //TODO Jak to ale budu ukladat jajajajajajaajajj
-                            //Prevod na keepra mi bude delat kurva problem shiiiiii
+                            // Treba prevod na Keepera
                             wage.Text = keeper.GrossWage.ToString();
                         }
                         else
@@ -144,6 +161,7 @@ namespace TISWindows
                             donationPanel.Visibility = Visibility.Visible;
                             wagePanel.Visibility = Visibility.Hidden;
                             //TODO Jak todle ale potom budu ukladat k sakra jajajajajaj
+                            //Treba prevod na adoptra
                             donation.Text = adopter.Donation.ToString();
                         }
                         name.Text = user.FirstName + " " + user.LastName;
@@ -214,19 +232,19 @@ namespace TISWindows
 
                     LoggRefresh(loggList);
                 }
-              
+
             };
 
             btnRemove.Click += (s, e) =>
             {
-                if(userAnimal.SelectedItem.ToString() == "Animals")
+                if (userAnimal.SelectedItem.ToString() == "Animals")
                 {
-                    HttpResponseMessage loggs = client.DeleteAsync("Animal/" + animal.Id).Result;
+                    client.DeleteAsync("Animal/" + animal.Id);
                     //TODO Checknout jestli tydle 2 věci jsou dobře
                 }
-                else if(userAnimal.SelectedItem.ToString() == "Users")
+                else if (userAnimal.SelectedItem.ToString() == "Users")
                 {
-                    HttpResponseMessage loggs = client.DeleteAsync("Person/" + user.Id).Result;
+                    client.DeleteAsync("Person/" + user.Id);
                 }
             };
 
@@ -247,16 +265,82 @@ namespace TISWindows
             string[] splitName = name.Text.Split(' ');
             user.FirstName = splitName[0];
             user.LastName = splitName[1];
-            string[] splitAddress = address.Text.Split(' ');
-            user.Address.Street = splitAddress[0];
-            user.Address.HouseNumber = Int32.Parse(splitAddress[1]);
-            user.Address.City = splitAddress[2];
-            user.Address.Country = splitAddress[3];
-            user.Address.PostalCode = Int32.Parse(splitAddress[4]);
+            string[] addressString = address.Text.Split(" ");
+            TISModelLibrary.Address adresa = new TISModelLibrary.Address();
+            if (addressString.Length == 4)
+            {
+                adresa.Street = addressString[0];
+                adresa.HouseNumber = Int32.Parse(addressString[1]);
+                adresa.City = addressString[2];
+                adresa.Country = addressString[3];
+                adresa.PostalCode = Int32.Parse(addressString[4]);
+            }
+            else if (addressString.Length == 5)
+            {
+                adresa.Street = addressString[0];
+                adresa.HouseNumber = Int32.Parse(addressString[1]);
+                adresa.City = addressString[2];
+                adresa.Country = addressString[3] + " " + addressString[4];
+                adresa.PostalCode = Int32.Parse(addressString[5]);
+            }
+
+            user.Address = adresa;
             user.Email = email.Text;
             user.PhoneNumber = Int64.Parse(phone.Text);
             user.PIN = Int64.Parse(pin.Text);
-            user.AccountNumber = Int32.Parse(account.Text);
+            user.AccountNumber = Int64.Parse(account.Text);
+
+            if (user.Role == PersonalRoles.KEEPER)
+            {
+                Keeper keeper = new Keeper();
+                keeper.Id = 0;
+                keeper.FirstName = user.FirstName;
+                keeper.LastName = user.LastName;
+                keeper.Email = user.Email;
+                keeper.Address = user.Address;
+                keeper.AccountNumber = user.AccountNumber;
+                keeper.PhoneNumber = user.PhoneNumber;
+                keeper.PIN = user.PIN;
+                keeper.Role = PersonalRoles.KEEPER;
+                keeper.PhotoId = user.PhotoId;
+
+                if (!string.IsNullOrEmpty(wage.Text))
+                {
+                    keeper.GrossWage = Int32.Parse(wage.Text);
+                }
+                else
+                {
+                    keeper.GrossWage = 0;
+                }
+                keeper.SupervisorId = 0;
+                var changedAnimal = JsonSerializer.Serialize(keeper);
+                client.PostAsync("Keeper/", new StringContent(changedAnimal, Encoding.UTF8, "application/json"));
+            }
+            else if (user.Role == PersonalRoles.ADOPTER)
+            {
+                Adopter adopter = new Adopter();
+                adopter.Id = 0;
+                adopter.FirstName = user.FirstName;
+                adopter.LastName = user.LastName;
+                adopter.Email = user.Email;
+                adopter.Address = user.Address;
+                adopter.AccountNumber = user.AccountNumber;
+                adopter.PhoneNumber = user.PhoneNumber;
+                adopter.PIN = user.PIN;
+                adopter.Role = PersonalRoles.ADOPTER;
+                adopter.PhotoId = user.PhotoId;
+
+                if (!string.IsNullOrEmpty(donation.Text))
+                {
+                    adopter.Donation = Int32.Parse(donation.Text);
+                }
+                else
+                {
+                    adopter.Donation = 0;
+                }
+                var changedAnimal = JsonSerializer.Serialize(adopter);
+                client.PostAsync("Adopter/", new StringContent(changedAnimal, Encoding.UTF8, "application/json"));
+            }
 
             users.Items.Clear();
             for (int i = 0; i < userList.Count; i++)
@@ -285,9 +369,9 @@ namespace TISWindows
             string log = loggs.Content.ReadAsStringAsync().Result;
             List<LogEntry> entries = JsonSerializer.Deserialize<List<LogEntry>>(log);
             entries.OrderBy((log) => log.Time);
-            for (int i = 0; i < entries.Count; i++)
+            foreach (var entry in entries)
             {
-                loggList.Items.Add(entries[i].Table + " " + entries[i].Event + " " + entries[i].Time.ToString() + " " + entries[i].Message);
+                loggList.Items.Add(entry.Table + " " + entry.Event + " " + entry.ToString() + " " + entry.Message);
             }
 
         }
@@ -312,7 +396,7 @@ namespace TISWindows
         }
         private Image AnimalPhotoChange(StackPanel profileMenu)
         {
-            PhotoChange();
+            PhotoChangeAnimal();
             AnimalProfileChange();
             return RefreshPhoto(profileMenu);
         }
@@ -338,8 +422,28 @@ namespace TISWindows
                 }
             }
         }
+        private void PhotoChangeAnimal()
+        {
+            if (user != null)
+            {
+                OpenFileDialog change = new OpenFileDialog();
+                change.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+                change.Multiselect = false;
+                if (change.ShowDialog() == true)
+                {
+                    var pic = new Document()
+                    {
+                        Name = change.SafeFileName,
+                        Extension = System.IO.Path.GetExtension(change.FileName),
+                        Data = Document.SerializeBytes(File.ReadAllBytes(change.FileName)),
+                    };
+                    var content = JsonSerializer.Serialize(pic);
 
-        //TODO opravit refreshPhoto
+                    var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
+                    animal.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
+                }
+            }
+        }
         private Image RefreshPhoto(StackPanel profileMenu)
         {
             Image profilePic = (Image)profileMenu.FindName("picture");
@@ -351,40 +455,26 @@ namespace TISWindows
             if (deserializace?.Data != null)
             {
                 byte[] data = deserializace.GetBytes();
-                /*  string message = "";
-                  for (int i = 0; i < data.Length; i++)
-                  {
-                      message += data[i] + " ";
-                  }
-                  MessageBox.Show(message);
-                */
-                var format = PixelFormats.Gray8;
-                int height = 200;
-                int width = 200;
-                int xDpi = 96;
-                int yDpi = 96;
-                int stride = width / 8;
-                List<Color> colors = new List<Color>();
-                colors.Add(Colors.Red);
-                colors.Add(Colors.Blue);
-                colors.Add(Colors.Green);
-                BitmapPalette myPalette = new BitmapPalette(colors);
-
-                BitmapSource pokus = BitmapSource.Create(width, height, xDpi, yDpi, format, myPalette, data, stride);
-                Image pokusImage = new Image();
-                pokusImage.Source = pokus;
-
-                profilePic.Source = BitmapSource.Create(width, height, xDpi, yDpi, format, myPalette, data, stride);
+                var image = new BitmapImage();
+                using (var mem = new MemoryStream(data))
+                {
+                    mem.Position = 0;
+                    image.BeginInit();
+                    image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.UriSource = null;
+                    image.StreamSource = mem;
+                    image.EndInit();
+                }
+                image.Freeze();
+                profilePic.Source = image;
             }
             else
             {
                 profilePic.Source = new BitmapImage(new Uri(@"/Items/defaultUser.png", UriKind.RelativeOrAbsolute));
             }
-
             return profilePic;
         }
-        /* TODO opravit ukladani zvirete
-        */
         private void AnimalEmulator()
         {
             EmulatorAnimal emulator = new EmulatorAnimal();
@@ -509,29 +599,68 @@ namespace TISWindows
 
             btnChange.Click += (s, e) =>
             {
-                animal.Name = name.Text;
-                animal.Sex.Abbreviation = sex.Text;
-                string[] splitNameCzech = nameCzech.Text.Split(' ');
-                animal.Species.CzechName = splitNameCzech[0];
-                animal.Species.Genus.CzechName = splitNameCzech[1];
-                string[] splitNameLatin = nameLatin.Text.Split(' ');
-                animal.Species.LatinName = splitNameLatin[0];
-                animal.Species.Genus.LatinName = splitNameLatin[1];
-                string[] enclosurePavilion = enclosure.Text.Split(' ');
-                animal.Enclosure.Name = enclosurePavilion[0];
-                animal.Enclosure.Pavilion.Name = enclosurePavilion[1];
-                animal.Birth = DateTime.Parse(birth.Text);
-                if (animal.Death != null)
+                if (!string.IsNullOrEmpty(name.Text))
+                {
+                    animal.Name = name.Text;
+                }
+                else
+                {
+                    animal.Name = " ";
+                }
+                if (!string.IsNullOrEmpty(nameCzech.Text) || !string.IsNullOrEmpty(nameLatin.Text))
+                {
+                    string[] speciesCZ = nameCzech.Text.Split(' ');
+                    string[] speciesLat = nameLatin.Text.Split(' ');
+                    Species species = new Species();
+                    species.CzechName = speciesCZ[0];
+                    species.LatinName = speciesLat[0];
+                    Genus gen = new Genus();
+                    gen.CzechName = speciesCZ[1];
+                    gen.LatinName = speciesLat[1];
+                    species.Genus = gen;
+                    animal.Species = species;
+                }
+                else
+                {
+                    Genus gen = new Genus();
+                    Species spes = new Species();
+                    spes.Genus = gen;
+                    animal.Species = spes;
+                }
+                Sex sexyTime = new Sex();
+                sexyTime.Abbreviation = sex.Text;
+                animal.Sex = sexyTime;
+                if (!string.IsNullOrEmpty(birth.Text))
+                {
+                    animal.Birth = DateTime.Parse(birth.Text);
+                }
+                else
+                {
+                    //TODO todle neni dobry uprimne
+                    animal.Birth = DateTime.Now;
+                }
+                if (!string.IsNullOrEmpty(death.Text))
                 {
                     animal.Death = DateTime.Parse(death.Text);
                 }
-                animal.MaintCosts = Int32.Parse(support.Text);
-
-                animals.Items.Clear();
-                for (int i = 0; i < animalList.Count; i++)
+                else
                 {
-                    animals.Items.Add(animalList[i].Name);
+                    //TODO todle neni dobry uprimne
+                    animal.Death = null;
                 }
+
+
+                if (!string.IsNullOrEmpty(support.Text))
+                {
+                    animal.MaintCosts = Int32.Parse(support.Text);
+                }
+                else
+                {
+                    animal.MaintCosts = 0;
+                }
+
+                var changedAnimal = JsonSerializer.Serialize(animal);
+                client.PostAsync("Animal/", new StringContent(changedAnimal, Encoding.UTF8, "application/json"));
 
                 AnimalProfileChange();
             };
@@ -541,18 +670,18 @@ namespace TISWindows
                 picture = AnimalPhotoChange(animalProfile);
             };
 
-             loggList.DataContextChanged += (s, e) =>
-             {
-                 loggList.Items.Clear();
-                 HttpResponseMessage loggs = client.GetAsync("Log/").Result;
-                 string log = loggs.Content.ReadAsStringAsync().Result;
-                 List<LogEntry> entries = JsonSerializer.Deserialize<List<LogEntry>>(log);
-                 entries.OrderBy((log) => log.Time);
-                 for (int i = 0; i < entries.Count; i++)
-                 {
-                     loggList.Items.Add(entries[i].Table + " " + entries[i].Event + " " + entries[i].Time.ToString() + " " + entries[i].Message);
-                 }
-             };
+            loggList.DataContextChanged += (s, e) =>
+            {
+                loggList.Items.Clear();
+                HttpResponseMessage loggs = client.GetAsync("Log/").Result;
+                string log = loggs.Content.ReadAsStringAsync().Result;
+                List<LogEntry> entries = JsonSerializer.Deserialize<List<LogEntry>>(log);
+                entries.OrderBy((log) => log.Time);
+                for (int i = 0; i < entries.Count; i++)
+                {
+                    loggList.Items.Add(entries[i].Table + " " + entries[i].Event + " " + entries[i].Time.ToString() + " " + entries[i].Message);
+                }
+            };
 
             adminWindow.Children.Add(profileMenu);
         }

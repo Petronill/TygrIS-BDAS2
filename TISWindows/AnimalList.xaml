@@ -22,32 +22,32 @@
                 <StackPanel x:Name="animal" Orientation="Vertical">
                     <Image x:Name="picture" Source="/Items/defaultAnimal.jpg" Width="100"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock Text="Jméno:" HorizontalAlignment="center"></TextBlock>
-                        <TextBox x:Name="name" Text="Adélka" HorizontalAlignment="center"></TextBox>
+                        <TextBlock  Text="Jméno:" HorizontalAlignment="center"></TextBlock>
+                        <TextBox IsReadOnly="True" x:Name="name" Text="Adélka" HorizontalAlignment="center"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="Pohlaví: " HorizontalAlignment="center"></TextBlock>
-                        <TextBox x:Name="sex" Text="žena" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" x:Name="sex" Text="žena" HorizontalAlignment="center"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="Rod:" HorizontalAlignment="center"></TextBlock>
-                        <TextBox x:Name="species" Text="P. lotor" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" x:Name="species" Text="P. lotor" HorizontalAlignment="center"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="Čeleď:" HorizontalAlignment="center"></TextBlock>
-                        <TextBox x:Name="genus" Text=" Procyon" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" x:Name="genus" Text=" Procyon" HorizontalAlignment="center"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="Narození: " HorizontalAlignment="center"></TextBlock>
-                        <TextBox x:Name="birth" Text="13.2.2000" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" x:Name="birth" Text="13.2.2000" HorizontalAlignment="center"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="Smrt: " HorizontalAlignment="center"></TextBlock>
-                        <TextBox x:Name="death" Text="ještě ne" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" x:Name="death" Text="ještě ne" HorizontalAlignment="center"></TextBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="Cena: " HorizontalAlignment="center"></TextBlock>
-                        <TextBox x:Name="costs" Text="42069 Kč" HorizontalAlignment="center"></TextBox>
+                        <TextBox IsReadOnly="True" x:Name="costs" Text="42069 Kč" HorizontalAlignment="center"></TextBox>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

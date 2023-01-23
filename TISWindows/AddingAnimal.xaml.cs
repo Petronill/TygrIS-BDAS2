@@ -173,6 +173,35 @@ namespace TISWindows
 
         var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
         animal.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
+
+                    Image profilePic = picture;
+
+                    HttpResponseMessage imageFile = client.GetAsync("File/" + animal.PhotoId).Result;
+                    string readToString = imageFile.Content.ReadAsStringAsync().Result;
+
+                    Document deserializace = JsonSerializer.Deserialize<Document>(readToString);
+                    if (deserializace?.Data != null)
+                    {
+                        byte[] data = deserializace.GetBytes();
+                        var image = new BitmapImage();
+                        using (var mem = new MemoryStream(data))
+                        {
+                            mem.Position = 0;
+                            image.BeginInit();
+                            image.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                            image.CacheOption = BitmapCacheOption.OnLoad;
+                            image.UriSource = null;
+                            image.StreamSource = mem;
+                            image.EndInit();
+                        }
+                        image.Freeze();
+                        profilePic.Source = image;
+                    }
+                    else
+                    {
+                        profilePic.Source = new BitmapImage(new Uri(@"/Items/defaultUser.png", UriKind.RelativeOrAbsolute));
+                    }
+                    picture = profilePic;
                 }
 };
         }
