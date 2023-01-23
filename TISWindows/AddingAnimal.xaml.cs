@@ -24,7 +24,7 @@ namespace TISWindows
     /// </summary>
     public partial class AddingAnimal : Window
     {
-        Animal animal;
+        Animal animal = new Animal();
         HttpClient client;
 
         public AddingAnimal(HttpClient client)
@@ -48,7 +48,7 @@ namespace TISWindows
             }
 
             HttpResponseMessage response2 = client.GetAsync("Pavilion/").Result;
-            string pavilionString = response.Content.ReadAsStringAsync().Result;
+            string pavilionString = response2.Content.ReadAsStringAsync().Result;
             List<Pavilion> pavil = JsonSerializer.Deserialize<List<Pavilion>>(pavilionString);
 
             for (int i = 0; i < pavil.Count; i++)
@@ -66,98 +66,100 @@ namespace TISWindows
                 {
                     animal.Name = " ";
                 }
-                if (!string.IsNullOrEmpty(nameCzech.Text)) { 
-                string[] speciesCZ = nameCzech.Text.Split(' ');
-                animal.Species.CzechName = speciesCZ[0];
-                animal.Species.Genus.CzechName = speciesCZ[1];
+                if (!string.IsNullOrEmpty(nameCzech.Text) || !string.IsNullOrEmpty(nameLatin.Text))
+                {
+                    string[] speciesCZ = nameCzech.Text.Split(' ');
+                    string[] speciesLat = nameLatin.Text.Split(' ');
+                    Species species = new Species();
+                    species.CzechName = speciesCZ[0];
+                    species.LatinName = speciesLat[0];
+                    Genus gen = new Genus();
+                    gen.CzechName = speciesCZ[1];
+                    gen.LatinName = speciesLat[1];
+                    species.Genus = gen;
+                    animal.Species = species;
                 }
                 else
                 {
-                    animal.Species.CzechName = " ";
-                    animal.Species.Genus.CzechName = " ";
+                    Genus gen = new Genus();
+                    Species spes = new Species();
+                    spes.Genus = gen;
+                    animal.Species = spes;
                 }
-                if (!string.IsNullOrEmpty(nameLatin.Text)) { 
-                string[] speciesLat = nameLatin.Text.Split(' ');
-                animal.Species.LatinName = speciesLat[0];
-                animal.Species.Genus.LatinName = speciesLat[1];
-                }
-                else
+                Sex sexyTime = new Sex();
+                sexyTime.Abbreviation = sex.SelectedItem.ToString();
+                animal.Sex = sexyTime;
+            for (int i = 0; i < enclosur.Count; i++)
+            {
+                if (enclosur[i].Name.Equals(enclosure.SelectedItem.ToString()))
                 {
-                    animal.Species.LatinName = " ";
-                    animal.Species.Genus.LatinName = " ";
+                    animal.Enclosure = enclosur[i];
+                    break;
                 }
-                animal.Sex.Abbreviation = sex.SelectedItem.ToString();
-                for (int i = 0; i < enclosur.Count; i++)
+            }
+            for (int i = 0; i < pavil.Count; i++)
+            {
+                if (pavil[i].Name.Equals(pavilon.SelectedItem.ToString()))
                 {
-                    if (enclosur[i].Name.Equals(enclosure.SelectedItem.ToString()))
-                    {
-                        animal.Enclosure = enclosur[i];
-                        break;
-                    }
+                    animal.Enclosure.Pavilion = pavil[i];
+                    break;
                 }
-                for (int i = 0; i < pavil.Count; i++)
-                {
-                    if (pavil[i].Name.Equals(pavilon.SelectedItem.ToString()))
-                    {
-                        animal.Enclosure.Pavilion = pavil[i];
-                        break;
-                    }
-                }
-                if (!string.IsNullOrEmpty(birth.Text))
-                {
-                    animal.Birth = DateTime.Parse(birth.Text);
-                }
-                else
-                {
-                    //TODO todle neni dobry uprimne
-                    animal.Birth = DateTime.Now;
-                }
-                if (!string.IsNullOrEmpty(death.Text))
-                {
-                    animal.Death = DateTime.Parse(death.Text);
-                }
-                else
-                {
-                    //TODO todle neni dobry uprimne
-                    animal.Death = DateTime.Now;
-                }
+            }
+            if (!string.IsNullOrEmpty(birth.Text))
+            {
+                animal.Birth = DateTime.Parse(birth.Text);
+            }
+            else
+            {
+                //TODO todle neni dobry uprimne
+                animal.Birth = DateTime.Now;
+            }
+            if (!string.IsNullOrEmpty(death.Text))
+            {
+                animal.Death = DateTime.Parse(death.Text);
+            }
+            else
+            {
+                //TODO todle neni dobry uprimne
+                animal.Death = null;
+            }
 
 
-                if (!string.IsNullOrEmpty(support.Text))
-                {
-                    animal.MaintCosts = Int32.Parse(support.Text);
-                }
-                else
-                {
-                    animal.MaintCosts = 0;
-                }
+            if (!string.IsNullOrEmpty(support.Text))
+            {
+                animal.MaintCosts = Int32.Parse(support.Text);
+            }
+            else
+            {
+                animal.MaintCosts = 0;
+            }
 
-                if (!string.IsNullOrEmpty(keeperId.Text))
-                {
-                    animal.KeeperId= Int32.Parse(keeperId.Text);
-                }
-                else
-                {
-                    animal.KeeperId = 0;
-                }
+            if (!string.IsNullOrEmpty(keeperId.Text))
+            {
+                animal.KeeperId = Int32.Parse(keeperId.Text);
+            }
+            else
+            {
+                animal.KeeperId = 0;
+            }
 
-                if (!string.IsNullOrEmpty(adopterId.Text))
-                {
-                    animal.AdopterId = Int32.Parse(adopterId.Text);
-                }
-                else
-                {
-                    animal.AdopterId= 0;
-                }
+            if (!string.IsNullOrEmpty(adopterId.Text))
+            {
+                animal.AdopterId = Int32.Parse(adopterId.Text);
+            }
+            else
+            {
+                animal.AdopterId = 0;
+            }
 
-                var changedAnimal = JsonSerializer.Serialize(animal);
-                client.PostAsync("Animal/", new StringContent(changedAnimal, Encoding.UTF8, "application/json"));
-            };
+            var changedAnimal = JsonSerializer.Serialize(animal);
+            client.PostAsync("Animal/", new StringContent(changedAnimal, Encoding.UTF8, "application/json"));
+        };
 
-            pictureChange.Click += (s, e) =>
+        pictureChange.Click += (s, e) =>
             {
                 OpenFileDialog change = new OpenFileDialog();
-                change.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+        change.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
                 change.Multiselect = false;
                 if (change.ShowDialog() == true)
                 {
@@ -167,12 +169,12 @@ namespace TISWindows
                         Extension = System.IO.Path.GetExtension(change.FileName),
                         Data = Document.SerializeBytes(File.ReadAllBytes(change.FileName)),
                     };
-                    var content = JsonSerializer.Serialize(pic);
+        var content = JsonSerializer.Serialize(pic);
 
-                    var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
-                    animal.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
+        var fileID = client.PostAsync("File/", new StringContent(content, Encoding.UTF8, "application/json")).Result;
+        animal.PhotoId = Int32.Parse(fileID.Content.ReadAsStringAsync().Result);
                 }
-            };
+};
         }
 
 

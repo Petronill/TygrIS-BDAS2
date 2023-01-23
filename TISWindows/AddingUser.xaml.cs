@@ -24,12 +24,13 @@ namespace TISWindows
     /// </summary>
     public partial class AddingUser : Window
     {
-        Person user;
+        Person user = new Person();
         HttpClient client;
         public AddingUser(HttpClient client)
         {
             this.client = client;
             InitializeComponent();
+            CreateUser();
             role.Items.Add("KEEPER");
             role.Items.Add("ADOPTER");
         }
@@ -97,21 +98,20 @@ namespace TISWindows
 
                 if (!string.IsNullOrEmpty(address.Text))
                 {
-                    string[] addressString = address.Text.Split(' ');
-                    user.Address.Street = addressString[0];
-                    user.Address.HouseNumber = Int32.Parse(addressString[1]);
-                    user.Address.City = addressString[2];
-                    user.Address.PostalCode = Int32.Parse(addressString[3]);
-                    user.Address.Country = addressString[4];
+                    string[] addressString = address.Text.Split(" ");
+                    TISModelLibrary.Address adresa = new TISModelLibrary.Address();
+                    adresa.Street = addressString[0];
+                    adresa.HouseNumber = Int32.Parse(addressString[1]);
+                    adresa.City = addressString[2];
+                    adresa.PostalCode = Int32.Parse(addressString[3]);
+                    adresa.Country = addressString[4];
+                    user.Address= adresa;
 
                 }
                 else
                 {
-                    user.Address.Street = " ";
-                    user.Address.HouseNumber = 0;
-                    user.Address.City = " ";
-                    user.Address.PostalCode = 0;
-                    user.Address.Country = " ";
+                    TISModelLibrary.Address adresa = new TISModelLibrary.Address();
+                    user.Address = adresa; 
                 }
 
                 if (!string.IsNullOrEmpty(email.Text))
@@ -199,9 +199,8 @@ namespace TISWindows
                     var changedAnimal = JsonSerializer.Serialize(adopter);
                     client.PostAsync("Adopter/", new StringContent(changedAnimal, Encoding.UTF8, "application/json"));
                 }
-
             };
-
         }
     }
+
 }

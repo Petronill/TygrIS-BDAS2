@@ -24,12 +24,15 @@ namespace TISWindows
     /// <summary>
     /// Interaction logic for Emulator.xaml
     /// </summary>
+    public delegate void UserChanged(Person user);
     public partial class Emulator : Window
     {
         Person user;
         Animal animal;
         HttpClient client;
         int counter = 0;
+
+        public event UserChanged OnUserChanged;
 
         public Emulator(Person user, HttpClient client)
         {
@@ -43,8 +46,6 @@ namespace TISWindows
         }
 
         public Person User => user;
-        /* TODO opravit ukladani uzivatele
-        */
         private void LoadDataIntoComponents()
         {
             adminWindow.Children.Clear();
@@ -129,6 +130,7 @@ namespace TISWindows
                     if (userList[i].FirstName.Equals(users.SelectedItem.ToString()))
                     {
                         user = userList[i];
+                        OnUserChanged?.Invoke(user);
                         if (userList[i].Role == PersonalRoles.KEEPER)
                         {
                             donationPanel.Visibility = Visibility.Hidden;
@@ -193,7 +195,6 @@ namespace TISWindows
 
             btnAdd.Click += (s, e) =>
             {
-                //TODO udělat uplně novou metodu s novým oknem... kriste pane... zase na novém threadu asi idk
                 if (userAnimal.SelectedItem.ToString() == "Animals")
                 {
                     Thread thread = new Thread(new ThreadStart(AddAnimal));
@@ -203,7 +204,6 @@ namespace TISWindows
 
                     LoggRefresh(loggList);
 
-                    //TODO zavolat okno s prvky a okey tlačítkem, co by mělo 
                 }
                 else if (userAnimal.SelectedItem.ToString() == "Users")
                 {
@@ -448,6 +448,7 @@ namespace TISWindows
                 btnChange.IsEnabled = false;
                 for (int i = 0; i < animalList.Count; i++)
                 {
+                    death.Text = "";
                     if (animalList[i].Name.Equals(animals.SelectedItem.ToString()))
                     {
                         animal = animalList[i];
@@ -456,9 +457,9 @@ namespace TISWindows
                         nameCzech.Text = animal.Species.CzechName + " " + animal.Species.Genus.CzechName;
                         nameLatin.Text = animal.Species.LatinName + " " + animal.Species.Genus.LatinName;
                         //TODO Kaveh mi tady hazi nejakou zas chybu wtf
-                        if (animal.Enclosure.Name != null)
+                        if (animal.Enclosure?.Name != null)
                             enclosure.Text = animal.Enclosure.Name + " ";
-                        else if (animal.Enclosure.Pavilion.Name != null)
+                        else if (animal.Enclosure?.Pavilion?.Name != null)
                         {
                             enclosure.Text += animal.Enclosure.Pavilion.Name;
                         }
